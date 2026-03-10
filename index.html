@@ -320,6 +320,33 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
       </div>
     </div>
 
+    <!-- ── KWH METER PHOTO ── -->
+    <div style="margin-top:18px;margin-bottom:6px">
+      <div class="slabel">📷 FOTO KWH METER <span style="font-weight:400;color:var(--mid)">(opsional)</span></div>
+      <div class="buz" id="buz_meter" onclick="document.getElementById('inp_meter').click()" style="max-width:100%;margin-bottom:8px">
+        <input type="file" id="inp_meter" accept="image/*" capture="environment" onchange="onMeterUpload(this)">
+        <div class="buz-ico" id="bico_meter">⚡</div>
+        <div class="buz-t" id="btxt_meter">Ambil / Pilih Foto KWH Meter</div>
+        <div class="buz-s">Untuk cek kondisi meter Tua/Normal & baca angka otomatis</div>
+        <img class="buz-img" id="prev_meter" src="" alt="" style="display:none">
+      </div>
+      <div id="meterBadge" style="display:none;margin-bottom:10px;padding:10px 14px;border-radius:10px;font-size:13px;font-weight:700"></div>
+    </div>
+
+    <!-- ── TAGIHAN BULAN LALU ── -->
+    <div style="margin-bottom:18px">
+      <div class="slabel">TAGIHAN LISTRIK BULAN LALU</div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:13px;font-weight:700;color:var(--mid)">Rp</span>
+        <input id="inp_actual" type="number" placeholder="Contoh: 450000"
+          style="flex:1;padding:11px 13px;border-radius:10px;border:1.5px solid var(--light);background:var(--bg);font-family:inherit;font-size:16px;font-weight:700;color:var(--dark);outline:none;transition:border-color .2s"
+          onfocus="this.style.borderColor='var(--acc)';this.style.background='#fffbeb'"
+          onblur="this.style.borderColor='var(--light)';this.style.background='var(--bg)'">
+        <span style="font-size:12px;color:var(--mid)">/bulan</span>
+      </div>
+      <div style="font-size:11px;color:var(--mid);margin-top:5px">Cek di aplikasi PLN Mobile atau struk terakhir</div>
+    </div>
+
     <div class="pnav">
       <div style="font-size:13px;color:var(--mid)" id="roomHint">Pilih minimal 1 ruangan</div>
       <button class="bnx" id="btnStep2" onclick="goStep2()" disabled>Scan Perangkat →</button>
@@ -342,30 +369,8 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
        STEP 3 — TAGIHAN
   ══════════════════════════════════════════════════ -->
   <div class="panel body" id="p3">
-    <div class="ptitle">🧾 Upload Tagihan PLN</div>
-    <div class="psub">Opsional — untuk perbandingan tagihan aktual vs estimasi AI</div>
-
-    <div class="bill-grid">
-      <div class="buz" id="buz1" onclick="document.getElementById('inp_bill').click()">
-        <input type="file" id="inp_bill" accept="image/*" onchange="billUp('buz1','inp_bill','prev_bill','bico1','btxt1')">
-        <div class="buz-ico" id="bico1">🧾</div>
-        <div class="buz-t" id="btxt1">Foto Tagihan / Struk PLN</div>
-        <div class="buz-s">Screenshot MyPLN atau struk</div>
-        <img class="buz-img" id="prev_bill" src="" alt="">
-      </div>
-      <div class="buz" id="buz2" onclick="document.getElementById('inp_meter').click()">
-        <input type="file" id="inp_meter" accept="image/*" onchange="billUp('buz2','inp_meter','prev_meter','bico2','btxt2')">
-        <div class="buz-ico" id="bico2">⚡</div>
-        <div class="buz-t" id="btxt2">Foto KWH Meter</div>
-        <div class="buz-s">Angka pada kwh meter rumah</div>
-        <img class="buz-img" id="prev_meter" src="" alt="">
-      </div>
-    </div>
-
-    <div class="skip-note">
-      <span>ℹ️</span>
-      <span>Tidak punya foto? Tidak apa-apa — klik <strong>Lewati</strong> untuk tetap dapat analisis lengkap.</span>
-    </div>
+    <div class="ptitle">🔍 Analisis Konsumsi Listrik</div>
+    <div class="psub">Ringkasan lengkap berdasarkan data & perangkat kamu</div>
 
     <div class="est-box">
       <div style="font-size:11px;font-weight:700;color:#92400e;letter-spacing:1px;margin-bottom:10px">ESTIMASI DARI SCAN PERANGKAT</div>
@@ -381,23 +386,11 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
       </div>
     </div>
 
-    <!-- Input tagihan aktual manual -->
-    <div style="margin-bottom:16px">
-      <div class="slabel">TAGIHAN AKTUAL (OPSIONAL)</div>
-      <div style="display:flex;align-items:center;gap:10px">
-        <span style="font-size:13px;font-weight:700;color:var(--mid)">Rp</span>
-        <input id="inp_actual" type="number" placeholder="Contoh: 450000"
-          style="flex:1;padding:11px 13px;border-radius:10px;border:1.5px solid var(--light);background:var(--bg);font-family:inherit;font-size:14px;font-weight:700;color:var(--dark);outline:none;transition:border-color .2s"
-          onfocus="this.style.borderColor='var(--acc)';this.style.background='#fffbeb'"
-          onblur="this.style.borderColor='var(--light)';this.style.background='var(--bg)'">
-        <span style="font-size:12px;color:var(--mid)">/bulan</span>
-      </div>
-      <div style="font-size:11px;color:var(--mid);margin-top:5px">Isi tagihan asli untuk perbandingan akurat</div>
-    </div>
+    <div id="s3AiSummary" style="margin-bottom:16px"></div>
 
     <div class="pnav">
       <button class="bbk" onclick="go(2)">← Kembali</button>
-      <button class="bnx" onclick="goResults()">Lihat Hasil Analisis →</button>
+      <button class="bnx" onclick="goResults()">Lihat Hasil Lengkap →</button>
     </div>
   </div>
 
@@ -672,18 +665,45 @@ function updateSticky(){
   document.getElementById('stickyVal').textContent=total>0?`${rp(total)}/bln · ${Math.round(kwh)} kWh`:'Upload foto dulu'
 }
 
-// ── STEP 3 ────────────────────────────────────────────────────────
-function billUp(buzId,inputId,prevId,icoId,txtId){
-  const file=document.getElementById(inputId).files[0]; if(!file) return
-  const reader=new FileReader()
-  reader.onload=e=>{
-    document.getElementById(prevId).src=e.target.result
-    document.getElementById(buzId).classList.add('done')
-    document.getElementById(icoId).style.display='none'
-    document.getElementById(txtId).textContent='✅ Foto terupload'
-  }
-  reader.readAsDataURL(file)
+// ── METER PHOTO (Step 1) ──────────────────────────────────────────
+async function onMeterUpload(input){
+  const file = input.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = async e => {
+    const prev = document.getElementById('prev_meter');
+    prev.src = e.target.result; prev.style.display='block';
+    document.getElementById('bico_meter').style.display='none';
+    document.getElementById('btxt_meter').textContent='✅ Foto terupload — menganalisis...';
+    document.getElementById('buz_meter').classList.add('done');
+
+    const badge = document.getElementById('meterBadge');
+    badge.style.display='block';
+    badge.style.background='#FEF3C7'; badge.style.color='#92400e';
+    badge.textContent='⏳ AI sedang menganalisis meter...';
+
+    try {
+      const fd = new FormData(); fd.append('image', file);
+      const res = await fetch('/api/analyze/meter', { method:'POST', body: fd });
+      const data = await res.json();
+      if(data.isTua){
+        badge.style.background='#FEF2F2'; badge.style.color='#991B1B';
+        badge.innerHTML='⚠️ <b>METER TUA</b> — ' + (data.reason||'Usia meter >15 tahun, disarankan penggantian');
+      } else {
+        badge.style.background='#F0FDF4'; badge.style.color='#166534';
+        badge.innerHTML='✅ <b>METER NORMAL</b> — ' + (data.reason||'Kondisi meter dalam keadaan baik');
+      }
+      if(data.tegangan && data.tegangan < 210){
+        badge.innerHTML += '<br><span style="color:#B45309">⚡ Tegangan rendah: '+data.tegangan+'V (undervoltage)</span>';
+      }
+    } catch(err){
+      badge.style.background='#F1F5F9'; badge.style.color='#64748B';
+      badge.textContent='ℹ️ Tidak dapat menganalisis foto — lanjut tanpa analisis meter';
+    }
+  };
+  reader.readAsDataURL(file);
 }
+
+// ── STEP 3 ────────────────────────────────────────────────────────
 function step3Summary(){
   const total=rooms.reduce((a,r)=>a+r.devs.reduce((b,d)=>b+calcDev(d.w,d.h).cost,0),0)
   const kwh=rooms.reduce((a,r)=>a+r.devs.reduce((b,d)=>b+calcDev(d.w,d.h).kwh,0),0)
