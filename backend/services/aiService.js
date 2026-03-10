@@ -48,14 +48,34 @@ async function analyzeDeviceImage(imageBuffer, mimeType) {
             },
             {
               type: 'text',
-              text: `Identify this household electrical appliance/device.
-Return ONLY a JSON object (no markdown) with:
+              text: `You are an expert at identifying household electrical appliances from photos.
+
+Look carefully at the EXACT object in this photo and identify it precisely.
+DO NOT guess or substitute — if it looks like a refrigerator, say refrigerator. If it looks like an AC, say AC.
+
+Common Indonesian household devices and their typical wattage:
+- Kulkas 1 pintu: 70-100W, 24h/day
+- Kulkas 2 pintu: 150-200W, 24h/day
+- AC Split 0.5 PK: 400W, 8h/day
+- AC Split 1 PK: 750W, 8h/day
+- AC Split 1.5 PK: 1200W, 8h/day
+- TV LED 32 inch: 50W, 6h/day
+- TV LED 55 inch: 120W, 6h/day
+- Mesin Cuci: 300-500W, 1h/day
+- Pompa Air: 250W, 2h/day
+- Rice Cooker: 400W, 1h/day
+- Setrika: 350W, 1h/day
+- Dispenser: 350W, 10h/day
+- Microwave: 1000W, 0.5h/day
+- Laptop: 65W, 8h/day
+- Lampu LED: 10W, 8h/day
+
+Identify what you actually see in the photo. Return ONLY a JSON object (no markdown, no explanation):
 {
-  "name": "device name in Indonesian (e.g. AC Split 1 PK)",
-  "watts": estimated wattage as number,
+  "name": "nama perangkat dalam Bahasa Indonesia (spesifik, contoh: Kulkas 2 Pintu, AC Split 1 PK)",
+  "watts": wattage as number,
   "dailyHours": typical daily usage hours as number
-}
-Be concise and realistic. If unclear, make a reasonable guess based on what you see.`,
+}`,
             },
           ],
         },
