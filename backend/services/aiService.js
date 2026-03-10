@@ -23,11 +23,23 @@ function getEmoji(name) {
   return '🔌';
 }
 
+async function toJpegBuffer(buffer) {
+  try {
+    const sharp = require('sharp');
+    return await sharp(buffer).rotate().jpeg({ quality: 90 }).toBuffer();
+  } catch (e) {
+    return buffer; // fallback: use original
+  }
+}
+
 async function analyzeDeviceImage(imageBuffer, mimeType) {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) throw new Error('OPENAI_API_KEY not set in environment');
 
-  const base64 = imageBuffer.toString('base64');
+  // Always convert to JPEG — fixes HEIC/HEIF from iPhones & ensures quality
+  const jpegBuffer = await toJpegBuffer(imageBuffer);
+  const base64 = jpegBuffer.toString('base64');
+  mimeType = 'image/jpeg';
 
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
@@ -44,38 +56,32 @@ async function analyzeDeviceImage(imageBuffer, mimeType) {
           content: [
             {
               type: 'image_url',
-              image_url: { url: `data:${mimeType};base64,${base64}` },
+              image_url: { url: `data:${mimeType};base64,${base64}`, detail: 'high' },
             },
             {
               type: 'text',
-              text: `You are an expert at identifying household electrical appliances from photos.
+              text: `You are an expert electrician identifying household appliances in Indonesian homes.
 
-Look carefully at the EXACT object in this photo and identify it precisely.
-DO NOT guess or substitute — if it looks like a refrigerator, say refrigerator. If it looks like an AC, say AC.
+IMPORTANT RULES:
+1. Look at the FULL object carefully — shape, size, door/panel, features
+2. Kulkas/refrigerator: has door(s), often white/silver, taller than wide, stored food
+3. AC indoor unit: long horizontal box mounted on wall near ceiling
+4. AC outdoor unit: boxy with fan grille, placed outside
+5. NEVER confuse kulkas with AC — they look completely different
+6. If you see a large white/silver vertical box with handle and door = KULKAS
+7. If you see horizontal wall-mounted unit = AC indoor
+8. Be specific: "Kulkas 1 Pintu", "Kulkas 2 Pintu", "AC Split 1 PK", "TV LED 43 inch"
 
-Common Indonesian household devices and their typical wattage:
-- Kulkas 1 pintu: 70-100W, 24h/day
-- Kulkas 2 pintu: 150-200W, 24h/day
-- AC Split 0.5 PK: 400W, 8h/day
-- AC Split 1 PK: 750W, 8h/day
-- AC Split 1.5 PK: 1200W, 8h/day
-- TV LED 32 inch: 50W, 6h/day
-- TV LED 55 inch: 120W, 6h/day
-- Mesin Cuci: 300-500W, 1h/day
-- Pompa Air: 250W, 2h/day
-- Rice Cooker: 400W, 1h/day
-- Setrika: 350W, 1h/day
-- Dispenser: 350W, 10h/day
-- Microwave: 1000W, 0.5h/day
-- Laptop: 65W, 8h/day
-- Lampu LED: 10W, 8h/day
+Reference wattage for Indonesian homes:
+Kulkas 1 pintu=80W/24h | Kulkas 2 pintu=150W/24h | Kulkas side-by-side=250W/24h
+AC 0.5PK=400W/8h | AC 1PK=750W/8h | AC 1.5PK=1200W/8h | AC 2PK=1800W/8h
+TV LED 32"=50W/6h | TV LED 43"=80W/6h | TV LED 55"=120W/6h
+Mesin Cuci=400W/1h | Pompa Air=250W/2h | Rice Cooker=400W/1h
+Setrika=350W/1h | Dispenser=350W/10h | Microwave=1000W/0.5h
+Laptop=65W/8h | PC Desktop=300W/8h | Lampu LED=10W/8h | Kipas Angin=50W/8h
 
-Identify what you actually see in the photo. Return ONLY a JSON object (no markdown, no explanation):
-{
-  "name": "nama perangkat dalam Bahasa Indonesia (spesifik, contoh: Kulkas 2 Pintu, AC Split 1 PK)",
-  "watts": wattage as number,
-  "dailyHours": typical daily usage hours as number
-}`,
+Return ONLY valid JSON (no markdown):
+{"name":"nama spesifik dalam Bahasa Indonesia","watts":number,"dailyHours":number}`,
             },
           ],
         },
