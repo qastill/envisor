@@ -31,7 +31,11 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/public/index.html'));
 });
 
-// ── Start ─────────────────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`✅ EnVisor AI running at http://localhost:${PORT}`);
-});
+// ── Start (local only) ───────────────────────────────────────────
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`✅ EnVisor AI running at http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;

@@ -1,6 +1,9 @@
 {
+  "functions": {
+    "api/index.js": { "maxDuration": 30 }
+  },
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" }
+    { "source": "/api/:path*", "destination": "/api/index" }
   ],
   "headers": [
     {
