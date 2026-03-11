@@ -450,7 +450,7 @@ let rooms=[
   {id:'r5',n:'Garasi',i:'🚗',devs:[]},
 ]
 let plnVa=1300, jumlahOrang=3, activeRoom='r1', selIco='🏠', customId=0
-const API_URL='' // isi URL Railway kamu
+const API_URL = window.location.origin // use same origin (Vercel backend)
 
 // ── TARIFF & CALC ──────────────────────────────────────────────────
 function tariff(){ return plnVa<=900?1352:plnVa<=2200?1444:1699 }

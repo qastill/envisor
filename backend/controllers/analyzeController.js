@@ -148,4 +148,39 @@ function buildSummary(req, res) {
   }
 }
 
-module.exports = { analyzeDevice, analyzeBill, buildSummary };
+/**
+ * POST /api/analyze/room
+ * Body: JSON { image: base64string, mediaType: 'image/jpeg', roomLabel: 'Dapur' }
+ * Returns: { devices: [{name, watts, dailyHours}] }
+ */
+async function analyzeRoom(req, res) {
+  try {
+    const { image, mediaType = 'image/jpeg', roomLabel = '' } = req.body;
+    if (!image) return res.status(400).json({ error: 'No image provided' });
+
+    // Decode base64 to buffer (strip data URL prefix if present)
+    const base64 = image.replace(/^data:image\/\w+;base64,/, '');
+    const buffer = Buffer.from(base64, 'base64');
+
+    const result = await analyzeDeviceImage(buffer, mediaType);
+    const { va = 1300 } = req.body;
+    const { kwh, cost } = calcDevice(result.watts, result.dailyHours, Number(va));
+
+    return res.json({
+      success: true,
+      devices: [{
+        name: result.name,
+        watts: result.watts,
+        dailyHours: result.dailyHours,
+        emoji: result.emoji,
+        kwh,
+        costPerMonth: cost,
+      }]
+    });
+  } catch (err) {
+    console.error('[analyzeRoom]', err.message);
+    return res.status(500).json({ error: err.message });
+  }
+}
+
+module.exports = { analyzeDevice, analyzeRoom, analyzeBill, buildSummary };
