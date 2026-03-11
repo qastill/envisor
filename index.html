@@ -4,239 +4,263 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#00C9FF">
+<meta name="theme-color" content="#0071e3">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="EnVisor">
 <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
 <script>if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));</script>
 <title>EnVisor AI — Audit Listrik Rumahmu</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#f7f8fc;--white:#fff;
-  --acc:#f59e0b;--acc2:#ef4444;--acc3:#f97316;
-  --green:#10b981;--blue:#0891b2;
-  --dark:#0f172a;--mid:#64748b;--light:#e2e8f0;--light2:#f1f5f9;
+  --bg:#f5f5f7;--surface:#fff;--text:#1d1d1f;--mid:#86868b;--border:#d2d2d7;
+  --acc:#0071e3;--success:#34c759;--warn:#ff9f0a;--danger:#ff3b30;
+  --white:#fff;--light:#d2d2d7;--light2:#f5f5f7;--acc2:#0077ed;--acc3:#30aaff;
+  --green:#34c759;--blue:#0071e3;--dark:#1d1d1f;
 }
-body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--dark);min-height:100vh}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Inter','Helvetica Neue',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
 
-/* NAV */
-nav{background:var(--white);border-bottom:1px solid var(--light);padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 8px rgba(0,0,0,0.06)}
-.logo{font-weight:900;font-size:20px;display:flex;align-items:center;gap:6px}
+/* HEADER */
+header{position:sticky;top:0;z-index:100;height:56px;background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,.08);display:flex;align-items:center}
+.header-inner{width:100%;max-width:480px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:17px;font-weight:700;letter-spacing:-.02em;color:var(--text);display:flex;align-items:center;gap:3px}
 .logo em{color:var(--acc);font-style:normal}
-.nav-badge{font-size:11px;background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:20px;font-weight:700}
+.header-badge{font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--mid);background:rgba(134,134,139,.1);padding:4px 10px;border-radius:980px}
+
+/* WRAP */
+.wrap{max-width:480px;margin:0 auto;padding:16px 16px 120px}
 
 /* HERO */
-.hero{text-align:center;padding:38px 24px 24px;max-width:560px;margin:0 auto}
-.hero h1{font-size:clamp(22px,5vw,38px);font-weight:900;line-height:1.15;margin-bottom:10px}
+.hero{text-align:center;padding:24px 0 16px}
+.hero h1{font-size:clamp(22px,6vw,32px);font-weight:700;letter-spacing:-.03em;line-height:1.2;color:var(--text);margin-bottom:8px}
 .hero h1 em{color:var(--acc);font-style:normal}
-.hero p{color:var(--mid);font-size:15px;line-height:1.6}
+.hero p{font-size:15px;color:var(--mid);line-height:1.6}
 
-/* MAIN CARD */
-.wrap{max-width:700px;margin:0 auto 60px;padding:0 16px}
-.card{background:var(--white);border-radius:24px;box-shadow:0 4px 28px rgba(0,0,0,0.08);overflow:hidden}
+/* STEPPER */
+.stepper{background:var(--surface);border-radius:18px;padding:18px 20px 14px;margin-bottom:12px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.stepper-row{display:flex;justify-content:space-between;position:relative}
+.stepper-row::before{content:'';position:absolute;top:15px;left:32px;right:32px;height:2px;background:var(--border);z-index:0}
+.step-item{display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;z-index:1;flex:1}
+.slbl{width:32px;height:32px;border-radius:50%;background:var(--border);color:var(--mid);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;transition:all .3s;border:2px solid transparent}
+.slbl.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+.slbl.ok{background:var(--success);color:#fff;border-color:var(--success);font-size:0}
+.slbl.ok::after{content:'✓';font-size:14px;color:#fff}
+.step-lbl{font-size:10px;font-weight:600;letter-spacing:.04em;color:var(--mid);text-align:center;white-space:nowrap;transition:color .3s}
 
-/* PROGRESS */
-.prog{padding:20px 24px 0}
-.step-row{display:flex;justify-content:space-between;margin-bottom:8px}
-.slbl{font-size:11px;font-weight:700;color:var(--light);flex:1;text-align:center;transition:color .3s}
-.slbl.on{color:var(--acc)}.slbl.ok{color:var(--green)}
-.track{height:4px;background:var(--light);border-radius:10px;overflow:hidden}
-.fill{height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));border-radius:10px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+/* CARD */
+.card{background:var(--surface);border-radius:18px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:12px}
+.card-title{font-size:20px;font-weight:700;letter-spacing:-.02em;color:var(--text);margin-bottom:4px}
+.card-sub{font-size:14px;color:var(--mid);line-height:1.5;margin-bottom:16px}
+.sec-label{display:block;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mid);margin-bottom:10px}
 
 /* PANEL */
-.body{padding:24px}
 .panel{display:none}
-.panel.active{display:block;animation:up .35s ease}
-@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-.ptitle{font-size:19px;font-weight:900;margin-bottom:4px}
-.psub{font-size:13px;color:var(--mid);margin-bottom:20px}
-
-/* SECTION LABEL */
-.slabel{font-size:11px;font-weight:700;color:var(--mid);letter-spacing:1px;margin-bottom:8px}
+.panel.active{display:block;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
 /* VA PILLS */
-.va-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
-.va-btn{padding:7px 13px;border:1.5px solid var(--light);border-radius:9px;background:var(--bg);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;color:var(--mid);transition:all .15s}
-.va-btn.sel{border-color:var(--acc);background:#fffbeb;color:#92400e}
+.va-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.va-btn{padding:8px 14px;border:1.5px solid var(--border);border-radius:980px;background:var(--surface);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;color:var(--mid);transition:all .15s}
+.va-btn.sel{border-color:var(--acc);background:rgba(0,113,227,.08);color:var(--acc)}
+.va-btn:hover:not(.sel){border-color:var(--acc);color:var(--acc);background:rgba(0,113,227,.04)}
 
-/* ORANG COUNTER */
-.orang-ctrl{display:inline-flex;align-items:center;border:1.5px solid var(--light);border-radius:10px;overflow:hidden;background:var(--bg)}
-.orang-btn{width:38px;height:38px;border:none;background:none;font-size:20px;font-weight:700;cursor:pointer;color:var(--mid);transition:background .15s}
-.orang-btn:hover{background:#fef3c7}
-.orang-num{font-size:17px;font-weight:800;width:36px;text-align:center;color:var(--dark)}
+/* ORANG */
+.orang-ctrl{display:inline-flex;align-items:center;border:1.5px solid var(--border);border-radius:980px;background:var(--bg);overflow:hidden}
+.orang-btn{width:36px;height:36px;border:none;background:none;font-size:20px;font-weight:700;cursor:pointer;color:var(--acc);transition:background .15s;display:flex;align-items:center;justify-content:center}
+.orang-btn:hover{background:rgba(0,113,227,.08)}
+.orang-num{font-size:16px;font-weight:700;width:32px;text-align:center;color:var(--text)}
 
 /* ROOM GRID */
-.room-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:10px;margin-bottom:14px}
-.room-card{position:relative;border:2px solid var(--light);border-radius:14px;padding:16px 10px;text-align:center;background:var(--bg);transition:all .2s}
-.room-card.done{border-color:var(--green);background:#f0fdf4}
-.r-ico{font-size:30px;margin-bottom:7px}
-.r-nm{font-size:12px;font-weight:700}
-.r-cnt{font-size:11px;color:var(--green);font-weight:700;margin-top:3px}
-.r-del{position:absolute;top:5px;right:5px;background:rgba(239,68,68,.1);border:none;border-radius:5px;color:#ef4444;width:20px;height:20px;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
-.add-preset-btn,.add-custom-btn{padding:8px 14px;border:1.5px solid var(--light);border-radius:9px;background:var(--bg);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;color:var(--mid);transition:all .15s}
-.add-preset-btn:hover,.add-custom-btn:hover{border-color:var(--acc);color:var(--acc);background:#fffbeb}
+.room-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin-bottom:12px}
+.room-card{position:relative;background:var(--bg);border:1.5px solid var(--border);border-radius:14px;padding:14px 10px;text-align:center;transition:all .2s}
+.room-card.done{border-color:var(--success);background:rgba(52,199,89,.06)}
+.r-ico{font-size:26px;margin-bottom:6px}
+.r-nm{font-size:12px;font-weight:600;color:var(--text);line-height:1.3}
+.r-cnt{font-size:11px;color:var(--success);font-weight:600;margin-top:3px}
+.r-del{position:absolute;top:6px;right:6px;background:rgba(255,59,48,.1);border:none;border-radius:6px;color:var(--danger);width:20px;height:20px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.r-del:hover{background:rgba(255,59,48,.2)}
 
-.preset-box{background:var(--bg);border:1.5px solid var(--light);border-radius:14px;padding:14px;margin-bottom:12px}
-.preset-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:7px;margin-top:10px}
-.preset-item{display:flex;align-items:center;gap:7px;padding:8px 10px;background:var(--white);border:1.5px solid var(--light);border-radius:9px;cursor:pointer;font-size:12px;font-weight:600;transition:all .15s}
-.preset-item:hover{border-color:var(--acc);background:#fffbeb}
+/* ROOM ACTIONS */
+.room-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.add-preset-btn,.add-custom-btn{padding:8px 16px;border:1.5px solid var(--border);border-radius:980px;background:var(--surface);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;color:var(--mid);transition:all .15s}
+.add-preset-btn:hover,.add-custom-btn:hover{border-color:var(--acc);color:var(--acc);background:rgba(0,113,227,.06)}
 
+/* PRESET BOX */
+.preset-box{background:var(--bg);border:1.5px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px}
+.preset-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-top:10px}
+.preset-item{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text);transition:all .15s}
+.preset-item:hover{border-color:var(--acc);color:var(--acc);background:rgba(0,113,227,.04)}
+
+/* ICON PICKER */
 .icon-picker{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
-.ico-opt{font-size:20px;padding:5px 7px;border:1.5px solid var(--light);border-radius:7px;cursor:pointer;background:var(--bg);transition:all .15s}
-.ico-opt.sel{border-color:var(--acc);background:#fffbeb}
-.custom-row{display:flex;gap:8px;margin-top:8px}
-.custom-row input{flex:1;padding:10px 13px;border-radius:10px;border:1.5px solid var(--light);background:var(--bg);font-family:inherit;font-size:13px;color:var(--dark);outline:none;transition:border-color .2s}
-.custom-row input:focus{border-color:var(--acc);background:#fffbeb}
-.custom-row button{padding:10px 16px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;border:none;border-radius:10px;font-family:inherit;font-weight:700;font-size:13px;cursor:pointer}
+.ico-opt{font-size:18px;padding:6px 8px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;background:var(--surface);transition:all .15s}
+.ico-opt.sel{border-color:var(--acc);background:rgba(0,113,227,.08)}
+.custom-row{display:flex;gap:8px;margin-top:10px}
+.custom-row input{flex:1;padding:11px 14px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);font-family:inherit;font-size:13px;color:var(--text);outline:none;transition:all .2s}
+.custom-row input:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(0,113,227,.15)}
+.custom-row button{padding:11px 18px;background:var(--acc);color:#fff;border:none;border-radius:12px;font-family:inherit;font-weight:600;font-size:13px;cursor:pointer;transition:opacity .15s}
+.custom-row button:hover{opacity:.88}
 
-/* STEP 2 */
-.room-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-.rtab{padding:7px 14px;border:1.5px solid var(--light);border-radius:20px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;background:var(--bg);color:var(--mid);transition:all .15s}
-.rtab.sel{border-color:var(--acc);background:#fffbeb;color:#92400e}
-.rtab.done{border-color:var(--green);color:var(--green);background:#f0fdf4}
-
-.uz{border:2px dashed var(--light);border-radius:16px;padding:28px 20px;text-align:center;cursor:pointer;background:var(--bg);transition:all .2s;margin-bottom:14px;position:relative}
-.uz:hover,.uz.drag{border-color:var(--acc);background:#fffbeb}
+/* UPLOAD */
+.uz{border:1.5px dashed #c7c7cc;border-radius:16px;padding:28px 20px;text-align:center;cursor:pointer;background:var(--bg);transition:all .2s;margin-bottom:12px;position:relative}
+.uz:hover,.uz.drag{border-color:var(--acc);background:rgba(0,113,227,.04)}
 .uz input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.uz-ico{font-size:34px;margin-bottom:8px}
-.uz-t{font-size:15px;font-weight:800;margin-bottom:4px}
-.uz-s{font-size:12px;color:var(--mid)}
-.lbar{height:3px;background:var(--light);border-radius:2px;overflow:hidden;margin-top:10px;display:none}
+.uz-ico{font-size:32px;margin-bottom:8px}
+.uz-t{font-size:15px;font-weight:600;color:var(--text);margin-bottom:4px}
+.uz-s{font-size:13px;color:var(--mid)}
+.buz{border:1.5px dashed #c7c7cc;border-radius:16px;padding:20px;text-align:center;cursor:pointer;background:var(--bg);transition:all .2s;position:relative;overflow:hidden}
+.buz:hover{border-color:var(--acc);background:rgba(0,113,227,.04)}
+.buz.done{border-color:var(--success);background:rgba(52,199,89,.06)}
+.buz input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.buz-ico{font-size:28px;margin-bottom:6px}
+.buz-t{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+.buz-s{font-size:11px;color:var(--mid)}
+.buz-img{width:100%;max-height:100px;object-fit:cover;border-radius:10px;margin-top:10px;display:none}
+.buz.done .buz-img{display:block}
+
+/* LOADING BAR */
+.lbar{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:10px;display:none}
 .lbar.on{display:block}
-.lbar-fill{height:100%;width:30%;background:linear-gradient(90deg,var(--acc),var(--acc2));border-radius:2px;animation:scan 1.2s ease-in-out infinite}
+.lbar-fill{height:100%;width:30%;background:var(--acc);border-radius:2px;animation:scan 1.2s ease-in-out infinite}
 @keyframes scan{0%{transform:translateX(-130%)}100%{transform:translateX(430%)}}
 
+/* DEVICE LIST */
 .dlist{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
-.drow{background:var(--bg);border-radius:12px;padding:10px 14px;border:1.5px solid var(--light)}
+.drow{background:var(--bg);border-radius:12px;padding:12px 14px;border:1.5px solid var(--border)}
 .drow-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .d-ico{font-size:18px;flex-shrink:0}
 .d-info{flex:1;min-width:0}
-.d-nm{font-size:13px;font-weight:700}
-.d-wt{font-size:11px;color:var(--mid)}
-.d-cost{font-size:13px;font-weight:800;flex-shrink:0}
-.dbtn{background:none;border:none;cursor:pointer;padding:3px 5px;color:#cbd5e1;font-size:16px;border-radius:5px;transition:all .15s;flex-shrink:0}
-.dbtn:hover{color:var(--acc2);background:#fee2e2}
-.slider-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
-.sl-lbl{font-size:11px;color:var(--mid)}
-.sl-val{font-size:12px;font-weight:800;background:#fef3c7;color:#92400e;padding:2px 9px;border-radius:8px}
-input[type=range]{-webkit-appearance:none;width:100%;height:5px;background:var(--light);border-radius:3px;outline:none;cursor:pointer}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--acc);box-shadow:0 0 6px rgba(245,158,11,.5);cursor:pointer;transition:transform .15s}
+.d-nm{font-size:13px;font-weight:600;color:var(--text)}
+.d-wt{font-size:11px;color:var(--mid);margin-top:2px}
+.d-cost{font-size:13px;font-weight:700;flex-shrink:0}
+.dbtn{background:none;border:none;cursor:pointer;padding:4px 6px;color:#c7c7cc;font-size:16px;border-radius:6px;transition:all .15s;flex-shrink:0}
+.dbtn:hover{color:var(--danger);background:rgba(255,59,48,.1)}
+.slider-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.sl-lbl{font-size:11px;color:var(--mid);font-weight:500}
+.sl-val{font-size:11px;font-weight:700;background:rgba(0,113,227,.1);color:var(--acc);padding:2px 8px;border-radius:6px}
+input[type=range]{-webkit-appearance:none;width:100%;height:4px;background:var(--border);border-radius:2px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--acc);box-shadow:0 2px 8px rgba(0,113,227,.35);cursor:pointer;transition:transform .15s}
 input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
-.sl-ticks{display:flex;justify-content:space-between;font-size:10px;color:var(--light);margin-top:2px}
-.room-total{display:flex;justify-content:space-between;align-items:center;padding:11px 16px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-radius:11px;border:1.5px solid #a7f3d0;margin-top:8px}
-.rt-lbl{font-size:13px;font-weight:700;color:#065f46}
-.rt-val{font-size:18px;font-weight:800;color:var(--green)}
+.sl-ticks{display:flex;justify-content:space-between;font-size:10px;color:var(--mid);margin-top:2px}
+.room-total{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:rgba(52,199,89,.08);border-radius:12px;border:1.5px solid rgba(52,199,89,.3);margin-top:8px}
+.rt-lbl{font-size:13px;font-weight:600;color:#1a7a3a}
+.rt-val{font-size:18px;font-weight:700;color:var(--success)}
+
+/* ROOM TABS */
+.room-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.rtab{padding:7px 14px;border:1.5px solid var(--border);border-radius:980px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;background:var(--bg);color:var(--mid);transition:all .15s}
+.rtab.sel{border-color:var(--acc);background:rgba(0,113,227,.08);color:var(--acc)}
+.rtab.done{border-color:var(--success);color:var(--success);background:rgba(52,199,89,.08)}
+
+/* BUTTONS */
+.bnx{display:inline-flex;align-items:center;gap:8px;background:var(--acc);color:#fff;border:none;border-radius:980px;padding:13px 28px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;box-shadow:0 2px 12px rgba(0,113,227,.3)}
+.bnx:hover{background:#0077ed;box-shadow:0 4px 20px rgba(0,113,227,.45);transform:translateY(-1px)}
+.bnx:active{transform:scale(.98)}
+.bnx:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;transform:none}
+.bbk{display:inline-flex;align-items:center;gap:6px;background:transparent;color:var(--mid);border:1.5px solid var(--border);border-radius:980px;padding:11px 22px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
+.bbk:hover{border-color:var(--mid);color:var(--text)}
+
+/* PNAV */
+.pnav{display:flex;align-items:center;justify-content:space-between;margin-top:20px;padding-top:20px;border-top:1px solid var(--border)}
 
 /* STICKY */
-.sticky{position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:2px solid var(--light);padding:11px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:50;box-shadow:0 -4px 16px rgba(0,0,0,0.08)}
-.st-lbl{font-size:12px;color:var(--mid)}
-.st-val{font-size:18px;font-weight:800}
+.sticky{position:fixed;bottom:0;left:0;right:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-top:1px solid rgba(0,0,0,.08);padding:12px 16px;box-shadow:0 -2px 20px rgba(0,0,0,.06)}
+.sticky-inner{width:100%;max-width:480px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.st-lbl{font-size:11px;color:var(--mid);font-weight:500;margin-bottom:1px}
+.st-val{font-size:17px;font-weight:700;color:var(--text)}
 
-/* STEP 3 BILL */
-.bill-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
-@media(max-width:440px){.bill-grid{grid-template-columns:1fr}}
-.buz{border:2px dashed var(--light);border-radius:14px;padding:22px 14px;text-align:center;cursor:pointer;background:var(--bg);transition:all .2s;position:relative;overflow:hidden}
-.buz:hover{border-color:var(--acc);background:#fffbeb}
-.buz.done{border-color:var(--green);background:#f0fdf4}
-.buz input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.buz-ico{font-size:30px;margin-bottom:7px}
-.buz-t{font-size:13px;font-weight:700;margin-bottom:3px}
-.buz-s{font-size:11px;color:var(--mid)}
-.buz-img{width:100%;max-height:100px;object-fit:cover;border-radius:8px;margin-top:8px;display:none}
-.buz.done .buz-img{display:block}
-.skip-note{background:var(--light2);border-radius:10px;padding:11px 14px;font-size:13px;color:var(--mid);margin-bottom:14px;display:flex;gap:8px}
-.est-box{background:linear-gradient(135deg,#fef3c7,#fde68a);border-radius:12px;padding:15px 18px;margin-bottom:14px;border:1px solid #fbbf24}
-
-/* NAVS */
-.pnav{display:flex;align-items:center;justify-content:space-between;margin-top:20px;padding-top:18px;border-top:1px solid var(--light)}
-.bbk{background:var(--bg);border:1.5px solid var(--light);color:var(--mid);padding:11px 20px;border-radius:11px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:600;transition:all .2s}
-.bbk:hover{border-color:var(--mid);color:var(--dark)}
-.bnx{display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;border:none;padding:11px 26px;border-radius:11px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:800;transition:all .25s;box-shadow:0 4px 14px rgba(245,158,11,.35)}
-.bnx:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(245,158,11,.45)}
-.bnx:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+/* EST BOX */
+.est-box{background:rgba(255,159,10,.07);border:1.5px solid rgba(255,159,10,.25);border-radius:14px;padding:16px 18px;margin-bottom:16px}
 
 /* LOADING */
 .lscreen{display:none;flex-direction:column;align-items:center;justify-content:center;padding:56px 24px;gap:14px;text-align:center}
 .lscreen.on{display:flex}
-.spin{width:48px;height:48px;border:3px solid var(--light);border-top-color:var(--acc);border-radius:50%;animation:rot .75s linear infinite}
+.spin{width:44px;height:44px;border:3px solid var(--border);border-top-color:var(--acc);border-radius:50%;animation:rot .75s linear infinite}
 @keyframes rot{to{transform:rotate(360deg)}}
 
-/* ─── RESULTS ─── */
-.rc{border-radius:16px;padding:18px;border:1.5px solid var(--light);background:var(--white);margin-bottom:12px}
-.rc.warn{border-color:#fde68a;background:#fffbeb}
-.rc.danger{border-color:#fecaca;background:#fff5f5}
-.rc.ok{border-color:#a7f3d0;background:#f0fdf4}
-.rc.blue{border-color:#bae6fd;background:#f0f9ff}
+/* RESULTS */
+.rc{border-radius:16px;padding:18px;border:1.5px solid var(--border);background:var(--surface);margin-bottom:12px}
+.rc.warn{border-color:rgba(255,159,10,.3);background:rgba(255,159,10,.06)}
+.rc.danger{border-color:rgba(255,59,48,.2);background:rgba(255,59,48,.04)}
+.rc.ok{border-color:rgba(52,199,89,.3);background:rgba(52,199,89,.06)}
+.rc.blue{border-color:rgba(0,113,227,.2);background:rgba(0,113,227,.04)}
 .rh{display:flex;align-items:center;gap:10px;margin-bottom:14px}
 .ri{font-size:22px}
-.rtl{font-size:15px;font-weight:800}
+.rtl{font-size:15px;font-weight:700;color:var(--text)}
 .rsb{font-size:12px;color:var(--mid);margin-top:2px}
 
-/* HERO RESULT CARD */
-.hero-result{border-radius:20px;padding:22px;background:linear-gradient(135deg,#0f172a,#1e293b);margin-bottom:12px;color:#fff}
-.hr-label{font-size:11px;font-weight:700;letter-spacing:1.5px;opacity:.6;margin-bottom:6px}
-.hr-main{font-size:36px;font-weight:900;margin-bottom:4px;color:#f59e0b}
+/* HERO RESULT */
+.hero-result{border-radius:18px;padding:22px;background:linear-gradient(135deg,#1a1a1e,#2c2c2e);margin-bottom:12px;color:#fff}
+.hr-label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;opacity:.6;margin-bottom:6px}
+.hr-main{font-size:34px;font-weight:700;margin-bottom:4px;letter-spacing:-.02em;color:#ff9f0a}
 .hr-sub{font-size:13px;opacity:.7;margin-bottom:16px}
-.hr-compare{display:flex;gap:12px;flex-wrap:wrap}
-.hr-cbox{flex:1;min-width:120px;background:rgba(255,255,255,.07);border-radius:12px;padding:12px 14px;border:1px solid rgba(255,255,255,.1)}
-.hr-clbl{font-size:10px;font-weight:700;letter-spacing:1px;opacity:.6;margin-bottom:5px}
-.hr-cval{font-size:20px;font-weight:800}
-.hr-cval.red{color:#f87171}
-.hr-cval.green{color:#34d399}
-.hr-cval.yellow{color:#fbbf24}
-.hr-badge{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;margin-top:14px}
-.hr-badge.over{background:rgba(239,68,68,.2);color:#f87171;border:1px solid rgba(239,68,68,.3)}
-.hr-badge.under{background:rgba(16,185,129,.2);color:#34d399;border:1px solid rgba(16,185,129,.3)}
-.hr-badge.ok{background:rgba(251,191,36,.2);color:#fbbf24;border:1px solid rgba(251,191,36,.3)}
+.hr-compare{display:flex;gap:10px;flex-wrap:wrap}
+.hr-cbox{flex:1;min-width:110px;background:rgba(255,255,255,.08);border-radius:12px;padding:12px 14px;border:1px solid rgba(255,255,255,.1)}
+.hr-clbl{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;opacity:.6;margin-bottom:5px}
+.hr-cval{font-size:18px;font-weight:700}
+.hr-cval.red{color:#ff6b6b}
+.hr-cval.green{color:var(--success)}
+.hr-cval.yellow{color:#ff9f0a}
+.hr-badge{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:980px;font-size:12px;font-weight:600;margin-top:12px}
+.hr-badge.over{background:rgba(255,59,48,.2);color:#ff6b6b;border:1px solid rgba(255,59,48,.3)}
+.hr-badge.under{background:rgba(52,199,89,.2);color:var(--success);border:1px solid rgba(52,199,89,.3)}
+.hr-badge.ok{background:rgba(255,159,10,.2);color:#ff9f0a;border:1px solid rgba(255,159,10,.3)}
 
-/* BAR CHART */
+/* CHART */
 .chart-wrap{display:flex;flex-direction:column;gap:10px}
 .chart-row{display:flex;align-items:center;gap:10px}
-.chart-label{font-size:12px;font-weight:700;min-width:110px;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.chart-bar-wrap{flex:1;background:var(--light2);border-radius:20px;height:24px;overflow:hidden;position:relative}
+.chart-label{font-size:12px;font-weight:600;min-width:110px;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}
+.chart-bar-wrap{flex:1;background:var(--bg);border-radius:20px;height:22px;overflow:hidden;position:relative}
 .chart-bar{height:100%;border-radius:20px;transition:width 1s cubic-bezier(.4,0,.2,1);display:flex;align-items:center;padding:0 10px;min-width:40px}
-.chart-val{font-size:11px;font-weight:800;color:#fff;white-space:nowrap;position:absolute;right:8px;top:50%;transform:translateY(-50%)}
-.chart-cost{font-size:12px;font-weight:800;min-width:72px;text-align:right;color:var(--acc2)}
+.chart-val{font-size:11px;font-weight:700;color:#fff;white-space:nowrap;position:absolute;right:8px;top:50%;transform:translateY(-50%)}
+.chart-cost{font-size:12px;font-weight:700;min-width:72px;text-align:right;color:var(--danger)}
 
 /* ANALYSIS ITEMS */
 .kemungkinan-list{display:flex;flex-direction:column;gap:10px}
-.km-item{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;background:var(--white);border-radius:12px;border:1.5px solid var(--light)}
-.km-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;margin-top:1px}
-.km-num.r{background:#fee2e2;color:#dc2626}
-.km-num.y{background:#fef3c7;color:#d97706}
-.km-num.o{background:#ffedd5;color:#ea580c}
-.km-num.b{background:#dbeafe;color:#2563eb}
-.km-text{font-size:13px;line-height:1.5}
-.km-text strong{display:block;font-size:13px;font-weight:800;margin-bottom:2px}
+.km-item{display:flex;gap:12px;align-items:flex-start;padding:14px;background:var(--surface);border-radius:12px;border:1.5px solid var(--border)}
+.km-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+.km-num.r{background:rgba(255,59,48,.1);color:var(--danger)}
+.km-num.y{background:rgba(255,159,10,.1);color:var(--warn)}
+.km-num.o{background:rgba(255,149,0,.1);color:#ff9500}
+.km-num.b{background:rgba(0,113,227,.1);color:var(--acc)}
+.km-text{font-size:13px;line-height:1.6;color:var(--text)}
+.km-text strong{display:block;font-size:13px;font-weight:700;margin-bottom:2px}
 
 /* ACTION ITEMS */
 .action-list{display:flex;flex-direction:column;gap:8px}
-.act-item{display:flex;gap:12px;align-items:flex-start;padding:13px 15px;background:var(--white);border-radius:12px;border:1.5px solid var(--light);transition:all .2s}
-.act-item:hover{border-color:var(--acc);background:#fffbeb}
-.act-num{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--acc),var(--acc2));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0}
-.act-text{font-size:13px;line-height:1.5}
-.act-text strong{display:block;font-weight:800;margin-bottom:2px}
+.act-item{display:flex;gap:12px;align-items:flex-start;padding:14px;background:var(--surface);border-radius:12px;border:1.5px solid var(--border);transition:all .2s}
+.act-item:hover{border-color:var(--acc);background:rgba(0,113,227,.02)}
+.act-num{width:28px;height:28px;border-radius:8px;background:var(--acc);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+.act-text{font-size:13px;line-height:1.6;color:var(--text)}
+.act-text strong{display:block;font-weight:700;margin-bottom:2px}
 
 /* WA CTA */
-.wa-cta{background:linear-gradient(135deg,#25D366,#128C7E);border-radius:16px;padding:20px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
-.wa-t h4{color:#fff;font-size:16px;font-weight:800;margin-bottom:3px}
+.wa-cta{background:linear-gradient(135deg,#25D366,#1aa054);border-radius:18px;padding:20px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.wa-t h4{color:#fff;font-size:16px;font-weight:700;margin-bottom:3px}
 .wa-t p{color:rgba(255,255,255,.85);font-size:12px}
-.wa-btn{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#128C7E;font-family:inherit;font-weight:800;font-size:13px;padding:12px 22px;border-radius:12px;border:none;cursor:pointer;text-decoration:none;transition:all .2s;white-space:nowrap;flex-shrink:0}
-.wa-btn:hover{transform:scale(1.05);box-shadow:0 6px 20px rgba(0,0,0,.2)}
+.wa-btn{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#1aa054;font-family:inherit;font-weight:700;font-size:13px;padding:11px 20px;border-radius:980px;border:none;cursor:pointer;text-decoration:none;transition:all .2s;white-space:nowrap;flex-shrink:0}
+.wa-btn:hover{transform:scale(1.04);box-shadow:0 4px 16px rgba(0,0,0,.2)}
+
+/* SKIP NOTE (compat) */
+.skip-note{background:var(--bg);border-radius:10px;padding:11px 14px;font-size:13px;color:var(--mid);margin-bottom:14px;display:flex;gap:8px}
 
 /* TRUST */
-.trust{display:flex;justify-content:center;gap:28px;flex-wrap:wrap;padding:18px 24px 44px}
-.ti{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--mid)}
-.ti strong{color:var(--dark)}
+.trust{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;padding:20px 16px 40px}
+.ti{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mid)}
+.ti strong{color:var(--text)}
 
-@media(max-width:480px){
-  nav{padding:0 16px}.body{padding:18px}
+/* HINT */
+.hint{font-size:11px;color:var(--mid);margin-top:5px}
+
+/* EMAIL */
+#emailInput{flex:1;padding:11px 14px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);font-family:inherit;font-size:13px;color:var(--text);outline:none;transition:all .2s}
+#emailInput:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(0,113,227,.15)}
+
+@media(max-width:520px){
   .pnav{flex-direction:column-reverse;gap:8px}
-  .bnx,.bbk{width:100%;justify-content:center}
-  .room-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
+  .pnav .bnx,.pnav .bbk{width:100%;justify-content:center}
+  .room-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}
   .chart-label{min-width:80px;max-width:80px}
   .hr-main{font-size:28px}
 }
@@ -244,193 +268,214 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
 </head>
 <body>
 
-<nav>
-  <div class="logo">⚡ EnVisor<em>.AI</em></div>
-  <div class="nav-badge">Energy Advisor</div>
-</nav>
-
-<div class="hero">
-  <h1>Kenapa Tagihan Listrik<br>Kamu <em>Mahal Banget?</em></h1>
-  <p>Foto tiap elektronik · set jam pakai · dapat diagnosa lengkap AI</p>
-</div>
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="logo">⚡ EnVisor<em>.AI</em></div>
+    <div class="header-badge">Energy Advisor</div>
+  </div>
+</header>
 
 <div class="wrap">
-<div class="card">
 
-  <!-- PROGRESS -->
-  <div class="prog">
-    <div class="step-row">
-      <span class="slbl on" id="s1">📋 Data Rumah</span>
-      <span class="slbl" id="s2">📷 Perangkat</span>
-      <span class="slbl" id="s3">🧾 Tagihan</span>
-      <span class="slbl" id="s4">✅ Hasil</span>
+  <!-- STEPPER -->
+  <div class="stepper">
+    <!-- pf hidden for JS compat -->
+    <div style="position:absolute;left:-9999px"><div id="pf" style="width:25%"></div></div>
+    <div class="stepper-row">
+      <div class="step-item">
+        <span class="slbl on" id="s1">1</span>
+        <span class="step-lbl">Data Rumah</span>
+      </div>
+      <div class="step-item">
+        <span class="slbl" id="s2">2</span>
+        <span class="step-lbl">Perangkat</span>
+      </div>
+      <div class="step-item">
+        <span class="slbl" id="s3">3</span>
+        <span class="step-lbl">Analisis</span>
+      </div>
+      <div class="step-item">
+        <span class="slbl" id="s4">4</span>
+        <span class="step-lbl">Hasil</span>
+      </div>
     </div>
-    <div class="track"><div class="fill" id="pf" style="width:25%"></div></div>
   </div>
 
-  <!-- ══════════════════════════════════════════════════
-       STEP 1 — DATA RUMAH
-  ══════════════════════════════════════════════════ -->
-  <div class="panel body active" id="p1">
-    <div class="ptitle">🏠 Data Rumah Kamu</div>
-    <div class="psub">Lengkapi info dasar rumah sebelum scan perangkat</div>
+  <!-- ══ STEP 1 — DATA RUMAH ══ -->
+  <div class="panel active" id="p1">
+
+    <div class="hero">
+      <h1>Kenapa Tagihan Listrik<br>Kamu <em>Mahal Banget?</em></h1>
+      <p>Foto tiap elektronik · set jam pakai · dapat diagnosa AI</p>
+    </div>
 
     <!-- Daya PLN -->
-    <div style="margin-bottom:20px">
-      <div class="slabel">DAYA PLN (VA)</div>
+    <div class="card">
+      <span class="sec-label">Daya PLN</span>
       <div class="va-row" id="vaRow"></div>
-      <div style="font-size:11px;color:var(--mid);margin-top:5px">Cek di kwh meter atau tagihan PLN kamu</div>
+      <p class="hint">Cek di kwh meter atau tagihan PLN kamu</p>
     </div>
 
     <!-- Jumlah Orang -->
-    <div style="margin-bottom:20px">
-      <div class="slabel">JUMLAH PENGHUNI RUMAH</div>
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+    <div class="card">
+      <span class="sec-label">Penghuni Rumah</span>
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
         <div class="orang-ctrl">
           <button class="orang-btn" onclick="setOrang(Math.max(1,jumlahOrang-1))">−</button>
           <span class="orang-num" id="orangVal">3</span>
           <button class="orang-btn" onclick="setOrang(Math.min(20,jumlahOrang+1))">+</button>
         </div>
         <div>
-          <div style="font-size:14px;font-weight:700" id="orangLabel">3 orang tinggal di rumah</div>
-          <div style="font-size:11px;color:var(--mid)">Untuk menghitung konsumsi wajar per kapita</div>
+          <div style="font-size:14px;font-weight:600;color:var(--text)" id="orangLabel">3 orang tinggal di rumah</div>
+          <div style="font-size:11px;color:var(--mid);margin-top:2px">Untuk menghitung konsumsi wajar per kapita</div>
         </div>
       </div>
     </div>
 
     <!-- Ruangan -->
-    <div class="slabel">RUANGAN</div>
-    <div class="room-grid" id="roomGrid"></div>
-
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
-      <button class="add-preset-btn" onclick="togglePreset()">🏠 + Preset Ruangan</button>
-      <button class="add-custom-btn" onclick="toggleCustom()">✏️ + Custom</button>
-    </div>
-
-    <div id="presetBox" style="display:none" class="preset-box">
-      <div style="font-size:12px;font-weight:700;color:var(--mid)">Pilih preset ruangan:</div>
-      <div class="preset-grid" id="presetGrid"></div>
-    </div>
-    <div id="customBox" style="display:none" class="preset-box">
-      <div style="font-size:12px;font-weight:700;color:var(--mid);margin-bottom:8px">Nama ruangan custom:</div>
-      <div class="icon-picker" id="iconPicker"></div>
-      <div class="custom-row">
-        <input id="customName" placeholder="Contoh: Ruang Gaming..." onkeydown="if(event.key==='Enter')addCustomRoom()">
-        <button onclick="addCustomRoom()">Tambah</button>
+    <div class="card">
+      <span class="sec-label">Ruangan</span>
+      <div class="room-grid" id="roomGrid"></div>
+      <div class="room-actions">
+        <button class="add-preset-btn" onclick="togglePreset()">🏠 Preset Ruangan</button>
+        <button class="add-custom-btn" onclick="toggleCustom()">✏️ Custom</button>
+      </div>
+      <div id="presetBox" style="display:none" class="preset-box">
+        <div style="font-size:12px;font-weight:600;color:var(--mid)">Pilih preset ruangan:</div>
+        <div class="preset-grid" id="presetGrid"></div>
+      </div>
+      <div id="customBox" style="display:none" class="preset-box">
+        <div style="font-size:12px;font-weight:600;color:var(--mid);margin-bottom:8px">Nama ruangan custom:</div>
+        <div class="icon-picker" id="iconPicker"></div>
+        <div class="custom-row">
+          <input id="customName" placeholder="Contoh: Ruang Gaming..." onkeydown="if(event.key==='Enter')addCustomRoom()">
+          <button onclick="addCustomRoom()">Tambah</button>
+        </div>
       </div>
     </div>
 
-    <!-- ── KWH METER PHOTO ── -->
-    <div style="margin-top:18px;margin-bottom:6px">
-      <div class="slabel">📷 FOTO KWH METER <span style="font-weight:400;color:var(--mid)">(opsional)</span></div>
-      <div class="buz" id="buz_meter" onclick="document.getElementById('inp_meter').click()" style="max-width:100%;margin-bottom:8px">
+    <!-- KWH Meter Photo -->
+    <div class="card">
+      <span class="sec-label">Foto KWH Meter <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--mid)">(opsional)</span></span>
+      <div class="buz" id="buz_meter" onclick="document.getElementById('inp_meter').click()">
         <input type="file" id="inp_meter" accept="image/*" capture="environment" onchange="onMeterUpload(this)">
         <div class="buz-ico" id="bico_meter">⚡</div>
         <div class="buz-t" id="btxt_meter">Ambil / Pilih Foto KWH Meter</div>
-        <div class="buz-s">Untuk cek kondisi meter Tua/Normal & baca angka otomatis</div>
-        <img class="buz-img" id="prev_meter" src="" alt="" style="display:none">
+        <div class="buz-s">Untuk cek kondisi meter &amp; baca angka otomatis</div>
+        <img class="buz-img" id="prev_meter" src="" alt="">
       </div>
-      <div id="meterBadge" style="display:none;margin-bottom:10px;padding:10px 14px;border-radius:10px;font-size:13px;font-weight:700"></div>
+      <div id="meterBadge" style="display:none;margin-top:8px;padding:10px 14px;border-radius:10px;font-size:13px;font-weight:600"></div>
     </div>
 
-    <!-- ── TAGIHAN BULAN LALU ── -->
-    <div style="margin-bottom:18px">
-      <div class="slabel">TAGIHAN LISTRIK BULAN LALU</div>
+    <!-- Tagihan -->
+    <div class="card">
+      <span class="sec-label">Tagihan Listrik Bulan Lalu</span>
       <div style="display:flex;align-items:center;gap:10px">
-        <span style="font-size:13px;font-weight:700;color:var(--mid)">Rp</span>
+        <span style="font-size:13px;font-weight:600;color:var(--mid)">Rp</span>
         <input id="inp_actual" type="number" placeholder="Contoh: 450000"
-          style="flex:1;padding:11px 13px;border-radius:10px;border:1.5px solid var(--light);background:var(--bg);font-family:inherit;font-size:16px;font-weight:700;color:var(--dark);outline:none;transition:border-color .2s"
-          onfocus="this.style.borderColor='var(--acc)';this.style.background='#fffbeb'"
-          onblur="this.style.borderColor='var(--light)';this.style.background='var(--bg)'">
+          style="flex:1;padding:12px 14px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);font-family:inherit;font-size:16px;font-weight:600;color:var(--text);outline:none;transition:all .2s"
+          onfocus="this.style.borderColor='var(--acc)';this.style.boxShadow='0 0 0 3px rgba(0,113,227,.15)'"
+          onblur="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
         <span style="font-size:12px;color:var(--mid)">/bulan</span>
       </div>
-      <div style="font-size:11px;color:var(--mid);margin-top:5px">Cek di aplikasi PLN Mobile atau struk terakhir</div>
+      <p class="hint">Cek di aplikasi PLN Mobile atau struk terakhir</p>
     </div>
 
     <div class="pnav">
-      <div style="font-size:13px;color:var(--mid)" id="roomHint">Pilih minimal 1 ruangan</div>
+      <span style="font-size:13px;color:var(--mid)" id="roomHint">Pilih minimal 1 ruangan</span>
       <button class="bnx" id="btnStep2" onclick="goStep2()" disabled>Scan Perangkat →</button>
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════════════
-       STEP 2 — SCAN PERANGKAT
-  ══════════════════════════════════════════════════ -->
+  <!-- ══ STEP 2 — SCAN PERANGKAT ══ -->
   <div class="panel" id="p2">
-    <div class="body" style="padding-bottom:82px">
-      <div class="ptitle">📷 Scan Perangkat</div>
-      <div class="psub">Pilih ruangan → foto 1 elektronik → klik "+ Tambah" untuk foto berikutnya</div>
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-title">📷 Scan Perangkat</div>
+      <div class="card-sub" style="margin-bottom:12px">Pilih ruangan → foto 1 elektronik → klik "+ Tambah" untuk foto berikutnya</div>
       <div class="room-tabs" id="roomTabs"></div>
+    </div>
+    <div class="card" style="padding-bottom:80px">
       <div id="roomContent"></div>
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════════════
-       STEP 3 — TAGIHAN
-  ══════════════════════════════════════════════════ -->
-  <div class="panel body" id="p3">
-    <div class="ptitle">🔍 Analisis Konsumsi Listrik</div>
-    <div class="psub">Ringkasan lengkap berdasarkan data & perangkat kamu</div>
+  <!-- ══ STEP 3 — ANALISIS ══ -->
+  <div class="panel" id="p3">
+    <div class="card">
+      <div class="card-title">🔍 Analisis Konsumsi Listrik</div>
+      <div class="card-sub">Ringkasan lengkap berdasarkan data &amp; perangkat kamu</div>
 
-    <div class="est-box">
-      <div style="font-size:11px;font-weight:700;color:#92400e;letter-spacing:1px;margin-bottom:10px">ESTIMASI DARI SCAN PERANGKAT</div>
-      <div style="display:flex;gap:24px;flex-wrap:wrap">
-        <div>
-          <div style="font-size:28px;font-weight:900;color:#92400e" id="s3Total">—</div>
-          <div style="font-size:12px;color:#92400e;opacity:.8">estimasi per bulan</div>
-        </div>
-        <div>
-          <div style="font-size:20px;font-weight:800;color:#b45309" id="s3Kwh">—</div>
-          <div style="font-size:12px;color:#92400e;opacity:.8">kWh per bulan</div>
+      <div class="est-box">
+        <div style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--warn);margin-bottom:10px">Estimasi dari Scan Perangkat</div>
+        <div style="display:flex;gap:24px;flex-wrap:wrap">
+          <div>
+            <div style="font-size:26px;font-weight:700;color:var(--text);letter-spacing:-.02em" id="s3Total">—</div>
+            <div style="font-size:12px;color:var(--mid);margin-top:3px">estimasi per bulan</div>
+          </div>
+          <div>
+            <div style="font-size:18px;font-weight:600;color:var(--text)" id="s3Kwh">—</div>
+            <div style="font-size:12px;color:var(--mid);margin-top:3px">kWh per bulan</div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div id="s3AiSummary" style="margin-bottom:16px"></div>
+      <div id="s3AiSummary" style="margin-bottom:16px"></div>
 
-    <div class="pnav">
-      <button class="bbk" onclick="go(2)">← Kembali</button>
-      <button class="bnx" onclick="goResults()">Lihat Hasil Lengkap →</button>
+      <div class="pnav">
+        <button class="bbk" onclick="go(2)">← Kembali</button>
+        <button class="bnx" onclick="goResults()">Lihat Hasil Lengkap →</button>
+      </div>
     </div>
   </div>
 
   <!-- LOADING -->
   <div class="lscreen" id="ls">
     <div class="spin"></div>
-    <div style="font-size:16px;font-weight:800">AI menganalisis semua data...</div>
+    <div style="font-size:16px;font-weight:600;color:var(--text)">AI menganalisis semua data...</div>
     <div style="font-size:13px;color:var(--mid)">Menyusun laporan lengkap untuk rumahmu</div>
   </div>
 
-  <!-- ══════════════════════════════════════════════════
-       STEP 4 — HASIL
-  ══════════════════════════════════════════════════ -->
-  <div class="panel body" id="p4">
-    <div class="ptitle">✅ Hasil Analisis Lengkap</div>
-    <div class="psub" id="rsub"></div>
+  <!-- ══ STEP 4 — HASIL ══ -->
+  <div class="panel" id="p4">
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-title">✅ Hasil Analisis Lengkap</div>
+      <div class="card-sub" id="rsub"></div>
+    </div>
     <div id="rbody"></div>
-    <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+    <div style="margin-top:4px;display:flex;gap:8px;flex-wrap:wrap">
       <button class="bbk" onclick="restart()">🔄 Mulai Ulang</button>
       <button class="bbk" onclick="window.print()">🖨️ Simpan PDF</button>
     </div>
   </div>
 
-</div><!-- /card -->
 </div><!-- /wrap -->
 
+<!-- Trust -->
 <div class="trust">
   <div class="ti">🔒 <strong>Privat</strong> · foto tidak disimpan</div>
   <div class="ti">⚡ <strong>~3 menit</strong> · hasil instan</div>
   <div class="ti">💸 <strong>Gratis</strong> · tanpa daftar</div>
 </div>
 
-<!-- STICKY TOTAL -->
+<!-- STICKY BAR -->
 <div class="sticky" id="stickyBar" style="display:none">
-  <div>
-    <div class="st-lbl">Total semua ruangan</div>
-    <div class="st-val" id="stickyVal">—</div>
+  <div class="sticky-inner">
+    <div>
+      <div class="st-lbl">Total semua ruangan</div>
+      <div class="st-val" id="stickyVal">—</div>
+    </div>
+    <button class="bnx" onclick="go(3);step3Summary()">Lanjut ke Analisis →</button>
   </div>
-  <button class="bnx" onclick="go(3);step3Summary()">Lanjut ke Tagihan →</button>
 </div>
+
+<!-- Compat stubs for restart() -->
+<div id="buz1" style="display:none"></div>
+<div id="buz2" style="display:none"></div>
+<span id="bico1" style="display:none"></span>
+<span id="bico2" style="display:none"></span>
+<span id="btxt1" style="display:none"></span>
+<span id="btxt2" style="display:none"></span>
 
 <script>
 // ── STATE ──────────────────────────────────────────────────────────
@@ -493,7 +538,7 @@ function renderRooms(){
       <div class="r-nm">${r.n}</div>
       ${r.devs.length>0?`<div class="r-cnt">✓ ${r.devs.length} perangkat</div>`:''}
     </div>
-  `).join('')+`<div style="border:2px dashed var(--light);border-radius:14px;padding:16px 10px;text-align:center;background:transparent;cursor:pointer;color:var(--mid);font-size:11px;font-weight:700;transition:all .2s" onclick="togglePreset()" onmouseover="this.style.borderColor='var(--acc)';this.style.color='var(--acc)'" onmouseout="this.style.borderColor='var(--light)';this.style.color='var(--mid)'"><div style="font-size:26px;margin-bottom:6px">＋</div>Tambah</div>`
+  `).join('')+`<div style="border:1.5px dashed var(--border);border-radius:14px;padding:14px 10px;text-align:center;background:transparent;cursor:pointer;color:var(--mid);font-size:11px;font-weight:600;transition:all .2s" onclick="togglePreset()" onmouseover="this.style.borderColor='var(--acc)';this.style.color='var(--acc)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--mid)'"><div style="font-size:22px;margin-bottom:4px">＋</div>Tambah</div>`
 
   const ok=rooms.length>0
   document.getElementById('btnStep2').disabled=!ok
@@ -552,13 +597,13 @@ function renderContent(){
     </div>
     ${room.devs.length>0?`
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <div style="font-size:14px;font-weight:800">⚡ Terdeteksi <span style="font-size:12px;color:var(--mid);font-weight:500">${room.devs.length} perangkat</span></div>
+        <div style="font-size:14px;font-weight:700">⚡ Terdeteksi <span style="font-size:12px;color:var(--mid);font-weight:500">${room.devs.length} perangkat</span></div>
         <span style="font-size:11px;color:var(--mid)">geser slider = jam/hari</span>
       </div>
       <div class="dlist">
         ${room.devs.map((d,i)=>{
           const {kwh,cost}=calcDev(d.w,d.h)
-          const cc=cost>150000?'#ef4444':cost>60000?'#d97706':'#10b981'
+          const cc=cost>150000?'#ff3b30':cost>60000?'#d97706':'#34c759'
           return `<div class="drow" id="drow_${room.id}_${i}">
             <div class="drow-top">
               <div class="d-ico">${d.e||'🔌'}</div>
@@ -593,13 +638,13 @@ function renderContent(){
     `:`
       <div id="addZone_${room.id}">
         <button id="addBtn_${room.id}" onclick="showAdd('${room.id}')"
-          style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px;border:2px dashed var(--light);border-radius:14px;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--acc);cursor:pointer;transition:all .2s"
-          onmouseover="this.style.background='#fffbeb';this.style.borderColor='var(--acc)'"
-          onmouseout="this.style.background='transparent';this.style.borderColor='var(--light)'">
+          style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px;border:1.5px dashed var(--border);border-radius:14px;background:transparent;font-family:inherit;font-size:14px;font-weight:600;color:var(--acc);cursor:pointer;transition:all .2s"
+          onmouseover="this.style.background='rgba(0,113,227,.04)';this.style.borderColor='var(--acc)'"
+          onmouseout="this.style.background='transparent';this.style.borderColor='var(--border)'">
           📷 + Tambah Elektronik ke-${room.devs.length+1}
         </button>
         <div id="addPanel_${room.id}" style="display:none;margin-top:10px">
-          <div style="font-size:12px;font-weight:700;color:var(--mid);margin-bottom:8px">📷 Foto Elektronik ke-${room.devs.length+1}</div>
+          <div style="font-size:12px;font-weight:600;color:var(--mid);margin-bottom:8px">📷 Foto Elektronik ke-${room.devs.length+1}</div>
           <div class="uz" ondrop="onDrop2(event,'${room.id}')" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" onclick="document.getElementById('fi2_${room.id}').click()">
             <input type="file" id="fi2_${room.id}" accept="image/*" onchange="oneFile(this.files,'${room.id}')">
             <div id="uzi2_${room.id}">
@@ -647,7 +692,7 @@ async function oneFile(files,roomId){
 function updH(rid,idx,val){
   const room=rooms.find(r=>r.id===rid); room.devs[idx].h=parseFloat(val)
   const {kwh,cost}=calcDev(room.devs[idx].w,parseFloat(val))
-  const cc=cost>150000?'#ef4444':cost>60000?'#d97706':'#10b981'
+  const cc=cost>150000?'#ff3b30':cost>60000?'#d97706':'#34c759'
   const sv=document.getElementById('sv_'+rid+'_'+idx); if(sv) sv.textContent=val+' jam'
   const dc=document.getElementById('dc_'+rid+'_'+idx); if(dc){ dc.textContent=rp(cost); dc.style.color=cc }
   const wt=document.getElementById('drow_'+rid+'_'+idx)?.querySelector('.d-wt'); if(wt) wt.textContent=room.devs[idx].w+'W · '+kwh+' kWh/bln'
@@ -678,7 +723,7 @@ async function onMeterUpload(input){
 
     const badge = document.getElementById('meterBadge');
     badge.style.display='block';
-    badge.style.background='#FEF3C7'; badge.style.color='#92400e';
+    badge.style.background='rgba(255,159,10,.1)'; badge.style.color='#92400e';
     badge.textContent='⏳ AI sedang menganalisis meter...';
 
     try {
@@ -686,17 +731,17 @@ async function onMeterUpload(input){
       const res = await fetch('/api/analyze/meter', { method:'POST', body: fd });
       const data = await res.json();
       if(data.isTua){
-        badge.style.background='#FEF2F2'; badge.style.color='#991B1B';
+        badge.style.background='rgba(255,59,48,.08)'; badge.style.color='#991B1B';
         badge.innerHTML='⚠️ <b>METER TUA</b> — ' + (data.reason||'Usia meter >15 tahun, disarankan penggantian');
       } else {
-        badge.style.background='#F0FDF4'; badge.style.color='#166534';
+        badge.style.background='rgba(52,199,89,.08)'; badge.style.color='#166534';
         badge.innerHTML='✅ <b>METER NORMAL</b> — ' + (data.reason||'Kondisi meter dalam keadaan baik');
       }
       if(data.tegangan && data.tegangan < 210){
         badge.innerHTML += '<br><span style="color:#B45309">⚡ Tegangan rendah: '+data.tegangan+'V (undervoltage)</span>';
       }
     } catch(err){
-      badge.style.background='#F1F5F9'; badge.style.color='#64748B';
+      badge.style.background='var(--bg)'; badge.style.color='var(--mid)';
       badge.textContent='ℹ️ Tidak dapat menganalisis foto — lanjut tanpa analisis meter';
     }
   };
@@ -722,7 +767,6 @@ function goResults(){
 const AVG_KWH_BY_VA = {900:70,1300:130,2200:220,3500:360,5500:560,7700:780}
 
 function buildPieChart(slices){
-  // slices = [{label,value,color,pct}]
   const R=80, cx=100, cy=100
   let startAngle=-Math.PI/2
   let paths='', legends=''
@@ -736,7 +780,6 @@ function buildPieChart(slices){
     const col=PIE_COLORS[i%PIE_COLORS.length]
     paths+=`<path d="M${cx},${cy} L${x1},${y1} A${R},${R} 0 ${lg},1 ${x2},${y2} Z"
       fill="${col}" stroke="white" stroke-width="2" opacity="0.92"/>`
-    // label jika slice cukup besar
     if(s.pct>7){
       const midA=startAngle+angle/2
       const lx=cx+(R*0.65)*Math.cos(midA), ly=cy+(R*0.65)*Math.sin(midA)
@@ -746,7 +789,7 @@ function buildPieChart(slices){
     legends+=`<div style="display:flex;align-items:center;gap:7px;margin-bottom:6px">
       <div style="width:11px;height:11px;border-radius:3px;background:${col};flex-shrink:0"></div>
       <div style="flex:1;font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.label}</div>
-      <div style="font-size:12px;font-weight:800;color:${col};flex-shrink:0">${s.pct}%</div>
+      <div style="font-size:12px;font-weight:700;color:${col};flex-shrink:0">${s.pct}%</div>
     </div>`
     startAngle=endAngle
   })
@@ -762,28 +805,24 @@ function buildResults(){
   const top5=sorted.slice(0,5)
   const maxDevCost=calcDev(top5[0]?.w||1,top5[0]?.h||1).cost
 
-  // Tagihan & perbandingan
   const actualBill=parseFloat(document.getElementById('inp_actual').value)||0
   const diff=actualBill>0?actualBill-totalCost:0
   const diffPct=actualBill>0?Math.round(Math.abs(diff/totalCost)*100):0
   const isOver=actualBill>0&&diff>totalCost*0.05
   const isUnder=actualBill>0&&diff<-(totalCost*0.05)
 
-  // Perbandingan rata-rata pelanggan daya yang sama
   const vaKey=VA_OPTIONS.reduce((p,v)=>v<=plnVa?v:p,VA_OPTIONS[0])
   const avgKwh=AVG_KWH_BY_VA[vaKey]||130
   const avgCost=Math.round(avgKwh*tariff())
   const vsAvgPct=avgKwh>0?Math.round(((totalKwh-avgKwh)/avgKwh)*100):0
   const isAboveAvg=vsAvgPct>10
 
-  // Konsumsi wajar per penghuni
   const wajarKwh=jumlahOrang*100
   const kwhVsWajar=Math.round((totalKwh/wajarKwh)*100)
   const suspectDev=sorted[0]
   const suspectShare=totalCost>0?Math.round((calcDev(suspectDev?.w||0,suspectDev?.h||0).cost/totalCost)*100):0
   const showWarning=isOver||(totalKwh>wajarKwh*1.1)||isAboveAvg
 
-  // Build pie chart slices
   const pieSlices=activeRooms.map(r=>{
     const rCost=r.devs.reduce((a,d)=>a+calcDev(d.w,d.h).cost,0)
     return {label:r.i+' '+r.n, value:rCost, pct:totalCost>0?Math.round((rCost/totalCost)*100):0}
@@ -796,12 +835,11 @@ function buildResults(){
 
   document.getElementById('rbody').innerHTML=`
 
-  <!-- ══ 1. ESTIMASI & PERBANDINGAN TAGIHAN ══ -->
-  <div class="hero-result" style="margin-bottom:12px">
+  <!-- 1. ESTIMASI & PERBANDINGAN -->
+  <div class="hero-result">
     <div class="hr-label">ESTIMASI TAGIHAN DARI PERANGKAT KAMU</div>
     <div class="hr-main">${rp(totalCost)}</div>
     <div class="hr-sub">per bulan · ${Math.round(totalKwh)} kWh · ${allDevs.length} perangkat</div>
-
     <div class="hr-compare">
       <div class="hr-cbox">
         <div class="hr-clbl">WAJAR (${jumlahOrang} org)</div>
@@ -816,8 +854,6 @@ function buildResults(){
         <div class="hr-cval ${isOver?'red':isUnder?'green':'yellow'}">${rp(actualBill)}</div>
       </div>`:''}
     </div>
-
-    <!-- Badges -->
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:14px">
       ${actualBill>0?`<div class="hr-badge ${isOver?'over':isUnder?'under':'ok'}">
         ${isOver?`⚠️ Tagihan aktual lebih besar ${diffPct}% dari estimasi perangkat`
@@ -834,8 +870,8 @@ function buildResults(){
     </div>
   </div>
 
-  <!-- ══ 2. PIE CHART KONSUMSI PER RUANGAN ══ -->
-  <div class="rc" style="margin-bottom:12px">
+  <!-- 2. PIE CHART -->
+  <div class="rc">
     <div class="rh">
       <div class="ri">🏠</div>
       <div><div class="rtl">Konsumsi per Ruangan</div><div class="rsb">Proporsi biaya listrik tiap ruangan</div></div>
@@ -846,8 +882,8 @@ function buildResults(){
     </div>
   </div>
 
-  <!-- ══ 3. 5 PERANGKAT PALING BOROS — BAR CHART ══ -->
-  <div class="rc warn" style="margin-bottom:12px">
+  <!-- 3. 5 PERANGKAT PALING BOROS -->
+  <div class="rc warn">
     <div class="rh">
       <div class="ri">🔥</div>
       <div><div class="rtl">5 Perangkat Paling Boros</div><div class="rsb">Biaya per bulan</div></div>
@@ -859,28 +895,28 @@ function buildResults(){
         const cols=['linear-gradient(90deg,#ef4444,#f97316)','linear-gradient(90deg,#f59e0b,#ef4444)','linear-gradient(90deg,#fbbf24,#f59e0b)','linear-gradient(90deg,#a3e635,#10b981)','linear-gradient(90deg,#38bdf8,#0891b2)']
         return `<div>
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
-            <div style="font-size:12px;font-weight:700;display:flex;align-items:center;gap:5px">
+            <div style="font-size:12px;font-weight:600;display:flex;align-items:center;gap:5px">
               <span>${d.e||'🔌'}</span>
               <span style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${d.n}</span>
               <span style="font-size:10px;color:var(--mid);font-weight:500">· ${d.room.n} · ${d.h}j/hr</span>
             </div>
-            <div style="font-size:12px;font-weight:800;color:#ef4444;flex-shrink:0">${rp(cost)}</div>
+            <div style="font-size:12px;font-weight:700;color:var(--danger);flex-shrink:0">${rp(cost)}</div>
           </div>
           <div style="height:20px;background:var(--light2);border-radius:20px;overflow:hidden;position:relative">
             <div id="dbar${di}" style="height:100%;width:0;border-radius:20px;background:${cols[di]};transition:width 1s cubic-bezier(.4,0,.2,1)"></div>
-            <span style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:10px;font-weight:800;color:${di<2?'#92400e':'var(--mid)'}">${kwh} kWh</span>
+            <span style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:10px;font-weight:700;color:${di<2?'#92400e':'var(--mid)'}">${kwh} kWh</span>
           </div>
         </div>`
       }).join('')}
     </div>
-    <div style="margin-top:12px;padding:10px 14px;background:var(--white);border-radius:10px;border:1.5px solid var(--light);font-size:12px;color:var(--mid)">
-      💡 <strong style="color:var(--dark)">${suspectDev?.e||'🔌'} ${suspectDev?.n||'—'}</strong> menyumbang <strong style="color:#ef4444">${suspectShare}%</strong> total tagihan bulanan
+    <div style="margin-top:12px;padding:10px 14px;background:var(--surface);border-radius:10px;border:1.5px solid var(--border);font-size:12px;color:var(--mid)">
+      💡 <strong style="color:var(--text)">${suspectDev?.e||'🔌'} ${suspectDev?.n||'—'}</strong> menyumbang <strong style="color:var(--danger)">${suspectShare}%</strong> total tagihan bulanan
     </div>
   </div>
 
-  <!-- ══ 4. ANALISA PENYEBAB TAGIHAN TINGGI ══ -->
+  <!-- 4. ANALISA / SOLUSI -->
   ${showWarning?`
-  <div class="rc danger" style="margin-bottom:12px">
+  <div class="rc danger">
     <div class="rh">
       <div class="ri">🔍</div>
       <div><div class="rtl">Analisa Penyebab Tagihan Tinggi</div>
@@ -918,11 +954,10 @@ function buildResults(){
     </div>
   </div>
 
-  <!-- ══ 5. SOLUSI / YANG HARUS DILAKUKAN ══ -->
-  <div class="rc blue" style="margin-bottom:12px">
+  <div class="rc blue">
     <div class="rh">
       <div class="ri">✅</div>
-      <div><div class="rtl">Solusi & Yang Harus Dilakukan</div><div class="rsb">Langkah prioritas untuk turunkan tagihan</div></div>
+      <div><div class="rtl">Solusi &amp; Yang Harus Dilakukan</div><div class="rsb">Langkah prioritas untuk turunkan tagihan</div></div>
     </div>
     <div class="action-list">
       <div class="act-item">
@@ -942,48 +977,46 @@ function buildResults(){
       <div class="act-item">
         <div class="act-num">3</div>
         <div class="act-text">
-          <strong>Audit instalasi & cek arus bocor</strong>
+          <strong>Audit instalasi &amp; cek arus bocor</strong>
           Matikan semua perangkat → amati KWH meter. Masih berputar? Hubungi teknisi listrik berlisensi untuk inspeksi panel, kabel, dan grounding rumah.
         </div>
       </div>
       <div class="act-item">
         <div class="act-num">4</div>
         <div class="act-text">
-          <strong>Kurangi 2 jam/hari pada ${top5.slice(0,2).map(d=>d.n).join(' & ')}</strong>
+          <strong>Kurangi 2 jam/hari pada ${top5.slice(0,2).map(d=>d.n).join(' &amp; ')}</strong>
           Estimasi hemat ${rp(top5.slice(0,2).reduce((a,d)=>a+calcDev(d.w,d.h).cost*0.3,0))}/bulan. Gunakan timer atau smart plug untuk otomatisasi.
         </div>
       </div>
     </div>
   </div>
   `:`
-  <div class="rc ok" style="margin-bottom:12px">
+  <div class="rc ok">
     <div class="rh"><div class="ri">✅</div><div><div class="rtl">Konsumsi Listrik Normal</div><div class="rsb">Tidak ada indikasi masalah besar</div></div></div>
-    <div style="font-size:13px;line-height:1.8;color:#065f46">
+    <div style="font-size:13px;line-height:1.8;color:#1a7a3a">
       Pemakaian listrik rumahmu <strong>sudah efisien</strong> — ${Math.abs(vsAvgPct)}% lebih hemat dari rata-rata pelanggan ${plnVa.toLocaleString()} VA. Tips tambahan:
       <ul style="margin-top:8px;padding-left:18px;display:flex;flex-direction:column;gap:5px">
         <li>Set AC 24–26°C → hemat 6% per derajat yang dinaikkan</li>
         <li>Cabut perangkat standby → bisa hemat 5–10% tagihan</li>
-        <li>Gunakan smart power strip dengan auto-cut untuk TV & audio</li>
+        <li>Gunakan smart power strip dengan auto-cut untuk TV &amp; audio</li>
       </ul>
     </div>
   </div>
   `}
 
-  <!-- ══ SIMPAN / KIRIM REPORT ══ -->
-  <div class="rc" style="margin-bottom:12px;border-color:#bae6fd;background:#f0f9ff">
+  <!-- SIMPAN / KIRIM -->
+  <div class="rc blue">
     <div class="rh">
       <div class="ri">📤</div>
-      <div><div class="rtl">Simpan & Kirim Laporan</div><div class="rsb">Download PDF atau kirim ke email kamu</div></div>
+      <div><div class="rtl">Simpan &amp; Kirim Laporan</div><div class="rsb">Download PDF atau kirim ke email kamu</div></div>
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <button onclick="window.print()" style="display:flex;align-items:center;gap:8px;padding:11px 18px;background:linear-gradient(135deg,#0891b2,#0e7490);color:#fff;border:none;border-radius:11px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 3px 10px rgba(8,145,178,.3)" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+      <button onclick="window.print()" style="display:flex;align-items:center;gap:8px;padding:11px 18px;background:var(--acc);color:#fff;border:none;border-radius:980px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;box-shadow:0 2px 8px rgba(0,113,227,.3)" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='none'">
         🖨️ Simpan PDF
       </button>
       <div style="flex:1;min-width:200px;display:flex;gap:8px">
-        <input id="emailInput" type="email" placeholder="email@kamu.com"
-          style="flex:1;padding:11px 13px;border-radius:11px;border:1.5px solid var(--light);background:var(--white);font-family:inherit;font-size:13px;color:var(--dark);outline:none;transition:border-color .2s"
-          onfocus="this.style.borderColor='#0891b2'" onblur="this.style.borderColor='var(--light)'">
-        <button onclick="sendEmail()" style="padding:11px 16px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;border:none;border-radius:11px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .2s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+        <input id="emailInput" type="email" placeholder="email@kamu.com">
+        <button onclick="sendEmail()" style="padding:11px 18px;background:var(--acc);color:#fff;border:none;border-radius:980px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .2s" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='none'">
           📧 Kirim
         </button>
       </div>
@@ -991,7 +1024,7 @@ function buildResults(){
     <div id="emailStatus" style="margin-top:8px;font-size:12px;display:none"></div>
   </div>
 
-  <!-- ══ 6. HUBUNGI WHATSAPP ══ -->
+  <!-- WA CTA -->
   <div class="wa-cta">
     <div class="wa-t">
       <h4>🔧 Butuh Bantuan Teknisi Listrik?</h4>
@@ -1004,7 +1037,6 @@ function buildResults(){
   </div>
   `
 
-  // Animate dev bars
   setTimeout(()=>{
     top5.forEach((d,di)=>{
       const {cost}=calcDev(d.w,d.h)
@@ -1018,10 +1050,9 @@ function sendEmail(){
   const email=document.getElementById('emailInput').value.trim()
   const status=document.getElementById('emailStatus')
   if(!email||!email.includes('@')){
-    status.style.display='block'; status.style.color='#ef4444'
+    status.style.display='block'; status.style.color='var(--danger)'
     status.textContent='⚠️ Masukkan alamat email yang valid'; return
   }
-  // Build report text
   const allDevs=rooms.flatMap(r=>r.devs.map(d=>({...d,room:r})))
   const totalKwh=Math.round(allDevs.reduce((a,d)=>a+calcDev(d.w,d.h).kwh,0))
   const totalCost=allDevs.reduce((a,d)=>a+calcDev(d.w,d.h).cost,0)
@@ -1039,7 +1070,7 @@ function sendEmail(){
   const body=encodeURIComponent(lines.join('\n'))
   const subject=encodeURIComponent(`Laporan Audit Listrik Rumah — EnVisor AI`)
   window.open(`mailto:${email}?subject=${subject}&body=${body}`)
-  status.style.display='block'; status.style.color='#10b981'
+  status.style.display='block'; status.style.color='var(--success)'
   status.textContent='✅ Membuka aplikasi email kamu...'
   setTimeout(()=>{ status.style.display='none' },4000)
 }
