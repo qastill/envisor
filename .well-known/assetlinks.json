@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.vercel.envisor.twa",
+      "sha256_cert_fingerprints": [
+        "4B:16:E6:10:4A:15:F6:3C:2E:88:0F:ED:F6:E4:19:5E:C9:44:F9:69:24:B3:00:66:BE:AB:9D:A5:FA:62:D7:08"
+      ]
+    }
+  }
+]
