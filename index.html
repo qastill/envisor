@@ -625,15 +625,24 @@ function renderContent(){
       <div class="room-total"><span class="rt-lbl">Total ${room.n}</span><span class="rt-val">${rp(rCost)}/bln</span></div>
       <div style="margin-top:12px"></div>
     `:''}
-    <div class="uz" ondrop="onDrop(event,'${room.id}')" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" onclick="document.getElementById('fi_${room.id}').click()">
-      <input type="file" id="fi_${room.id}" accept="image/*" onchange="oneFile(this.files,'${room.id}')">
-      <div id="uzi_${room.id}">
-        <div class="uz-ico">📷</div>
-        <div class="uz-t">${room.devs.length===0?`Foto Elektronik Pertama di ${room.n}`:`Foto Elektronik ke-${room.devs.length+1}`}</div>
-        <div class="uz-s">Klik atau drag foto · 1 foto = 1 elektronik</div>
+    <div id="uzi_${room.id}" style="text-align:center;padding:16px 0 8px">
+      <div style="font-size:32px;margin-bottom:8px">📷</div>
+      <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:4px">${room.devs.length===0?`Foto Elektronik Pertama di ${room.n}`:`Foto Elektronik ke-${room.devs.length+1}`}</div>
+      <div style="font-size:13px;color:var(--mid);margin-bottom:16px">1 foto = 1 elektronik, AI identifikasi otomatis</div>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button onclick="document.getElementById('fi_cam_${room.id}').click()"
+          style="display:inline-flex;align-items:center;gap:8px;padding:12px 22px;background:var(--acc);color:#fff;border:none;border-radius:980px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 2px 12px rgba(0,113,227,.3)">
+          📸 Buka Kamera
+        </button>
+        <button onclick="document.getElementById('fi_gal_${room.id}').click()"
+          style="display:inline-flex;align-items:center;gap:8px;padding:12px 22px;background:var(--surface);color:var(--acc);border:1.5px solid var(--acc);border-radius:980px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer">
+          🖼️ Pilih Galeri
+        </button>
       </div>
-      <div class="lbar" id="lb_${room.id}"><div class="lbar-fill"></div></div>
+      <input type="file" id="fi_cam_${room.id}" accept="image/*" capture="environment" style="display:none" onchange="oneFile(this.files,'${room.id}')">
+      <input type="file" id="fi_gal_${room.id}" accept="image/*" style="display:none" onchange="oneFile(this.files,'${room.id}')">
     </div>
+    <div class="lbar" id="lb_${room.id}" style="margin-top:12px"><div class="lbar-fill"></div></div>
   `
   updateSticky()
 }
@@ -647,7 +656,7 @@ async function oneFile(files,roomId){
   const innId='uzi_'+roomId
   const lb=document.getElementById(lbId), inn=document.getElementById(innId)
   if(lb) lb.classList.add('on')
-  if(inn) inn.innerHTML=`<div class="uz-ico" style="animation:rot .75s linear infinite;display:inline-block">⚡</div><div class="uz-t" style="color:var(--acc)">AI mengidentifikasi...</div><div class="uz-s">Mengenali elektronik dari foto</div>`
+  if(inn) inn.innerHTML=`<div style="font-size:32px;animation:rot .75s linear infinite;display:inline-block;margin-bottom:8px">⚡</div><div style="font-size:15px;font-weight:600;color:var(--acc);margin-bottom:4px">AI mengidentifikasi...</div><div style="font-size:13px;color:var(--mid)">Mengenali elektronik dari foto</div>`
   try{
     let devs=[]
     if(API_URL){
