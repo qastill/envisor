@@ -625,54 +625,26 @@ function renderContent(){
       <div class="room-total"><span class="rt-lbl">Total ${room.n}</span><span class="rt-val">${rp(rCost)}/bln</span></div>
       <div style="margin-top:12px"></div>
     `:''}
-    ${room.devs.length===0?`
-      <div class="uz" ondrop="onDrop(event,'${room.id}')" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" onclick="document.getElementById('fi_${room.id}').click()">
-        <input type="file" id="fi_${room.id}" accept="image/*" onchange="oneFile(this.files,'${room.id}')">
-        <div id="uzi_${room.id}">
-          <div class="uz-ico">📷</div>
-          <div class="uz-t">Foto Elektronik Pertama di ${room.n}</div>
-          <div class="uz-s">Klik atau drag foto · 1 foto = 1 elektronik</div>
-        </div>
-        <div class="lbar" id="lb_${room.id}"><div class="lbar-fill"></div></div>
+    <div class="uz" ondrop="onDrop(event,'${room.id}')" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" onclick="document.getElementById('fi_${room.id}').click()">
+      <input type="file" id="fi_${room.id}" accept="image/*" onchange="oneFile(this.files,'${room.id}')">
+      <div id="uzi_${room.id}">
+        <div class="uz-ico">📷</div>
+        <div class="uz-t">${room.devs.length===0?`Foto Elektronik Pertama di ${room.n}`:`Foto Elektronik ke-${room.devs.length+1}`}</div>
+        <div class="uz-s">Klik atau drag foto · 1 foto = 1 elektronik</div>
       </div>
-    `:`
-      <div id="addZone_${room.id}">
-        <button id="addBtn_${room.id}" onclick="showAdd('${room.id}')"
-          style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px;border:1.5px dashed var(--border);border-radius:14px;background:transparent;font-family:inherit;font-size:14px;font-weight:600;color:var(--acc);cursor:pointer;transition:all .2s"
-          onmouseover="this.style.background='rgba(0,113,227,.04)';this.style.borderColor='var(--acc)'"
-          onmouseout="this.style.background='transparent';this.style.borderColor='var(--border)'">
-          📷 + Tambah Elektronik ke-${room.devs.length+1}
-        </button>
-        <div id="addPanel_${room.id}" style="display:none;margin-top:10px">
-          <div style="font-size:12px;font-weight:600;color:var(--mid);margin-bottom:8px">📷 Foto Elektronik ke-${room.devs.length+1}</div>
-          <div class="uz" ondrop="onDrop2(event,'${room.id}')" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" onclick="document.getElementById('fi2_${room.id}').click()">
-            <input type="file" id="fi2_${room.id}" accept="image/*" onchange="oneFile(this.files,'${room.id}')">
-            <div id="uzi2_${room.id}">
-              <div class="uz-ico">📱</div>
-              <div class="uz-t">Foto Elektronik Berikutnya</div>
-              <div class="uz-s">AI identifikasi otomatis dari foto</div>
-            </div>
-            <div class="lbar" id="lb2_${room.id}"><div class="lbar-fill"></div></div>
-          </div>
-          <button onclick="hideAdd('${room.id}')" style="background:none;border:none;color:var(--mid);font-size:13px;cursor:pointer;font-family:inherit">Batal</button>
-        </div>
-      </div>
-    `}
+      <div class="lbar" id="lb_${room.id}"><div class="lbar-fill"></div></div>
+    </div>
   `
   updateSticky()
 }
 
-function showAdd(id){ document.getElementById('addBtn_'+id).style.display='none'; document.getElementById('addPanel_'+id).style.display='block' }
-function hideAdd(id){ document.getElementById('addBtn_'+id).style.display='flex'; document.getElementById('addPanel_'+id).style.display='none' }
 function onDrop(e,id){ e.preventDefault(); oneFile(e.dataTransfer.files,id) }
-function onDrop2(e,id){ e.preventDefault(); oneFile(e.dataTransfer.files,id) }
 
 async function oneFile(files,roomId){
   const imgs=Array.from(files).filter(f=>f.type.startsWith('image/')); if(!imgs.length) return
   const room=rooms.find(r=>r.id===roomId)
-  const isFirst=room.devs.length===0
-  const lbId=isFirst?'lb_'+roomId:'lb2_'+roomId
-  const innId=isFirst?'uzi_'+roomId:'uzi2_'+roomId
+  const lbId='lb_'+roomId
+  const innId='uzi_'+roomId
   const lb=document.getElementById(lbId), inn=document.getElementById(innId)
   if(lb) lb.classList.add('on')
   if(inn) inn.innerHTML=`<div class="uz-ico" style="animation:rot .75s linear infinite;display:inline-block">⚡</div><div class="uz-t" style="color:var(--acc)">AI mengidentifikasi...</div><div class="uz-s">Mengenali elektronik dari foto</div>`
