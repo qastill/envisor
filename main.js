@@ -111,25 +111,26 @@ function switchRoom(id){ activeRoom=id; renderTabs(); renderContent() }
 let isUploading = false
 
 function renderUploadZone(room) {
+  const rid = room.id
   return `
-    <div id="uzi_${room.id}" style="text-align:center;padding:16px 0 8px">
+    <div id="uzi_${rid}" style="text-align:center;padding:16px 0 8px">
       <div style="font-size:32px;margin-bottom:8px">📷</div>
       <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:4px">${room.devs.length===0?`Foto Elektronik Pertama di ${room.n}`:`Foto Elektronik ke-${room.devs.length+1}`}</div>
       <div style="font-size:13px;color:var(--mid);margin-bottom:16px">1 foto = 1 elektronik, AI identifikasi otomatis</div>
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-        <button onclick="triggerUpload('cam','${room.id}')"
+        <label for="fi_cam_${rid}"
           style="display:inline-flex;align-items:center;gap:8px;padding:12px 22px;background:var(--acc);color:#fff;border:none;border-radius:980px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 2px 12px rgba(0,113,227,.3)">
           📸 Buka Kamera
-        </button>
-        <button onclick="triggerUpload('gal','${room.id}')"
+        </label>
+        <label for="fi_gal_${rid}"
           style="display:inline-flex;align-items:center;gap:8px;padding:12px 22px;background:var(--surface);color:var(--acc);border:1.5px solid var(--acc);border-radius:980px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer">
           🖼️ Pilih Galeri
-        </button>
+        </label>
       </div>
-      <input type="file" id="fi_cam_${room.id}" accept="image/*" capture="environment" style="display:none">
-      <input type="file" id="fi_gal_${room.id}" accept="image/*" style="display:none">
+      <input type="file" id="fi_cam_${rid}" accept="image/*" capture="environment" style="display:none" onclick="this.value=''" onchange="oneFile(this.files,'${rid}')">
+      <input type="file" id="fi_gal_${rid}" accept="image/*" style="display:none" onclick="this.value=''" onchange="oneFile(this.files,'${rid}')">
     </div>
-    <div class="lbar" id="lb_${room.id}" style="margin-top:12px"><div class="lbar-fill"></div></div>`
+    <div class="lbar" id="lb_${rid}" style="margin-top:12px"><div class="lbar-fill"></div></div>`
 }
 
 function renderContent(){
@@ -186,67 +187,46 @@ function renderContent(){
       ${renderUploadZone(room)}
     `}
   `
-  // Bind file input change events after DOM is ready
-  bindFileInputs(room.id)
   updateSticky()
 }
 
 function showAddZone(roomId){
-  const btn=document.getElementById('addBtn_'+roomId)
-  const panel=document.getElementById('addPanel_'+roomId)
+  var btn=document.getElementById('addBtn_'+roomId)
+  var panel=document.getElementById('addPanel_'+roomId)
   if(btn) btn.style.display='none'
   if(panel) panel.style.display='block'
-  // Re-bind file inputs for the newly visible panel
-  bindFileInputs(roomId)
 }
 
 function hideAddZone(roomId){
-  const btn=document.getElementById('addBtn_'+roomId)
-  const panel=document.getElementById('addPanel_'+roomId)
+  var btn=document.getElementById('addBtn_'+roomId)
+  var panel=document.getElementById('addPanel_'+roomId)
   if(btn) btn.style.display='flex'
   if(panel) panel.style.display='none'
-}
-
-function triggerUpload(type, roomId){
-  if(isUploading) return
-  const id = type==='cam' ? 'fi_cam_'+roomId : 'fi_gal_'+roomId
-  const el = document.getElementById(id)
-  if(el){
-    el.value = '' // Reset so onchange fires even for same file
-    el.click()
-  }
-}
-
-function bindFileInputs(roomId){
-  const cam = document.getElementById('fi_cam_'+roomId)
-  const gal = document.getElementById('fi_gal_'+roomId)
-  if(cam) cam.onchange = function(){ oneFile(this.files, roomId) }
-  if(gal) gal.onchange = function(){ oneFile(this.files, roomId) }
 }
 
 function onDrop(e,id){ e.preventDefault(); oneFile(e.dataTransfer.files,id) }
 
 async function oneFile(files,roomId){
   if(isUploading) return
-  const imgs=Array.from(files).filter(f=>f.type.startsWith('image/'))
+  var imgs=Array.from(files).filter(function(f){return f.type.startsWith('image/')})
   if(!imgs.length) return
 
   isUploading = true
-  const room=rooms.find(r=>r.id===roomId)
-  const lb=document.getElementById('lb_'+roomId)
-  const inn=document.getElementById('uzi_'+roomId)
+  var room=rooms.find(function(r){return r.id===roomId})
+  var lb=document.getElementById('lb_'+roomId)
+  var inn=document.getElementById('uzi_'+roomId)
 
   if(lb) lb.classList.add('on')
-  if(inn) inn.innerHTML=`<div style="font-size:32px;animation:rot .75s linear infinite;display:inline-block;margin-bottom:8px">⚡</div><div style="font-size:15px;font-weight:600;color:var(--acc);margin-bottom:4px">AI mengidentifikasi...</div><div style="font-size:13px;color:var(--mid)">Mengenali elektronik dari foto</div>`
+  if(inn) inn.innerHTML='<div style="font-size:32px;animation:rot .75s linear infinite;display:inline-block;margin-bottom:8px">⚡</div><div style="font-size:15px;font-weight:600;color:var(--acc);margin-bottom:4px">AI mengidentifikasi...</div><div style="font-size:13px;color:var(--mid)">Mengenali elektronik dari foto</div>'
 
   try{
-    let devs=[]
+    var devs=[]
     if(API_URL){
-      const b64=await toB64(imgs[0])
-      const res=await fetch(API_URL+'/api/analyze/room',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:b64,mediaType:imgs[0].type,roomLabel:room.n})})
+      var b64=await toB64(imgs[0])
+      var res=await fetch(API_URL+'/api/analyze/room',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:b64,mediaType:imgs[0].type,roomLabel:room.n})})
       devs=(await res.json()).devices||[]
     } else { devs=mockOne(room.n,room.devs.length) }
-    devs.forEach(d=>room.devs.push({n:d.name,w:d.watts,h:d.dailyHours||4,e:emoji(d.name)}))
+    devs.forEach(function(d){room.devs.push({n:d.name,w:d.watts,h:d.dailyHours||4,e:emoji(d.name)})})
   }catch(e){ console.error(e) }
 
   if(lb) lb.classList.remove('on')
