@@ -14,8 +14,8 @@ app.use(cors());
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 
-// ── Static Frontend ───────────────────────────────────────────────
-app.use(express.static(path.join(__dirname, '../frontend/public')));
+// ── Static Frontend (from project root) ──────────────────────────
+app.use(express.static(path.join(__dirname, '..')));
 
 // ── API Routes ────────────────────────────────────────────────────
 app.use('/api/analyze', analyzeRoutes);
@@ -26,9 +26,9 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// ── Catch-all: serve frontend ─────────────────────────────────────
+// ── Catch-all: serve root index.html ─────────────────────────────
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/public/index.html'));
+  res.sendFile(path.join(__dirname, '../index.html'));
 });
 
 // ── Start (local only) ───────────────────────────────────────────

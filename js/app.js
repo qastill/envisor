@@ -15,7 +15,7 @@ let rooms=[
   {id:'r5',n:'Garasi',i:'🚗',devs:[]},
 ]
 let plnVa=1300, jumlahOrang=3, activeRoom='r1', selIco='🏠', customId=0
-const API_URL = window.location.origin // use same origin (Vercel backend)
+const API_URL='' // Leave empty to use mock data, or set to your deployed URL
 
 // ── TARIFF & CALC ──────────────────────────────────────────────────
 function tariff(){ return plnVa<=900?1352:plnVa<=2200?1444:1699 }
@@ -58,7 +58,7 @@ function renderRooms(){
       <div class="r-nm">${r.n}</div>
       ${r.devs.length>0?`<div class="r-cnt">✓ ${r.devs.length} perangkat</div>`:''}
     </div>
-  `).join('')+`<div style="border:1.5px dashed var(--border);border-radius:14px;padding:14px 10px;text-align:center;background:transparent;cursor:pointer;color:var(--mid);font-size:11px;font-weight:600;transition:all .2s" onclick="togglePreset()" onmouseover="this.style.borderColor='var(--acc)';this.style.color='var(--acc)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--mid)'"><div style="font-size:22px;margin-bottom:4px">＋</div>Tambah</div>`
+  `).join('')+`<div style="border:2px dashed var(--light);border-radius:14px;padding:16px 10px;text-align:center;background:transparent;cursor:pointer;color:var(--mid);font-size:11px;font-weight:700;transition:all .2s" onclick="togglePreset()" onmouseover="this.style.borderColor='var(--acc)';this.style.color='var(--acc)'" onmouseout="this.style.borderColor='var(--light)';this.style.color='var(--mid)'"><div style="font-size:26px;margin-bottom:6px">＋</div>Tambah</div>`
 
   const ok=rooms.length>0
   document.getElementById('btnStep2').disabled=!ok
@@ -108,49 +108,22 @@ function renderTabs(){
 }
 function switchRoom(id){ activeRoom=id; renderTabs(); renderContent() }
 
-let isUploading = false
-
-function renderUploadZone(room) {
-  const rid = room.id
-  return `
-    <div id="uzi_${rid}" style="text-align:center;padding:16px 0 8px">
-      <div style="font-size:32px;margin-bottom:8px">📷</div>
-      <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:4px">${room.devs.length===0?`Foto Elektronik Pertama di ${room.n}`:`Foto Elektronik ke-${room.devs.length+1}`}</div>
-      <div style="font-size:13px;color:var(--mid);margin-bottom:16px">1 foto = 1 elektronik, AI identifikasi otomatis</div>
-      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-        <label for="fi_cam_${rid}"
-          style="display:inline-flex;align-items:center;gap:8px;padding:12px 22px;background:var(--acc);color:#fff;border:none;border-radius:980px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 2px 12px rgba(0,113,227,.3)">
-          📸 Buka Kamera
-        </label>
-        <label for="fi_gal_${rid}"
-          style="display:inline-flex;align-items:center;gap:8px;padding:12px 22px;background:var(--surface);color:var(--acc);border:1.5px solid var(--acc);border-radius:980px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer">
-          🖼️ Pilih Galeri
-        </label>
-      </div>
-      <input type="file" id="fi_cam_${rid}" accept="image/*" capture="environment" style="display:none" onclick="this.value=''" onchange="oneFile(this.files,'${rid}')">
-      <input type="file" id="fi_gal_${rid}" accept="image/*" style="display:none" onclick="this.value=''" onchange="oneFile(this.files,'${rid}')">
-    </div>
-    <div class="lbar" id="lb_${rid}" style="margin-top:12px"><div class="lbar-fill"></div></div>`
-}
-
 function renderContent(){
   const room=rooms.find(r=>r.id===activeRoom); if(!room) return
   const rCost=room.devs.reduce((a,d)=>a+calcDev(d.w,d.h).cost,0)
-  const hasDevs = room.devs.length > 0
-
   document.getElementById('roomContent').innerHTML=`
     <div style="font-size:12px;color:var(--mid);margin-bottom:12px;padding:9px 13px;background:var(--light2);border-radius:9px;display:flex;gap:7px">
       <span>📸</span><span>Foto <strong>satu elektronik per foto</strong>. Tiap foto → AI identifikasi 1 perangkat.</span>
     </div>
-    ${hasDevs?`
+    ${room.devs.length>0?`
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <div style="font-size:14px;font-weight:700">⚡ Terdeteksi <span style="font-size:12px;color:var(--mid);font-weight:500">${room.devs.length} perangkat</span></div>
+        <div style="font-size:14px;font-weight:800">⚡ Terdeteksi <span style="font-size:12px;color:var(--mid);font-weight:500">${room.devs.length} perangkat</span></div>
         <span style="font-size:11px;color:var(--mid)">geser slider = jam/hari</span>
       </div>
       <div class="dlist">
         ${room.devs.map((d,i)=>{
           const {kwh,cost}=calcDev(d.w,d.h)
-          const cc=cost>150000?'#ff3b30':cost>60000?'#d97706':'#34c759'
+          const cc=cost>150000?'#ef4444':cost>60000?'#d97706':'#10b981'
           return `<div class="drow" id="drow_${room.id}_${i}">
             <div class="drow-top">
               <div class="d-ico">${d.e||'🔌'}</div>
@@ -170,74 +143,76 @@ function renderContent(){
         }).join('')}
       </div>
       <div class="room-total"><span class="rt-lbl">Total ${room.n}</span><span class="rt-val">${rp(rCost)}/bln</span></div>
-      <!-- Collapsed add button — click to reveal upload zone -->
-      <div id="addWrap_${room.id}" style="margin-top:12px">
-        <button id="addBtn_${room.id}" onclick="showAddZone('${room.id}')"
-          style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;border:1.5px dashed var(--border);border-radius:14px;background:transparent;font-family:inherit;font-size:14px;font-weight:600;color:var(--acc);cursor:pointer;transition:all .2s"
-          onmouseover="this.style.background='rgba(0,113,227,.04)';this.style.borderColor='var(--acc)'"
-          onmouseout="this.style.background='transparent';this.style.borderColor='var(--border)'">
+      <div style="margin-top:12px"></div>
+    `:''}
+    ${room.devs.length===0?`
+      <label for="fi_${room.id}" class="uz" style="display:block" ondrop="onDrop(event,'${room.id}')" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')">
+        <input type="file" id="fi_${room.id}" accept="image/*" onchange="oneFile(this.files,'${room.id}')" style="display:none">
+        <div id="uzi_${room.id}">
+          <div class="uz-ico">📷</div>
+          <div class="uz-t">Foto Elektronik Pertama di ${room.n}</div>
+          <div class="uz-s">Klik atau drag foto · 1 foto = 1 elektronik</div>
+        </div>
+        <div class="lbar" id="lb_${room.id}"><div class="lbar-fill"></div></div>
+      </label>
+    `:`
+      <div id="addZone_${room.id}">
+        <button id="addBtn_${room.id}" onclick="showAdd('${room.id}')"
+          style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px;border:2px dashed var(--light);border-radius:14px;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--acc);cursor:pointer;transition:all .2s"
+          onmouseover="this.style.background='#fffbeb';this.style.borderColor='var(--acc)'"
+          onmouseout="this.style.background='transparent';this.style.borderColor='var(--light)'">
           📷 + Tambah Elektronik ke-${room.devs.length+1}
         </button>
-        <div id="addPanel_${room.id}" style="display:none;margin-top:8px">
-          ${renderUploadZone(room)}
-          <button onclick="hideAddZone('${room.id}')" style="margin-top:8px;background:none;border:none;color:var(--mid);font-size:13px;cursor:pointer;font-family:inherit;padding:8px 0">← Batal</button>
+        <div id="addPanel_${room.id}" style="display:none;margin-top:10px">
+          <div style="font-size:12px;font-weight:700;color:var(--mid);margin-bottom:8px">📷 Foto Elektronik ke-${room.devs.length+1}</div>
+          <label for="fi2_${room.id}" class="uz" style="display:block" ondrop="onDrop2(event,'${room.id}')" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')">
+            <input type="file" id="fi2_${room.id}" accept="image/*" onchange="oneFile(this.files,'${room.id}')" style="display:none">
+            <div id="uzi2_${room.id}">
+              <div class="uz-ico">📱</div>
+              <div class="uz-t">Foto Elektronik Berikutnya</div>
+              <div class="uz-s">AI identifikasi otomatis dari foto</div>
+            </div>
+            <div class="lbar" id="lb2_${room.id}"><div class="lbar-fill"></div></div>
+          </label>
+          <button onclick="hideAdd('${room.id}')" style="background:none;border:none;color:var(--mid);font-size:13px;cursor:pointer;font-family:inherit">Batal</button>
         </div>
       </div>
-    `:`
-      ${renderUploadZone(room)}
     `}
   `
   updateSticky()
 }
 
-function showAddZone(roomId){
-  var btn=document.getElementById('addBtn_'+roomId)
-  var panel=document.getElementById('addPanel_'+roomId)
-  if(btn) btn.style.display='none'
-  if(panel) panel.style.display='block'
-}
-
-function hideAddZone(roomId){
-  var btn=document.getElementById('addBtn_'+roomId)
-  var panel=document.getElementById('addPanel_'+roomId)
-  if(btn) btn.style.display='flex'
-  if(panel) panel.style.display='none'
-}
-
+function showAdd(id){ document.getElementById('addBtn_'+id).style.display='none'; document.getElementById('addPanel_'+id).style.display='block' }
+function hideAdd(id){ document.getElementById('addBtn_'+id).style.display='flex'; document.getElementById('addPanel_'+id).style.display='none' }
 function onDrop(e,id){ e.preventDefault(); oneFile(e.dataTransfer.files,id) }
+function onDrop2(e,id){ e.preventDefault(); oneFile(e.dataTransfer.files,id) }
 
 async function oneFile(files,roomId){
-  if(isUploading) return
-  var imgs=Array.from(files).filter(function(f){return f.type.startsWith('image/')})
-  if(!imgs.length) return
-
-  isUploading = true
-  var room=rooms.find(function(r){return r.id===roomId})
-  var lb=document.getElementById('lb_'+roomId)
-  var inn=document.getElementById('uzi_'+roomId)
-
+  const imgs=Array.from(files).filter(f=>f.type.startsWith('image/')); if(!imgs.length) return
+  const room=rooms.find(r=>r.id===roomId)
+  const isFirst=room.devs.length===0
+  const lbId=isFirst?'lb_'+roomId:'lb2_'+roomId
+  const innId=isFirst?'uzi_'+roomId:'uzi2_'+roomId
+  const lb=document.getElementById(lbId), inn=document.getElementById(innId)
   if(lb) lb.classList.add('on')
-  if(inn) inn.innerHTML='<div style="font-size:32px;animation:rot .75s linear infinite;display:inline-block;margin-bottom:8px">⚡</div><div style="font-size:15px;font-weight:600;color:var(--acc);margin-bottom:4px">AI mengidentifikasi...</div><div style="font-size:13px;color:var(--mid)">Mengenali elektronik dari foto</div>'
-
+  if(inn) inn.innerHTML=`<div class="uz-ico" style="animation:rot .75s linear infinite;display:inline-block">⚡</div><div class="uz-t" style="color:var(--acc)">AI mengidentifikasi...</div><div class="uz-s">Mengenali elektronik dari foto</div>`
   try{
-    var devs=[]
-    if(API_URL){
-      var b64=await toB64(imgs[0])
-      var res=await fetch(API_URL+'/api/analyze/room',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:b64,mediaType:imgs[0].type,roomLabel:room.n})})
+    let devs=[]
+    if(API_URL){ // Set API_URL above to enable real AI analysis
+      const b64=await toB64(imgs[0])
+      const res=await fetch(API_URL+'/api/analyze/room',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:b64,mediaType:imgs[0].type,roomLabel:room.n})})
       devs=(await res.json()).devices||[]
     } else { devs=mockOne(room.n,room.devs.length) }
-    devs.forEach(function(d){room.devs.push({n:d.name,w:d.watts,h:d.dailyHours||4,e:emoji(d.name)})})
+    devs.forEach(d=>room.devs.push({n:d.name,w:d.watts,h:d.dailyHours||4,e:emoji(d.name)}))
   }catch(e){ console.error(e) }
-
   if(lb) lb.classList.remove('on')
-  isUploading = false
   renderTabs(); renderContent(); renderRooms()
 }
 
 function updH(rid,idx,val){
   const room=rooms.find(r=>r.id===rid); room.devs[idx].h=parseFloat(val)
   const {kwh,cost}=calcDev(room.devs[idx].w,parseFloat(val))
-  const cc=cost>150000?'#ff3b30':cost>60000?'#d97706':'#34c759'
+  const cc=cost>150000?'#ef4444':cost>60000?'#d97706':'#10b981'
   const sv=document.getElementById('sv_'+rid+'_'+idx); if(sv) sv.textContent=val+' jam'
   const dc=document.getElementById('dc_'+rid+'_'+idx); if(dc){ dc.textContent=rp(cost); dc.style.color=cc }
   const wt=document.getElementById('drow_'+rid+'_'+idx)?.querySelector('.d-wt'); if(wt) wt.textContent=room.devs[idx].w+'W · '+kwh+' kWh/bln'
@@ -255,45 +230,18 @@ function updateSticky(){
   document.getElementById('stickyVal').textContent=total>0?`${rp(total)}/bln · ${Math.round(kwh)} kWh`:'Upload foto dulu'
 }
 
-// ── METER PHOTO (Step 1) ──────────────────────────────────────────
-async function onMeterUpload(input){
-  const file = input.files[0]; if(!file) return;
-  const reader = new FileReader();
-  reader.onload = async e => {
-    const prev = document.getElementById('prev_meter');
-    prev.src = e.target.result; prev.style.display='block';
-    document.getElementById('bico_meter').style.display='none';
-    document.getElementById('btxt_meter').textContent='✅ Foto terupload — menganalisis...';
-    document.getElementById('buz_meter').classList.add('done');
-
-    const badge = document.getElementById('meterBadge');
-    badge.style.display='block';
-    badge.style.background='rgba(255,159,10,.1)'; badge.style.color='#92400e';
-    badge.textContent='⏳ AI sedang menganalisis meter...';
-
-    try {
-      const fd = new FormData(); fd.append('image', file);
-      const res = await fetch('/api/analyze/meter', { method:'POST', body: fd });
-      const data = await res.json();
-      if(data.isTua){
-        badge.style.background='rgba(255,59,48,.08)'; badge.style.color='#991B1B';
-        badge.innerHTML='⚠️ <b>METER TUA</b> — ' + (data.reason||'Usia meter >15 tahun, disarankan penggantian');
-      } else {
-        badge.style.background='rgba(52,199,89,.08)'; badge.style.color='#166534';
-        badge.innerHTML='✅ <b>METER NORMAL</b> — ' + (data.reason||'Kondisi meter dalam keadaan baik');
-      }
-      if(data.tegangan && data.tegangan < 210){
-        badge.innerHTML += '<br><span style="color:#B45309">⚡ Tegangan rendah: '+data.tegangan+'V (undervoltage)</span>';
-      }
-    } catch(err){
-      badge.style.background='var(--bg)'; badge.style.color='var(--mid)';
-      badge.textContent='ℹ️ Tidak dapat menganalisis foto — lanjut tanpa analisis meter';
-    }
-  };
-  reader.readAsDataURL(file);
-}
-
 // ── STEP 3 ────────────────────────────────────────────────────────
+function billUp(buzId,inputId,prevId,icoId,txtId){
+  const file=document.getElementById(inputId).files[0]; if(!file) return
+  const reader=new FileReader()
+  reader.onload=e=>{
+    document.getElementById(prevId).src=e.target.result
+    document.getElementById(buzId).classList.add('done')
+    document.getElementById(icoId).style.display='none'
+    document.getElementById(txtId).textContent='✅ Foto terupload'
+  }
+  reader.readAsDataURL(file)
+}
 function step3Summary(){
   const total=rooms.reduce((a,r)=>a+r.devs.reduce((b,d)=>b+calcDev(d.w,d.h).cost,0),0)
   const kwh=rooms.reduce((a,r)=>a+r.devs.reduce((b,d)=>b+calcDev(d.w,d.h).kwh,0),0)
@@ -312,6 +260,7 @@ function goResults(){
 const AVG_KWH_BY_VA = {900:70,1300:130,2200:220,3500:360,5500:560,7700:780}
 
 function buildPieChart(slices){
+  // slices = [{label,value,color,pct}]
   const R=80, cx=100, cy=100
   let startAngle=-Math.PI/2
   let paths='', legends=''
@@ -325,6 +274,7 @@ function buildPieChart(slices){
     const col=PIE_COLORS[i%PIE_COLORS.length]
     paths+=`<path d="M${cx},${cy} L${x1},${y1} A${R},${R} 0 ${lg},1 ${x2},${y2} Z"
       fill="${col}" stroke="white" stroke-width="2" opacity="0.92"/>`
+    // label jika slice cukup besar
     if(s.pct>7){
       const midA=startAngle+angle/2
       const lx=cx+(R*0.65)*Math.cos(midA), ly=cy+(R*0.65)*Math.sin(midA)
@@ -334,7 +284,7 @@ function buildPieChart(slices){
     legends+=`<div style="display:flex;align-items:center;gap:7px;margin-bottom:6px">
       <div style="width:11px;height:11px;border-radius:3px;background:${col};flex-shrink:0"></div>
       <div style="flex:1;font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.label}</div>
-      <div style="font-size:12px;font-weight:700;color:${col};flex-shrink:0">${s.pct}%</div>
+      <div style="font-size:12px;font-weight:800;color:${col};flex-shrink:0">${s.pct}%</div>
     </div>`
     startAngle=endAngle
   })
@@ -350,24 +300,28 @@ function buildResults(){
   const top5=sorted.slice(0,5)
   const maxDevCost=calcDev(top5[0]?.w||1,top5[0]?.h||1).cost
 
+  // Tagihan & perbandingan
   const actualBill=parseFloat(document.getElementById('inp_actual').value)||0
   const diff=actualBill>0?actualBill-totalCost:0
   const diffPct=actualBill>0?Math.round(Math.abs(diff/totalCost)*100):0
   const isOver=actualBill>0&&diff>totalCost*0.05
   const isUnder=actualBill>0&&diff<-(totalCost*0.05)
 
+  // Perbandingan rata-rata pelanggan daya yang sama
   const vaKey=VA_OPTIONS.reduce((p,v)=>v<=plnVa?v:p,VA_OPTIONS[0])
   const avgKwh=AVG_KWH_BY_VA[vaKey]||130
   const avgCost=Math.round(avgKwh*tariff())
   const vsAvgPct=avgKwh>0?Math.round(((totalKwh-avgKwh)/avgKwh)*100):0
   const isAboveAvg=vsAvgPct>10
 
+  // Konsumsi wajar per penghuni
   const wajarKwh=jumlahOrang*100
   const kwhVsWajar=Math.round((totalKwh/wajarKwh)*100)
   const suspectDev=sorted[0]
   const suspectShare=totalCost>0?Math.round((calcDev(suspectDev?.w||0,suspectDev?.h||0).cost/totalCost)*100):0
   const showWarning=isOver||(totalKwh>wajarKwh*1.1)||isAboveAvg
 
+  // Build pie chart slices
   const pieSlices=activeRooms.map(r=>{
     const rCost=r.devs.reduce((a,d)=>a+calcDev(d.w,d.h).cost,0)
     return {label:r.i+' '+r.n, value:rCost, pct:totalCost>0?Math.round((rCost/totalCost)*100):0}
@@ -380,11 +334,12 @@ function buildResults(){
 
   document.getElementById('rbody').innerHTML=`
 
-  <!-- 1. ESTIMASI & PERBANDINGAN -->
-  <div class="hero-result">
+  <!-- ══ 1. ESTIMASI & PERBANDINGAN TAGIHAN ══ -->
+  <div class="hero-result" style="margin-bottom:12px">
     <div class="hr-label">ESTIMASI TAGIHAN DARI PERANGKAT KAMU</div>
     <div class="hr-main">${rp(totalCost)}</div>
     <div class="hr-sub">per bulan · ${Math.round(totalKwh)} kWh · ${allDevs.length} perangkat</div>
+
     <div class="hr-compare">
       <div class="hr-cbox">
         <div class="hr-clbl">WAJAR (${jumlahOrang} org)</div>
@@ -399,6 +354,8 @@ function buildResults(){
         <div class="hr-cval ${isOver?'red':isUnder?'green':'yellow'}">${rp(actualBill)}</div>
       </div>`:''}
     </div>
+
+    <!-- Badges -->
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:14px">
       ${actualBill>0?`<div class="hr-badge ${isOver?'over':isUnder?'under':'ok'}">
         ${isOver?`⚠️ Tagihan aktual lebih besar ${diffPct}% dari estimasi perangkat`
@@ -415,8 +372,8 @@ function buildResults(){
     </div>
   </div>
 
-  <!-- 2. PIE CHART -->
-  <div class="rc">
+  <!-- ══ 2. PIE CHART KONSUMSI PER RUANGAN ══ -->
+  <div class="rc" style="margin-bottom:12px">
     <div class="rh">
       <div class="ri">🏠</div>
       <div><div class="rtl">Konsumsi per Ruangan</div><div class="rsb">Proporsi biaya listrik tiap ruangan</div></div>
@@ -427,8 +384,8 @@ function buildResults(){
     </div>
   </div>
 
-  <!-- 3. 5 PERANGKAT PALING BOROS -->
-  <div class="rc warn">
+  <!-- ══ 3. 5 PERANGKAT PALING BOROS — BAR CHART ══ -->
+  <div class="rc warn" style="margin-bottom:12px">
     <div class="rh">
       <div class="ri">🔥</div>
       <div><div class="rtl">5 Perangkat Paling Boros</div><div class="rsb">Biaya per bulan</div></div>
@@ -440,28 +397,28 @@ function buildResults(){
         const cols=['linear-gradient(90deg,#ef4444,#f97316)','linear-gradient(90deg,#f59e0b,#ef4444)','linear-gradient(90deg,#fbbf24,#f59e0b)','linear-gradient(90deg,#a3e635,#10b981)','linear-gradient(90deg,#38bdf8,#0891b2)']
         return `<div>
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
-            <div style="font-size:12px;font-weight:600;display:flex;align-items:center;gap:5px">
+            <div style="font-size:12px;font-weight:700;display:flex;align-items:center;gap:5px">
               <span>${d.e||'🔌'}</span>
               <span style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${d.n}</span>
               <span style="font-size:10px;color:var(--mid);font-weight:500">· ${d.room.n} · ${d.h}j/hr</span>
             </div>
-            <div style="font-size:12px;font-weight:700;color:var(--danger);flex-shrink:0">${rp(cost)}</div>
+            <div style="font-size:12px;font-weight:800;color:#ef4444;flex-shrink:0">${rp(cost)}</div>
           </div>
           <div style="height:20px;background:var(--light2);border-radius:20px;overflow:hidden;position:relative">
             <div id="dbar${di}" style="height:100%;width:0;border-radius:20px;background:${cols[di]};transition:width 1s cubic-bezier(.4,0,.2,1)"></div>
-            <span style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:10px;font-weight:700;color:${di<2?'#92400e':'var(--mid)'}">${kwh} kWh</span>
+            <span style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:10px;font-weight:800;color:${di<2?'#92400e':'var(--mid)'}">${kwh} kWh</span>
           </div>
         </div>`
       }).join('')}
     </div>
-    <div style="margin-top:12px;padding:10px 14px;background:var(--surface);border-radius:10px;border:1.5px solid var(--border);font-size:12px;color:var(--mid)">
-      💡 <strong style="color:var(--text)">${suspectDev?.e||'🔌'} ${suspectDev?.n||'—'}</strong> menyumbang <strong style="color:var(--danger)">${suspectShare}%</strong> total tagihan bulanan
+    <div style="margin-top:12px;padding:10px 14px;background:var(--white);border-radius:10px;border:1.5px solid var(--light);font-size:12px;color:var(--mid)">
+      💡 <strong style="color:var(--dark)">${suspectDev?.e||'🔌'} ${suspectDev?.n||'—'}</strong> menyumbang <strong style="color:#ef4444">${suspectShare}%</strong> total tagihan bulanan
     </div>
   </div>
 
-  <!-- 4. ANALISA / SOLUSI -->
+  <!-- ══ 4. ANALISA PENYEBAB TAGIHAN TINGGI ══ -->
   ${showWarning?`
-  <div class="rc danger">
+  <div class="rc danger" style="margin-bottom:12px">
     <div class="rh">
       <div class="ri">🔍</div>
       <div><div class="rtl">Analisa Penyebab Tagihan Tinggi</div>
@@ -499,10 +456,11 @@ function buildResults(){
     </div>
   </div>
 
-  <div class="rc blue">
+  <!-- ══ 5. SOLUSI / YANG HARUS DILAKUKAN ══ -->
+  <div class="rc blue" style="margin-bottom:12px">
     <div class="rh">
       <div class="ri">✅</div>
-      <div><div class="rtl">Solusi &amp; Yang Harus Dilakukan</div><div class="rsb">Langkah prioritas untuk turunkan tagihan</div></div>
+      <div><div class="rtl">Solusi & Yang Harus Dilakukan</div><div class="rsb">Langkah prioritas untuk turunkan tagihan</div></div>
     </div>
     <div class="action-list">
       <div class="act-item">
@@ -522,46 +480,48 @@ function buildResults(){
       <div class="act-item">
         <div class="act-num">3</div>
         <div class="act-text">
-          <strong>Audit instalasi &amp; cek arus bocor</strong>
+          <strong>Audit instalasi & cek arus bocor</strong>
           Matikan semua perangkat → amati KWH meter. Masih berputar? Hubungi teknisi listrik berlisensi untuk inspeksi panel, kabel, dan grounding rumah.
         </div>
       </div>
       <div class="act-item">
         <div class="act-num">4</div>
         <div class="act-text">
-          <strong>Kurangi 2 jam/hari pada ${top5.slice(0,2).map(d=>d.n).join(' &amp; ')}</strong>
+          <strong>Kurangi 2 jam/hari pada ${top5.slice(0,2).map(d=>d.n).join(' & ')}</strong>
           Estimasi hemat ${rp(top5.slice(0,2).reduce((a,d)=>a+calcDev(d.w,d.h).cost*0.3,0))}/bulan. Gunakan timer atau smart plug untuk otomatisasi.
         </div>
       </div>
     </div>
   </div>
   `:`
-  <div class="rc ok">
+  <div class="rc ok" style="margin-bottom:12px">
     <div class="rh"><div class="ri">✅</div><div><div class="rtl">Konsumsi Listrik Normal</div><div class="rsb">Tidak ada indikasi masalah besar</div></div></div>
-    <div style="font-size:13px;line-height:1.8;color:#1a7a3a">
+    <div style="font-size:13px;line-height:1.8;color:#065f46">
       Pemakaian listrik rumahmu <strong>sudah efisien</strong> — ${Math.abs(vsAvgPct)}% lebih hemat dari rata-rata pelanggan ${plnVa.toLocaleString()} VA. Tips tambahan:
       <ul style="margin-top:8px;padding-left:18px;display:flex;flex-direction:column;gap:5px">
         <li>Set AC 24–26°C → hemat 6% per derajat yang dinaikkan</li>
         <li>Cabut perangkat standby → bisa hemat 5–10% tagihan</li>
-        <li>Gunakan smart power strip dengan auto-cut untuk TV &amp; audio</li>
+        <li>Gunakan smart power strip dengan auto-cut untuk TV & audio</li>
       </ul>
     </div>
   </div>
   `}
 
-  <!-- SIMPAN / KIRIM -->
-  <div class="rc blue">
+  <!-- ══ SIMPAN / KIRIM REPORT ══ -->
+  <div class="rc" style="margin-bottom:12px;border-color:#bae6fd;background:#f0f9ff">
     <div class="rh">
       <div class="ri">📤</div>
-      <div><div class="rtl">Simpan &amp; Kirim Laporan</div><div class="rsb">Download PDF atau kirim ke email kamu</div></div>
+      <div><div class="rtl">Simpan & Kirim Laporan</div><div class="rsb">Download PDF atau kirim ke email kamu</div></div>
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <button onclick="window.print()" style="display:flex;align-items:center;gap:8px;padding:11px 18px;background:var(--acc);color:#fff;border:none;border-radius:980px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;box-shadow:0 2px 8px rgba(0,113,227,.3)" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='none'">
+      <button onclick="window.print()" style="display:flex;align-items:center;gap:8px;padding:11px 18px;background:linear-gradient(135deg,#0891b2,#0e7490);color:#fff;border:none;border-radius:11px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 3px 10px rgba(8,145,178,.3)" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
         🖨️ Simpan PDF
       </button>
       <div style="flex:1;min-width:200px;display:flex;gap:8px">
-        <input id="emailInput" type="email" placeholder="email@kamu.com">
-        <button onclick="sendEmail()" style="padding:11px 18px;background:var(--acc);color:#fff;border:none;border-radius:980px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .2s" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='none'">
+        <input id="emailInput" type="email" placeholder="email@kamu.com"
+          style="flex:1;padding:11px 13px;border-radius:11px;border:1.5px solid var(--light);background:var(--white);font-family:inherit;font-size:13px;color:var(--dark);outline:none;transition:border-color .2s"
+          onfocus="this.style.borderColor='#0891b2'" onblur="this.style.borderColor='var(--light)'">
+        <button onclick="sendEmail()" style="padding:11px 16px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;border:none;border-radius:11px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .2s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
           📧 Kirim
         </button>
       </div>
@@ -569,7 +529,7 @@ function buildResults(){
     <div id="emailStatus" style="margin-top:8px;font-size:12px;display:none"></div>
   </div>
 
-  <!-- WA CTA -->
+  <!-- ══ 6. HUBUNGI WHATSAPP ══ -->
   <div class="wa-cta">
     <div class="wa-t">
       <h4>🔧 Butuh Bantuan Teknisi Listrik?</h4>
@@ -582,6 +542,7 @@ function buildResults(){
   </div>
   `
 
+  // Animate dev bars
   setTimeout(()=>{
     top5.forEach((d,di)=>{
       const {cost}=calcDev(d.w,d.h)
@@ -595,9 +556,10 @@ function sendEmail(){
   const email=document.getElementById('emailInput').value.trim()
   const status=document.getElementById('emailStatus')
   if(!email||!email.includes('@')){
-    status.style.display='block'; status.style.color='var(--danger)'
+    status.style.display='block'; status.style.color='#ef4444'
     status.textContent='⚠️ Masukkan alamat email yang valid'; return
   }
+  // Build report text
   const allDevs=rooms.flatMap(r=>r.devs.map(d=>({...d,room:r})))
   const totalKwh=Math.round(allDevs.reduce((a,d)=>a+calcDev(d.w,d.h).kwh,0))
   const totalCost=allDevs.reduce((a,d)=>a+calcDev(d.w,d.h).cost,0)
@@ -615,7 +577,7 @@ function sendEmail(){
   const body=encodeURIComponent(lines.join('\n'))
   const subject=encodeURIComponent(`Laporan Audit Listrik Rumah — EnVisor AI`)
   window.open(`mailto:${email}?subject=${subject}&body=${body}`)
-  status.style.display='block'; status.style.color='var(--success)'
+  status.style.display='block'; status.style.color='#10b981'
   status.textContent='✅ Membuka aplikasi email kamu...'
   setTimeout(()=>{ status.style.display='none' },4000)
 }
