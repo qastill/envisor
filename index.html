@@ -118,20 +118,20 @@
     <div class="psub">Opsional — untuk perbandingan tagihan aktual vs estimasi AI</div>
 
     <div class="bill-grid">
-      <label for="inp_bill" class="buz" id="buz1" style="display:block">
-        <input type="file" id="inp_bill" accept="image/*" onchange="billUp('buz1','inp_bill','prev_bill','bico1','btxt1')" style="display:none">
+      <input type="file" id="inp_bill" accept="image/*" style="display:none" onchange="billUp('buz1','inp_bill','prev_bill','bico1','btxt1')">
+      <div class="buz" id="buz1" onclick="triggerUpload('inp_bill')">
         <div class="buz-ico" id="bico1">🧾</div>
         <div class="buz-t" id="btxt1">Foto Tagihan / Struk PLN</div>
         <div class="buz-s">Screenshot MyPLN atau struk</div>
         <img class="buz-img" id="prev_bill" src="" alt="">
-      </label>
-      <label for="inp_meter" class="buz" id="buz2" style="display:block">
-        <input type="file" id="inp_meter" accept="image/*" onchange="billUp('buz2','inp_meter','prev_meter','bico2','btxt2')" style="display:none">
+      </div>
+      <input type="file" id="inp_meter" accept="image/*" style="display:none" onchange="billUp('buz2','inp_meter','prev_meter','bico2','btxt2')">
+      <div class="buz" id="buz2" onclick="triggerUpload('inp_meter')">
         <div class="buz-ico" id="bico2">⚡</div>
         <div class="buz-t" id="btxt2">Foto KWH Meter</div>
         <div class="buz-s">Angka pada kwh meter rumah</div>
         <img class="buz-img" id="prev_meter" src="" alt="">
-      </label>
+      </div>
     </div>
 
     <div class="skip-note">

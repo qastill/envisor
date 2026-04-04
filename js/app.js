@@ -146,15 +146,15 @@ function renderContent(){
       <div style="margin-top:12px"></div>
     `:''}
     ${room.devs.length===0?`
-      <label for="fi_${room.id}" class="uz" style="display:block" ondrop="onDrop(event,'${room.id}')" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')">
-        <input type="file" id="fi_${room.id}" accept="image/*" onchange="oneFile(this.files,'${room.id}')" style="display:none">
+      <input type="file" id="fi_${room.id}" accept="image/*" style="display:none" onchange="oneFile(this.files,'${room.id}')">
+      <div class="uz" ondrop="onDrop(event,'${room.id}')" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" onclick="triggerUpload('fi_${room.id}')">
         <div id="uzi_${room.id}">
           <div class="uz-ico">📷</div>
           <div class="uz-t">Foto Elektronik Pertama di ${room.n}</div>
           <div class="uz-s">Klik atau drag foto · 1 foto = 1 elektronik</div>
         </div>
         <div class="lbar" id="lb_${room.id}"><div class="lbar-fill"></div></div>
-      </label>
+      </div>
     `:`
       <div id="addZone_${room.id}">
         <button id="addBtn_${room.id}" onclick="showAdd('${room.id}')"
@@ -165,15 +165,15 @@ function renderContent(){
         </button>
         <div id="addPanel_${room.id}" style="display:none;margin-top:10px">
           <div style="font-size:12px;font-weight:700;color:var(--mid);margin-bottom:8px">📷 Foto Elektronik ke-${room.devs.length+1}</div>
-          <label for="fi2_${room.id}" class="uz" style="display:block" ondrop="onDrop2(event,'${room.id}')" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')">
-            <input type="file" id="fi2_${room.id}" accept="image/*" onchange="oneFile(this.files,'${room.id}')" style="display:none">
+          <input type="file" id="fi2_${room.id}" accept="image/*" style="display:none" onchange="oneFile(this.files,'${room.id}')">
+          <div class="uz" ondrop="onDrop2(event,'${room.id}')" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" onclick="triggerUpload('fi2_${room.id}')">
             <div id="uzi2_${room.id}">
               <div class="uz-ico">📱</div>
               <div class="uz-t">Foto Elektronik Berikutnya</div>
               <div class="uz-s">AI identifikasi otomatis dari foto</div>
             </div>
             <div class="lbar" id="lb2_${room.id}"><div class="lbar-fill"></div></div>
-          </label>
+          </div>
           <button onclick="hideAdd('${room.id}')" style="background:none;border:none;color:var(--mid);font-size:13px;cursor:pointer;font-family:inherit">Batal</button>
         </div>
       </div>
@@ -184,6 +184,14 @@ function renderContent(){
 
 function showAdd(id){ document.getElementById('addBtn_'+id).style.display='none'; document.getElementById('addPanel_'+id).style.display='block' }
 function hideAdd(id){ document.getElementById('addBtn_'+id).style.display='flex'; document.getElementById('addPanel_'+id).style.display='none' }
+var _uploadLock = false
+function triggerUpload(inputId) {
+  if (_uploadLock) return
+  _uploadLock = true
+  var el = document.getElementById(inputId)
+  if (el) el.click()
+  setTimeout(function(){ _uploadLock = false }, 600)
+}
 function onDrop(e,id){ e.preventDefault(); oneFile(e.dataTransfer.files,id) }
 function onDrop2(e,id){ e.preventDefault(); oneFile(e.dataTransfer.files,id) }
 
