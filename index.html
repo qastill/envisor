@@ -4,226 +4,213 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#0071e3">
+<meta name="theme-color" content="#00C9FF">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="EnVisor">
 <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
-<script>if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));</script>
+<script>if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));</script>
 <title>EnVisor AI — Audit Listrik Rumahmu</title>
-<link rel="stylesheet" href="/css/main.css">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 
-<!-- HEADER -->
-<header>
-  <div class="header-inner">
-    <div class="logo">⚡ EnVisor<em>.AI</em></div>
-    <div class="header-badge">Energy Advisor</div>
-  </div>
-</header>
+<nav>
+  <div class="logo">⚡ EnVisor<em>.AI</em></div>
+  <div class="nav-badge">Energy Advisor</div>
+</nav>
+
+<div class="hero">
+  <h1>Kenapa Tagihan Listrik<br>Kamu <em>Mahal Banget?</em></h1>
+  <p>Foto tiap elektronik · set jam pakai · dapat diagnosa lengkap AI</p>
+</div>
 
 <div class="wrap">
+<div class="card">
 
-  <!-- STEPPER -->
-  <div class="stepper">
-    <!-- pf hidden for JS compat -->
-    <div style="position:absolute;left:-9999px"><div id="pf" style="width:25%"></div></div>
-    <div class="stepper-row">
-      <div class="step-item">
-        <span class="slbl on" id="s1">1</span>
-        <span class="step-lbl">Data Rumah</span>
-      </div>
-      <div class="step-item">
-        <span class="slbl" id="s2">2</span>
-        <span class="step-lbl">Perangkat</span>
-      </div>
-      <div class="step-item">
-        <span class="slbl" id="s3">3</span>
-        <span class="step-lbl">Analisis</span>
-      </div>
-      <div class="step-item">
-        <span class="slbl" id="s4">4</span>
-        <span class="step-lbl">Hasil</span>
-      </div>
+  <!-- PROGRESS -->
+  <div class="prog">
+    <div class="step-row">
+      <span class="slbl on" id="s1">📋 Data Rumah</span>
+      <span class="slbl" id="s2">📷 Perangkat</span>
+      <span class="slbl" id="s3">🧾 Tagihan</span>
+      <span class="slbl" id="s4">✅ Hasil</span>
     </div>
+    <div class="track"><div class="fill" id="pf" style="width:25%"></div></div>
   </div>
 
-  <!-- ══ STEP 1 — DATA RUMAH ══ -->
-  <div class="panel active" id="p1">
-
-    <div class="hero">
-      <h1>Kenapa Tagihan Listrik<br>Kamu <em>Mahal Banget?</em></h1>
-      <p>Foto tiap elektronik · set jam pakai · dapat diagnosa AI</p>
-    </div>
+  <!-- ══════════════════════════════════════════════════
+       STEP 1 — DATA RUMAH
+  ══════════════════════════════════════════════════ -->
+  <div class="panel body active" id="p1">
+    <div class="ptitle">🏠 Data Rumah Kamu</div>
+    <div class="psub">Lengkapi info dasar rumah sebelum scan perangkat</div>
 
     <!-- Daya PLN -->
-    <div class="card">
-      <span class="sec-label">Daya PLN</span>
+    <div style="margin-bottom:20px">
+      <div class="slabel">DAYA PLN (VA)</div>
       <div class="va-row" id="vaRow"></div>
-      <p class="hint">Cek di kwh meter atau tagihan PLN kamu</p>
+      <div style="font-size:11px;color:var(--mid);margin-top:5px">Cek di kwh meter atau tagihan PLN kamu</div>
     </div>
 
     <!-- Jumlah Orang -->
-    <div class="card">
-      <span class="sec-label">Penghuni Rumah</span>
-      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+    <div style="margin-bottom:20px">
+      <div class="slabel">JUMLAH PENGHUNI RUMAH</div>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
         <div class="orang-ctrl">
           <button class="orang-btn" onclick="setOrang(Math.max(1,jumlahOrang-1))">−</button>
           <span class="orang-num" id="orangVal">3</span>
           <button class="orang-btn" onclick="setOrang(Math.min(20,jumlahOrang+1))">+</button>
         </div>
         <div>
-          <div style="font-size:14px;font-weight:600;color:var(--text)" id="orangLabel">3 orang tinggal di rumah</div>
-          <div style="font-size:11px;color:var(--mid);margin-top:2px">Untuk menghitung konsumsi wajar per kapita</div>
+          <div style="font-size:14px;font-weight:700" id="orangLabel">3 orang tinggal di rumah</div>
+          <div style="font-size:11px;color:var(--mid)">Untuk menghitung konsumsi wajar per kapita</div>
         </div>
       </div>
     </div>
 
     <!-- Ruangan -->
-    <div class="card">
-      <span class="sec-label">Ruangan</span>
-      <div class="room-grid" id="roomGrid"></div>
-      <div class="room-actions">
-        <button class="add-preset-btn" onclick="togglePreset()">🏠 Preset Ruangan</button>
-        <button class="add-custom-btn" onclick="toggleCustom()">✏️ Custom</button>
-      </div>
-      <div id="presetBox" style="display:none" class="preset-box">
-        <div style="font-size:12px;font-weight:600;color:var(--mid)">Pilih preset ruangan:</div>
-        <div class="preset-grid" id="presetGrid"></div>
-      </div>
-      <div id="customBox" style="display:none" class="preset-box">
-        <div style="font-size:12px;font-weight:600;color:var(--mid);margin-bottom:8px">Nama ruangan custom:</div>
-        <div class="icon-picker" id="iconPicker"></div>
-        <div class="custom-row">
-          <input id="customName" placeholder="Contoh: Ruang Gaming..." onkeydown="if(event.key==='Enter')addCustomRoom()">
-          <button onclick="addCustomRoom()">Tambah</button>
-        </div>
-      </div>
+    <div class="slabel">RUANGAN</div>
+    <div class="room-grid" id="roomGrid"></div>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+      <button class="add-preset-btn" onclick="togglePreset()">🏠 + Preset Ruangan</button>
+      <button class="add-custom-btn" onclick="toggleCustom()">✏️ + Custom</button>
     </div>
 
-    <!-- KWH Meter Photo -->
-    <div class="card">
-      <span class="sec-label">Foto KWH Meter <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--mid)">(opsional)</span></span>
-      <div class="buz" id="buz_meter" onclick="document.getElementById('inp_meter').click()">
-        <input type="file" id="inp_meter" accept="image/*" capture="environment" onchange="onMeterUpload(this)">
-        <div class="buz-ico" id="bico_meter">⚡</div>
-        <div class="buz-t" id="btxt_meter">Ambil / Pilih Foto KWH Meter</div>
-        <div class="buz-s">Untuk cek kondisi meter &amp; baca angka otomatis</div>
-        <img class="buz-img" id="prev_meter" src="" alt="">
-      </div>
-      <div id="meterBadge" style="display:none;margin-top:8px;padding:10px 14px;border-radius:10px;font-size:13px;font-weight:600"></div>
+    <div id="presetBox" style="display:none" class="preset-box">
+      <div style="font-size:12px;font-weight:700;color:var(--mid)">Pilih preset ruangan:</div>
+      <div class="preset-grid" id="presetGrid"></div>
     </div>
-
-    <!-- Tagihan -->
-    <div class="card">
-      <span class="sec-label">Tagihan Listrik Bulan Lalu</span>
-      <div style="display:flex;align-items:center;gap:10px">
-        <span style="font-size:13px;font-weight:600;color:var(--mid)">Rp</span>
-        <input id="inp_actual" type="number" placeholder="Contoh: 450000"
-          style="flex:1;padding:12px 14px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);font-family:inherit;font-size:16px;font-weight:600;color:var(--text);outline:none;transition:all .2s"
-          onfocus="this.style.borderColor='var(--acc)';this.style.boxShadow='0 0 0 3px rgba(0,113,227,.15)'"
-          onblur="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
-        <span style="font-size:12px;color:var(--mid)">/bulan</span>
+    <div id="customBox" style="display:none" class="preset-box">
+      <div style="font-size:12px;font-weight:700;color:var(--mid);margin-bottom:8px">Nama ruangan custom:</div>
+      <div class="icon-picker" id="iconPicker"></div>
+      <div class="custom-row">
+        <input id="customName" placeholder="Contoh: Ruang Gaming..." onkeydown="if(event.key==='Enter')addCustomRoom()">
+        <button onclick="addCustomRoom()">Tambah</button>
       </div>
-      <p class="hint">Cek di aplikasi PLN Mobile atau struk terakhir</p>
     </div>
 
     <div class="pnav">
-      <span style="font-size:13px;color:var(--mid)" id="roomHint">Pilih minimal 1 ruangan</span>
+      <div style="font-size:13px;color:var(--mid)" id="roomHint">Pilih minimal 1 ruangan</div>
       <button class="bnx" id="btnStep2" onclick="goStep2()" disabled>Scan Perangkat →</button>
     </div>
   </div>
 
-  <!-- ══ STEP 2 — SCAN PERANGKAT ══ -->
+  <!-- ══════════════════════════════════════════════════
+       STEP 2 — SCAN PERANGKAT
+  ══════════════════════════════════════════════════ -->
   <div class="panel" id="p2">
-    <div class="card" style="margin-bottom:12px">
-      <div class="card-title">📷 Scan Perangkat</div>
-      <div class="card-sub" style="margin-bottom:12px">Pilih ruangan → foto 1 elektronik → klik "+ Tambah" untuk foto berikutnya</div>
+    <div class="body" style="padding-bottom:82px">
+      <div class="ptitle">📷 Scan Perangkat</div>
+      <div class="psub">Pilih ruangan → foto 1 elektronik → klik "+ Tambah" untuk foto berikutnya</div>
       <div class="room-tabs" id="roomTabs"></div>
-    </div>
-    <div class="card" style="padding-bottom:80px">
       <div id="roomContent"></div>
     </div>
   </div>
 
-  <!-- ══ STEP 3 — ANALISIS ══ -->
-  <div class="panel" id="p3">
-    <div class="card">
-      <div class="card-title">🔍 Analisis Konsumsi Listrik</div>
-      <div class="card-sub">Ringkasan lengkap berdasarkan data &amp; perangkat kamu</div>
+  <!-- ══════════════════════════════════════════════════
+       STEP 3 — TAGIHAN
+  ══════════════════════════════════════════════════ -->
+  <div class="panel body" id="p3">
+    <div class="ptitle">🧾 Upload Tagihan PLN</div>
+    <div class="psub">Opsional — untuk perbandingan tagihan aktual vs estimasi AI</div>
 
-      <div class="est-box">
-        <div style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--warn);margin-bottom:10px">Estimasi dari Scan Perangkat</div>
-        <div style="display:flex;gap:24px;flex-wrap:wrap">
-          <div>
-            <div style="font-size:26px;font-weight:700;color:var(--text);letter-spacing:-.02em" id="s3Total">—</div>
-            <div style="font-size:12px;color:var(--mid);margin-top:3px">estimasi per bulan</div>
-          </div>
-          <div>
-            <div style="font-size:18px;font-weight:600;color:var(--text)" id="s3Kwh">—</div>
-            <div style="font-size:12px;color:var(--mid);margin-top:3px">kWh per bulan</div>
-          </div>
+    <div class="bill-grid">
+      <div class="buz" id="buz1">
+        <input type="file" id="inp_bill" accept="image/*" onchange="billUp('buz1','inp_bill','prev_bill','bico1','btxt1')" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:2">
+        <div class="buz-ico" id="bico1">🧾</div>
+        <div class="buz-t" id="btxt1">Foto Tagihan / Struk PLN</div>
+        <div class="buz-s">Screenshot MyPLN atau struk</div>
+        <img class="buz-img" id="prev_bill" src="" alt="">
+      </div>
+      <div class="buz" id="buz2">
+        <input type="file" id="inp_meter" accept="image/*" onchange="billUp('buz2','inp_meter','prev_meter','bico2','btxt2')" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:2">
+        <div class="buz-ico" id="bico2">⚡</div>
+        <div class="buz-t" id="btxt2">Foto KWH Meter</div>
+        <div class="buz-s">Angka pada kwh meter rumah</div>
+        <img class="buz-img" id="prev_meter" src="" alt="">
+      </div>
+    </div>
+
+    <div class="skip-note">
+      <span>ℹ️</span>
+      <span>Tidak punya foto? Tidak apa-apa — klik <strong>Lewati</strong> untuk tetap dapat analisis lengkap.</span>
+    </div>
+
+    <div class="est-box">
+      <div style="font-size:11px;font-weight:700;color:#92400e;letter-spacing:1px;margin-bottom:10px">ESTIMASI DARI SCAN PERANGKAT</div>
+      <div style="display:flex;gap:24px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:28px;font-weight:900;color:#92400e" id="s3Total">—</div>
+          <div style="font-size:12px;color:#92400e;opacity:.8">estimasi per bulan</div>
+        </div>
+        <div>
+          <div style="font-size:20px;font-weight:800;color:#b45309" id="s3Kwh">—</div>
+          <div style="font-size:12px;color:#92400e;opacity:.8">kWh per bulan</div>
         </div>
       </div>
+    </div>
 
-      <div id="s3AiSummary" style="margin-bottom:16px"></div>
-
-      <div class="pnav">
-        <button class="bbk" onclick="go(2)">← Kembali</button>
-        <button class="bnx" onclick="goResults()">Lihat Hasil Lengkap →</button>
+    <!-- Input tagihan aktual manual -->
+    <div style="margin-bottom:16px">
+      <div class="slabel">TAGIHAN AKTUAL (OPSIONAL)</div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:13px;font-weight:700;color:var(--mid)">Rp</span>
+        <input id="inp_actual" type="number" placeholder="Contoh: 450000"
+          style="flex:1;padding:11px 13px;border-radius:10px;border:1.5px solid var(--light);background:var(--bg);font-family:inherit;font-size:14px;font-weight:700;color:var(--dark);outline:none;transition:border-color .2s"
+          onfocus="this.style.borderColor='var(--acc)';this.style.background='#fffbeb'"
+          onblur="this.style.borderColor='var(--light)';this.style.background='var(--bg)'">
+        <span style="font-size:12px;color:var(--mid)">/bulan</span>
       </div>
+      <div style="font-size:11px;color:var(--mid);margin-top:5px">Isi tagihan asli untuk perbandingan akurat</div>
+    </div>
+
+    <div class="pnav">
+      <button class="bbk" onclick="go(2)">← Kembali</button>
+      <button class="bnx" onclick="goResults()">Lihat Hasil Analisis →</button>
     </div>
   </div>
 
   <!-- LOADING -->
   <div class="lscreen" id="ls">
     <div class="spin"></div>
-    <div style="font-size:16px;font-weight:600;color:var(--text)">AI menganalisis semua data...</div>
+    <div style="font-size:16px;font-weight:800">AI menganalisis semua data...</div>
     <div style="font-size:13px;color:var(--mid)">Menyusun laporan lengkap untuk rumahmu</div>
   </div>
 
-  <!-- ══ STEP 4 — HASIL ══ -->
-  <div class="panel" id="p4">
-    <div class="card" style="margin-bottom:12px">
-      <div class="card-title">✅ Hasil Analisis Lengkap</div>
-      <div class="card-sub" id="rsub"></div>
-    </div>
+  <!-- ══════════════════════════════════════════════════
+       STEP 4 — HASIL
+  ══════════════════════════════════════════════════ -->
+  <div class="panel body" id="p4">
+    <div class="ptitle">✅ Hasil Analisis Lengkap</div>
+    <div class="psub" id="rsub"></div>
     <div id="rbody"></div>
-    <div style="margin-top:4px;display:flex;gap:8px;flex-wrap:wrap">
+    <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
       <button class="bbk" onclick="restart()">🔄 Mulai Ulang</button>
       <button class="bbk" onclick="window.print()">🖨️ Simpan PDF</button>
     </div>
   </div>
 
+</div><!-- /card -->
 </div><!-- /wrap -->
 
-<!-- Trust -->
 <div class="trust">
   <div class="ti">🔒 <strong>Privat</strong> · foto tidak disimpan</div>
   <div class="ti">⚡ <strong>~3 menit</strong> · hasil instan</div>
   <div class="ti">💸 <strong>Gratis</strong> · tanpa daftar</div>
 </div>
 
-<!-- STICKY BAR -->
+<!-- STICKY TOTAL -->
 <div class="sticky" id="stickyBar" style="display:none">
-  <div class="sticky-inner">
-    <div>
-      <div class="st-lbl">Total semua ruangan</div>
-      <div class="st-val" id="stickyVal">—</div>
-    </div>
-    <button class="bnx" onclick="go(3);step3Summary()">Lanjut ke Analisis →</button>
+  <div>
+    <div class="st-lbl">Total semua ruangan</div>
+    <div class="st-val" id="stickyVal">—</div>
   </div>
+  <button class="bnx" onclick="go(3);step3Summary()">Lanjut ke Tagihan →</button>
 </div>
 
-<!-- Compat stubs for restart() -->
-<div id="buz1" style="display:none"></div>
-<div id="buz2" style="display:none"></div>
-<span id="bico1" style="display:none"></span>
-<span id="bico2" style="display:none"></span>
-<span id="btxt1" style="display:none"></span>
-<span id="btxt2" style="display:none"></span>
-
-<script src="/js/main.js"></script>
+<script src="/js/app.js"></script>
 </body>
 </html>

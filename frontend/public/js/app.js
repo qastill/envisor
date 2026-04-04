@@ -146,8 +146,8 @@ function renderContent(){
       <div style="margin-top:12px"></div>
     `:''}
     ${room.devs.length===0?`
-      <div class="uz" ondrop="onDrop(event,'${room.id}')" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" onclick="document.getElementById('fi_${room.id}').click()">
-        <input type="file" id="fi_${room.id}" accept="image/*" onchange="oneFile(this.files,'${room.id}')">
+      <div class="uz" ondrop="onDrop(event,'${room.id}')" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')">
+        <input type="file" id="fi_${room.id}" accept="image/*" onchange="oneFile(this.files,'${room.id}')" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:2">
         <div id="uzi_${room.id}">
           <div class="uz-ico">📷</div>
           <div class="uz-t">Foto Elektronik Pertama di ${room.n}</div>
@@ -165,8 +165,8 @@ function renderContent(){
         </button>
         <div id="addPanel_${room.id}" style="display:none;margin-top:10px">
           <div style="font-size:12px;font-weight:700;color:var(--mid);margin-bottom:8px">📷 Foto Elektronik ke-${room.devs.length+1}</div>
-          <div class="uz" ondrop="onDrop2(event,'${room.id}')" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" onclick="document.getElementById('fi2_${room.id}').click()">
-            <input type="file" id="fi2_${room.id}" accept="image/*" onchange="oneFile(this.files,'${room.id}')">
+          <div class="uz" ondrop="onDrop2(event,'${room.id}')" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')">
+            <input type="file" id="fi2_${room.id}" accept="image/*" onchange="oneFile(this.files,'${room.id}')" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:2">
             <div id="uzi2_${room.id}">
               <div class="uz-ico">📱</div>
               <div class="uz-t">Foto Elektronik Berikutnya</div>
