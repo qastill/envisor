@@ -329,257 +329,355 @@ function buildResults(){
   const sorted=[...allDevs].sort((a,b)=>calcDev(b.w,b.h).cost-calcDev(a.w,a.h).cost)
   const top5=sorted.slice(0,5)
   const maxDevCost=calcDev(top5[0]?.w||1,top5[0]?.h||1).cost
-
-  // Tagihan & perbandingan
   const actualBill=parseFloat(document.getElementById('inp_actual').value)||0
   const diff=actualBill>0?actualBill-totalCost:0
   const diffPct=actualBill>0?Math.round(Math.abs(diff/totalCost)*100):0
   const isOver=actualBill>0&&diff>totalCost*0.05
   const isUnder=actualBill>0&&diff<-(totalCost*0.05)
-
-  // Perbandingan rata-rata pelanggan daya yang sama
   const vaKey=VA_OPTIONS.reduce((p,v)=>v<=plnVa?v:p,VA_OPTIONS[0])
   const avgKwh=AVG_KWH_BY_VA[vaKey]||130
   const avgCost=Math.round(avgKwh*tariff())
   const vsAvgPct=avgKwh>0?Math.round(((totalKwh-avgKwh)/avgKwh)*100):0
   const isAboveAvg=vsAvgPct>10
-
-  // Konsumsi wajar per penghuni
   const wajarKwh=jumlahOrang*100
-  const kwhVsWajar=Math.round((totalKwh/wajarKwh)*100)
+  const wajarCost=Math.round(wajarKwh*tariff())
+  const kwhVsWajar=wajarKwh>0?Math.round(((totalKwh-wajarKwh)/wajarKwh)*100):0
   const suspectDev=sorted[0]
   const suspectShare=totalCost>0?Math.round((calcDev(suspectDev?.w||0,suspectDev?.h||0).cost/totalCost)*100):0
   const showWarning=isOver||(totalKwh>wajarKwh*1.1)||isAboveAvg
-
-  // Build pie chart slices
+  const reportId='ENV-'+new Date().getFullYear()+'-'+String(new Date().getMonth()+1).padStart(2,'0')+'-'+String(Math.floor(Math.random()*9999)).padStart(4,'0')
+  const reportDate=new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})
+  const potentialSaving=Math.round(totalCost*0.30)
   const pieSlices=activeRooms.map(r=>{
     const rCost=r.devs.reduce((a,d)=>a+calcDev(d.w,d.h).cost,0)
-    return {label:r.i+' '+r.n, value:rCost, pct:totalCost>0?Math.round((rCost/totalCost)*100):0}
+    return {label:r.i+' '+r.n,value:rCost,pct:totalCost>0?Math.round((rCost/totalCost)*100):0,kwh:Math.round(r.devs.reduce((a,d)=>a+calcDev(d.w,d.h).kwh,0)*10)/10,cnt:r.devs.length}
   }).filter(s=>s.pct>0)
-  const {svg:pieSvg, legends:pieLeg}=buildPieChart(pieSlices)
+  const {svg:pieSvg,legends:pieLeg}=buildPieChart(pieSlices)
+  const waMsg=encodeURIComponent('Halo! Saya baru cek lewat EnVisor AI.\nEstimasi tagihan: '+rp(totalCost)+'/bln\nDaya: '+plnVa+' VA · '+jumlahOrang+' penghuni\nID Laporan: '+reportId+'\nMohon bantu audit listrik rumah saya')
 
-  const waMsg=encodeURIComponent(`Halo! Saya baru cek lewat EnVisor AI.\nEstimasi tagihan: ${rp(totalCost)}/bln\nDaya: ${plnVa} VA · ${jumlahOrang} penghuni\nMohon bantu audit listrik rumah saya 🙏`)
+  document.getElementById('rsub').textContent=Math.round(totalKwh)+' kWh/bulan · '+allDevs.length+' perangkat · '+jumlahOrang+' penghuni'
 
-  document.getElementById('rsub').textContent=`${Math.round(totalKwh)} kWh/bulan · ${allDevs.length} perangkat · ${jumlahOrang} penghuni`
+  // ═══════════════════════════════════════════════════════════════
+  // BUILD PREMIUM REPORT HTML
+  // ═══════════════════════════════════════════════════════════════
+  var h=''
 
-  document.getElementById('rbody').innerHTML=`
+  // ══ SECTION 1: HEADER & HERO RESULT ══
+  h+='<div class="rpt-header" style="background:linear-gradient(135deg,#0f172a,#1e293b);border-radius:20px;padding:24px;color:#fff;margin-bottom:16px">'
+  h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;opacity:.7;font-size:11px;font-weight:700;letter-spacing:1px"><span>■ EnVisor.AI — Laporan Audit Energi Premium</span><span>ID: '+reportId+' | '+reportDate+'</span></div>'
+  h+='<div style="font-size:11px;font-weight:700;letter-spacing:1.5px;opacity:.5;margin-bottom:6px">ESTIMASI TAGIHAN DARI PERANGKAT</div>'
+  h+='<div style="font-size:38px;font-weight:900;color:#f59e0b;margin-bottom:4px">'+rp(totalCost)+'</div>'
+  h+='<div style="font-size:13px;opacity:.7;margin-bottom:18px">per bulan · '+Math.round(totalKwh)+' kWh · '+allDevs.length+' perangkat</div>'
+  // 3-column comparison
+  h+='<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px">'
+  h+='<div style="flex:1;min-width:120px;background:rgba(255,255,255,.07);border-radius:12px;padding:12px 14px;border:1px solid rgba(255,255,255,.1)"><div style="font-size:10px;font-weight:700;letter-spacing:1px;opacity:.6;margin-bottom:5px">ESTIMASI</div><div style="font-size:20px;font-weight:800;color:#f59e0b">'+rp(totalCost)+'</div></div>'
+  if(actualBill>0){
+    h+='<div style="flex:1;min-width:120px;background:rgba(255,255,255,.07);border-radius:12px;padding:12px 14px;border:1px solid rgba(255,255,255,.1)"><div style="font-size:10px;font-weight:700;letter-spacing:1px;opacity:.6;margin-bottom:5px">TAGIHAN AKTUAL</div><div style="font-size:20px;font-weight:800;color:'+(isOver?'#f87171':'#34d399')+'">'+rp(actualBill)+'</div></div>'
+  }
+  h+='<div style="flex:1;min-width:120px;background:rgba(255,255,255,.07);border-radius:12px;padding:12px 14px;border:1px solid rgba(255,255,255,.1)"><div style="font-size:10px;font-weight:700;letter-spacing:1px;opacity:.6;margin-bottom:5px">POTENSI HEMAT</div><div style="font-size:20px;font-weight:800;color:#34d399">'+rp(potentialSaving)+'</div></div>'
+  h+='</div>'
+  // Stats row
+  h+='<div style="display:flex;gap:20px;flex-wrap:wrap;font-size:12px;opacity:.7">'
+  h+='<span>Daya: '+plnVa.toLocaleString()+' VA</span>'
+  h+='<span>Penghuni: '+jumlahOrang+' orang</span>'
+  h+='<span>Konsumsi: '+Math.round(totalKwh*10)/10+' kWh/bln</span>'
+  h+='<span>Perangkat: '+allDevs.length+' unit</span>'
+  h+='<span>Ruangan: '+activeRooms.length+'</span>'
+  h+='</div></div>'
 
-  <!-- ══ 1. ESTIMASI & PERBANDINGAN TAGIHAN ══ -->
-  <div class="hero-result" style="margin-bottom:12px">
-    <div class="hr-label">ESTIMASI TAGIHAN DARI PERANGKAT KAMU</div>
-    <div class="hr-main">${rp(totalCost)}</div>
-    <div class="hr-sub">per bulan · ${Math.round(totalKwh)} kWh · ${allDevs.length} perangkat</div>
+  // ══ WARNING BADGE ══
+  if(showWarning){
+    h+='<div style="background:#fef2f2;border:1.5px solid #fecaca;border-radius:14px;padding:14px 18px;margin-bottom:16px;font-size:13px;line-height:1.6;color:#991b1b">'
+    h+='<strong style="color:#dc2626">■ PERINGATAN:</strong> Konsumsi listrik terdeteksi <strong style="color:#dc2626">'+(vsAvgPct>0?vsAvgPct+'% di atas rata-rata':'setara')+'</strong> pelanggan PLN '+plnVa.toLocaleString()+' VA'
+    if(kwhVsWajar>10) h+=' dan <strong style="color:#dc2626">'+kwhVsWajar+'% di atas batas wajar</strong> untuk '+jumlahOrang+' penghuni'
+    h+='. Laporan ini memuat analisa mendalam, diagnosa ilmiah, dan rencana aksi prioritas.</div>'
+  }
 
-    <div class="hr-compare">
-      <div class="hr-cbox">
-        <div class="hr-clbl">WAJAR (${jumlahOrang} org)</div>
-        <div class="hr-cval green">${rp(wajarKwh*tariff())}</div>
-      </div>
-      <div class="hr-cbox">
-        <div class="hr-clbl">RATA-RATA ${plnVa.toLocaleString()} VA</div>
-        <div class="hr-cval yellow">${rp(avgCost)}</div>
-      </div>
-      ${actualBill>0?`<div class="hr-cbox">
-        <div class="hr-clbl">TAGIHAN AKTUAL</div>
-        <div class="hr-cval ${isOver?'red':isUnder?'green':'yellow'}">${rp(actualBill)}</div>
-      </div>`:''}
-    </div>
+  // ══ SECTION 2: RINGKASAN EKSEKUTIF ══
+  h+='<div class="rc" style="margin-bottom:16px"><div class="rpt-sec">■ RINGKASAN EKSEKUTIF</div>'
+  h+='<div style="font-size:13px;line-height:1.8;color:var(--dark)">'
+  h+='EnVisor AI melakukan audit terhadap seluruh perangkat elektronik di rumah ini. Total ditemukan <strong>'+allDevs.length+' perangkat</strong> di '+activeRooms.length+' ruangan dengan konsumsi gabungan <strong>'+Math.round(totalKwh*10)/10+' kWh/bulan</strong>. Estimasi biaya dari perangkat adalah <strong>'+rp(totalCost)+'/bulan</strong>'
+  if(actualBill>0){
+    h+=', namun tagihan PLN aktual sebesar <strong>'+rp(actualBill)+'/bulan</strong> — artinya ada selisih <strong>'+rp(Math.abs(diff))+'/bulan ('+diffPct+'%)</strong> yang '+(isOver?'tidak dapat dijelaskan oleh pemakaian perangkat saja — indikasi kuat adanya permasalahan teknis':'menunjukkan estimasi cukup akurat')+'.'
+  } else {
+    h+='.'
+  }
+  h+='</div>'
 
-    <!-- Badges -->
-    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:14px">
-      ${actualBill>0?`<div class="hr-badge ${isOver?'over':isUnder?'under':'ok'}">
-        ${isOver?`⚠️ Tagihan aktual lebih besar ${diffPct}% dari estimasi perangkat`
-          :isUnder?`✅ Tagihan aktual lebih kecil ${diffPct}% dari estimasi`
-          :`✅ Tagihan aktual sesuai estimasi perangkat`}
-      </div>`:''}
-      <div class="hr-badge ${isAboveAvg?'over':'ok'}">
-        ${isAboveAvg
-          ?`⚠️ Pemakaian kamu lebih besar ${vsAvgPct}% dari rata-rata pelanggan ${plnVa.toLocaleString()} VA`
-          :vsAvgPct<-10
-            ?`✅ Pemakaian kamu lebih hemat ${Math.abs(vsAvgPct)}% dari rata-rata pelanggan ${plnVa.toLocaleString()} VA`
-            :`✅ Pemakaian kamu setara rata-rata pelanggan ${plnVa.toLocaleString()} VA`}
-      </div>
-    </div>
-  </div>
+  // Indicator table
+  h+='<table class="rpt-tbl" style="width:100%;margin-top:14px;border-collapse:collapse;font-size:12px">'
+  h+='<tr style="background:#0f172a;color:#fff"><th style="padding:10px;text-align:left">INDIKATOR</th><th style="padding:10px;text-align:center">NILAI ANDA</th><th style="padding:10px;text-align:center">NILAI NORMAL</th><th style="padding:10px;text-align:center">SELISIH</th><th style="padding:10px;text-align:center">STATUS</th></tr>'
+  var trs=[
+    ['Konsumsi kWh/bulan',Math.round(totalKwh)+' kWh',(jumlahOrang*100)+' kWh',kwhVsWajar>10?'+'+kwhVsWajar+'%':'Normal',kwhVsWajar>10?'🔴 Di atas wajar':'🟢 Normal'],
+    ['Estimasi tagihan',rp(totalCost),rp(wajarCost),kwhVsWajar>10?'+'+kwhVsWajar+'%':'Normal',kwhVsWajar>10?'🟠 Perlu perhatian':'🟢 Normal'],
+    ['vs Rata-rata '+plnVa.toLocaleString()+'VA',Math.round(totalKwh)+' kWh',avgKwh+' kWh',vsAvgPct>0?'+'+vsAvgPct+'%':vsAvgPct+'%',isAboveAvg?'🔴 Di atas rata-rata':'🟢 Normal']
+  ]
+  if(actualBill>0) trs.push(['Tagihan aktual vs estimasi',rp(actualBill),rp(totalCost),(isOver?'+':'')+diffPct+'% / '+rp(diff),isOver?'⚠️ Mencurigakan':'🟢 Sesuai'])
+  trs.forEach(function(row,ri){
+    h+='<tr style="background:'+(ri%2===0?'#f8fafc':'#fff')+'">'
+    row.forEach(function(cell,ci){
+      var align=ci===0?'left':'center'
+      var color=ci===4?(cell.includes('🔴')||cell.includes('⚠️')?'#dc2626':cell.includes('🟠')?'#d97706':'#059669'):'var(--dark)'
+      var fw=ci===4||ci===3?'700':'400'
+      h+='<td style="padding:9px 10px;text-align:'+align+';border-bottom:1px solid var(--light);color:'+color+';font-weight:'+fw+'">'+cell+'</td>'
+    })
+    h+='</tr>'
+  })
+  h+='</table></div>'
 
-  <!-- ══ 2. PIE CHART KONSUMSI PER RUANGAN ══ -->
-  <div class="rc" style="margin-bottom:12px">
-    <div class="rh">
-      <div class="ri">🏠</div>
-      <div><div class="rtl">Konsumsi per Ruangan</div><div class="rsb">Proporsi biaya listrik tiap ruangan</div></div>
-    </div>
-    <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
-      <div style="flex-shrink:0">${pieSvg}</div>
-      <div style="flex:1;min-width:140px">${pieLeg}</div>
-    </div>
-  </div>
+  // ══ SECTION 3: DISTRIBUSI KONSUMSI (BELL CURVE) ══
+  h+='<div class="rc" style="margin-bottom:16px"><div class="rpt-sec">■ POSISI KONSUMSI: DISTRIBUSI PELANGGAN PLN '+plnVa.toLocaleString()+' VA</div>'
+  h+='<div style="font-size:13px;line-height:1.6;margin-bottom:14px;color:var(--dark)">Grafik di bawah menampilkan distribusi konsumsi listrik bulanan pelanggan daya <strong>'+plnVa.toLocaleString()+' VA</strong> (rata-rata '+avgKwh+' kWh/bulan). Posisi Anda berada di <strong>'+(vsAvgPct>0?'+'+vsAvgPct+'% dari rata-rata':Math.abs(vsAvgPct)+'% di bawah rata-rata')+'</strong>.</div>'
+  // Build bell curve SVG
+  h+=buildBellCurveSVG(avgKwh, totalKwh, plnVa)
+  h+='<div style="margin-top:12px;padding:10px 14px;background:#f0f9ff;border-radius:10px;border:1px solid #bae6fd;font-size:12px;line-height:1.6;color:#0c4a6e">'
+  h+='<strong>■ Penjelasan Statistik:</strong> Mean (μ) = '+avgKwh+' kWh, Standar Deviasi (σ) ≈ '+Math.round(avgKwh*0.28)+' kWh. 68% pelanggan berada di μ±σ = '+(avgKwh-Math.round(avgKwh*0.28))+'–'+(avgKwh+Math.round(avgKwh*0.28))+' kWh (zona hijau). Konsumsi Anda sebesar '+Math.round(totalKwh)+' kWh '+(totalKwh>avgKwh+avgKwh*0.56?'berada di zona merah (>2σ) — hanya ditempati oleh 2.5% pelanggan teratas':totalKwh>avgKwh+avgKwh*0.28?'berada di zona kuning (1-2σ)':'berada di zona normal')+'.'
+  h+='</div></div>'
 
-  <!-- ══ 3. 5 PERANGKAT PALING BOROS — BAR CHART ══ -->
-  <div class="rc warn" style="margin-bottom:12px">
-    <div class="rh">
-      <div class="ri">🔥</div>
-      <div><div class="rtl">5 Perangkat Paling Boros</div><div class="rsb">Biaya per bulan</div></div>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:10px">
-      ${top5.map((d,di)=>{
-        const {kwh,cost}=calcDev(d.w,d.h)
-        const pct=Math.round((cost/maxDevCost)*100)
-        const cols=['linear-gradient(90deg,#ef4444,#f97316)','linear-gradient(90deg,#f59e0b,#ef4444)','linear-gradient(90deg,#fbbf24,#f59e0b)','linear-gradient(90deg,#a3e635,#10b981)','linear-gradient(90deg,#38bdf8,#0891b2)']
-        return `<div>
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
-            <div style="font-size:12px;font-weight:700;display:flex;align-items:center;gap:5px">
-              <span>${d.e||'🔌'}</span>
-              <span style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${d.n}</span>
-              <span style="font-size:10px;color:var(--mid);font-weight:500">· ${d.room.n} · ${d.h}j/hr</span>
-            </div>
-            <div style="font-size:12px;font-weight:800;color:#ef4444;flex-shrink:0">${rp(cost)}</div>
-          </div>
-          <div style="height:20px;background:var(--light2);border-radius:20px;overflow:hidden;position:relative">
-            <div id="dbar${di}" style="height:100%;width:0;border-radius:20px;background:${cols[di]};transition:width 1s cubic-bezier(.4,0,.2,1)"></div>
-            <span style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:10px;font-weight:800;color:${di<2?'#92400e':'var(--mid)'}">${kwh} kWh</span>
-          </div>
-        </div>`
-      }).join('')}
-    </div>
-    <div style="margin-top:12px;padding:10px 14px;background:var(--white);border-radius:10px;border:1.5px solid var(--light);font-size:12px;color:var(--mid)">
-      💡 <strong style="color:var(--dark)">${suspectDev?.e||'🔌'} ${suspectDev?.n||'—'}</strong> menyumbang <strong style="color:#ef4444">${suspectShare}%</strong> total tagihan bulanan
-    </div>
-  </div>
+  // ══ SECTION 4: KONSUMSI PER RUANGAN ══
+  h+='<div class="rc" style="margin-bottom:16px"><div class="rpt-sec">■ KONSUMSI PER RUANGAN — BREAKDOWN VISUAL</div>'
+  h+='<div style="display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap">'
+  h+='<div style="flex-shrink:0">'+pieSvg+'</div>'
+  h+='<div style="flex:1;min-width:200px"><table style="width:100%;border-collapse:collapse;font-size:12px">'
+  h+='<tr style="border-bottom:2px solid var(--light)"><th style="padding:8px;text-align:left">Ruangan</th><th style="text-align:center;padding:8px">Perangkat</th><th style="text-align:right;padding:8px">kWh</th><th style="text-align:right;padding:8px">Biaya/bln</th></tr>'
+  pieSlices.forEach(function(s){
+    h+='<tr style="border-bottom:1px solid var(--light2)"><td style="padding:8px;font-weight:600">'+s.label+'</td><td style="text-align:center;padding:8px">'+s.cnt+'</td><td style="text-align:right;padding:8px">'+s.kwh+'</td><td style="text-align:right;padding:8px;font-weight:700;color:#d97706">'+rp(s.value)+'</td></tr>'
+  })
+  h+='<tr style="background:#f0fdf4;font-weight:800"><td style="padding:8px">TOTAL</td><td style="text-align:center;padding:8px">'+allDevs.length+'</td><td style="text-align:right;padding:8px">'+Math.round(totalKwh)+'</td><td style="text-align:right;padding:8px;color:#059669">'+rp(totalCost)+'</td></tr>'
+  h+='</table></div></div></div>'
 
-  <!-- ══ 4. ANALISA PENYEBAB TAGIHAN TINGGI ══ -->
-  ${showWarning?`
-  <div class="rc danger" style="margin-bottom:12px">
-    <div class="rh">
-      <div class="ri">🔍</div>
-      <div><div class="rtl">Analisa Penyebab Tagihan Tinggi</div>
-      <div class="rsb">${actualBill>0&&isOver?`Tagihan aktual ${diffPct}% di atas estimasi`:`Konsumsi ${vsAvgPct>0?vsAvgPct+'% di atas':Math.abs(vsAvgPct)+'% di bawah'} rata-rata pelanggan ${plnVa.toLocaleString()} VA`}</div></div>
-    </div>
-    <div class="kemungkinan-list">
-      <div class="km-item">
-        <div class="km-num r">1</div>
-        <div class="km-text">
-          <strong>Perangkat ${suspectDev?.n||'boros'} tidak efisien</strong>
-          Menyumbang ${suspectShare}% tagihan. Jika usianya >5 tahun, komponen internal (kapasitor, kompresor) mengalami degradasi dan menarik daya jauh di atas spesifikasi asli ${suspectDev?.w||0}W.
-        </div>
-      </div>
-      <div class="km-item">
-        <div class="km-num y">2</div>
-        <div class="km-text">
-          <strong>KWH Meter sudah tua atau tidak akurat</strong>
-          Meter analog berumur >10 tahun rentan kalibrasi bergeser. Kenaikan suhu ruangan juga mempercepat putaran disk meter analog. Hubungi PLN 123 untuk pemeriksaan gratis.
-        </div>
-      </div>
-      <div class="km-item">
-        <div class="km-num o">3</div>
-        <div class="km-text">
-          <strong>Ada arus bocor (current leakage)</strong>
-          Isolasi kabel tua, stop kontak longgar, atau grounding buruk bisa menyebabkan arus mengalir ke tanah 24 jam tanpa disadari. Tes: matikan semua beban → amati KWH meter. Jika masih berputar = ada kebocoran.
-        </div>
-      </div>
-      <div class="km-item">
-        <div class="km-num b">4</div>
-        <div class="km-text">
-          <strong>Instalasi listrik sudah tua</strong>
-          Kabel berumur >15 tahun memiliki resistansi lebih tinggi → terjadi rugi daya (power loss) di sepanjang jaringan. Semakin panjang kabel, semakin besar kehilangan energinya.
-        </div>
-      </div>
-    </div>
-  </div>
+  // ══ SECTION 5: TOP 5 PERANGKAT BOROS — ANALISA MENDALAM ══
+  h+='<div class="rc warn" style="margin-bottom:16px"><div class="rpt-sec">■ 5 PERANGKAT PALING BOROS — ANALISA MENDALAM</div>'
+  // Bar chart
+  h+='<div style="font-size:13px;font-weight:700;margin-bottom:10px;text-align:center">5 Perangkat Paling Boros — Biaya per Bulan</div>'
+  h+='<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">'
+  top5.forEach(function(d,di){
+    var dc=calcDev(d.w,d.h)
+    var pct=Math.round((dc.cost/maxDevCost)*100)
+    var cols=['linear-gradient(90deg,#ef4444,#f97316)','linear-gradient(90deg,#f59e0b,#ef4444)','linear-gradient(90deg,#fbbf24,#f59e0b)','linear-gradient(90deg,#a3e635,#10b981)','linear-gradient(90deg,#38bdf8,#0891b2)']
+    h+='<div><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><div style="font-size:12px;font-weight:700">'+(d.e||'🔌')+' '+d.n+' <span style="font-size:10px;color:var(--mid);font-weight:500">· '+d.room.n+' · '+d.h+'j/hr</span></div><div style="font-size:12px;font-weight:800;color:#ef4444">'+rp(dc.cost)+'</div></div>'
+    h+='<div style="height:22px;background:var(--light2);border-radius:20px;overflow:hidden;position:relative"><div id="dbar'+di+'" style="height:100%;width:0;border-radius:20px;background:'+cols[di]+';transition:width 1s cubic-bezier(.4,0,.2,1)"></div><span style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:10px;font-weight:800;color:var(--mid)">'+dc.kwh+' kWh</span></div></div>'
+  })
+  h+='</div>'
+  // Detailed table
+  h+='<table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:12px">'
+  h+='<tr style="background:#92400e;color:#fff"><th style="padding:9px;text-align:center;width:30px">#</th><th style="padding:9px;text-align:left">Perangkat</th><th style="padding:9px;text-align:left">Ruangan</th><th style="padding:9px;text-align:center">Watt</th><th style="padding:9px;text-align:center">Jam/hr</th><th style="padding:9px;text-align:center">kWh/bln</th><th style="padding:9px;text-align:right">Biaya/bln</th><th style="padding:9px;text-align:center">Porsi</th></tr>'
+  top5.forEach(function(d,di){
+    var dc=calcDev(d.w,d.h)
+    var share=totalCost>0?Math.round(dc.cost/totalCost*100):0
+    h+='<tr style="background:'+(di%2===0?'#fffbeb':'#fff')+'"><td style="padding:8px;text-align:center;font-weight:800;color:#fff;background:'+(di<2?'#ef4444':di<4?'#f59e0b':'#0891b2')+';border-radius:6px">'+(di+1)+'</td><td style="padding:8px;font-weight:700">'+(d.e||'🔌')+' '+d.n+'</td><td style="padding:8px">'+d.room.n+'</td><td style="padding:8px;text-align:center">'+d.w+'W</td><td style="padding:8px;text-align:center">'+d.h+'</td><td style="padding:8px;text-align:center">'+dc.kwh+'</td><td style="padding:8px;text-align:right;font-weight:800;color:#ef4444">'+rp(dc.cost)+'</td><td style="padding:8px;text-align:center;font-weight:700">'+share+'%</td></tr>'
+  })
+  h+='</table>'
+  h+='<div style="padding:10px 14px;background:var(--white);border-radius:10px;border:1.5px solid var(--light);font-size:12px;color:var(--mid)">💡 <strong style="color:var(--dark)">'+(suspectDev?.e||'🔌')+' '+(suspectDev?.n||'—')+'</strong> menyumbang <strong style="color:#ef4444">'+suspectShare+'%</strong> total tagihan bulanan</div></div>'
 
-  <!-- ══ 5. SOLUSI / YANG HARUS DILAKUKAN ══ -->
-  <div class="rc blue" style="margin-bottom:12px">
-    <div class="rh">
-      <div class="ri">✅</div>
-      <div><div class="rtl">Solusi & Yang Harus Dilakukan</div><div class="rsb">Langkah prioritas untuk turunkan tagihan</div></div>
-    </div>
-    <div class="action-list">
-      <div class="act-item">
-        <div class="act-num">1</div>
-        <div class="act-text">
-          <strong>Ganti atau servis ${suspectDev?.n||'perangkat boros'}</strong>
-          Kontribusi ${suspectShare}% tagihan. Ganti dengan model inverter/berlabel SNI hemat energi → estimasi hemat ${rp(calcDev(suspectDev?.w||0,suspectDev?.h||0).cost*0.35)}/bulan. ROI alat baru biasanya 18–24 bulan.
-        </div>
-      </div>
-      <div class="act-item">
-        <div class="act-num">2</div>
-        <div class="act-text">
-          <strong>Minta PLN periksa atau ganti KWH Meter</strong>
-          Hubungi PLN 123 (gratis). Jika meter >10 tahun, ajukan penggantian resmi. Proses 1–2 minggu dan tidak dipungut biaya untuk pelanggan reguler.
-        </div>
-      </div>
-      <div class="act-item">
-        <div class="act-num">3</div>
-        <div class="act-text">
-          <strong>Audit instalasi & cek arus bocor</strong>
-          Matikan semua perangkat → amati KWH meter. Masih berputar? Hubungi teknisi listrik berlisensi untuk inspeksi panel, kabel, dan grounding rumah.
-        </div>
-      </div>
-      <div class="act-item">
-        <div class="act-num">4</div>
-        <div class="act-text">
-          <strong>Kurangi 2 jam/hari pada ${top5.slice(0,2).map(d=>d.n).join(' & ')}</strong>
-          Estimasi hemat ${rp(top5.slice(0,2).reduce((a,d)=>a+calcDev(d.w,d.h).cost*0.3,0))}/bulan. Gunakan timer atau smart plug untuk otomatisasi.
-        </div>
-      </div>
-    </div>
-  </div>
-  `:`
-  <div class="rc ok" style="margin-bottom:12px">
-    <div class="rh"><div class="ri">✅</div><div><div class="rtl">Konsumsi Listrik Normal</div><div class="rsb">Tidak ada indikasi masalah besar</div></div></div>
-    <div style="font-size:13px;line-height:1.8;color:#065f46">
-      Pemakaian listrik rumahmu <strong>sudah efisien</strong> — ${Math.abs(vsAvgPct)}% lebih hemat dari rata-rata pelanggan ${plnVa.toLocaleString()} VA. Tips tambahan:
-      <ul style="margin-top:8px;padding-left:18px;display:flex;flex-direction:column;gap:5px">
-        <li>Set AC 24–26°C → hemat 6% per derajat yang dinaikkan</li>
-        <li>Cabut perangkat standby → bisa hemat 5–10% tagihan</li>
-        <li>Gunakan smart power strip dengan auto-cut untuk TV & audio</li>
-      </ul>
-    </div>
-  </div>
-  `}
+  // ══ SECTION 6: ANALISA PENYEBAB TAGIHAN TINGGI (ILMIAH) ══
+  if(showWarning){
+    h+='<div class="rc danger" style="margin-bottom:16px"><div class="rpt-sec">■ ANALISA PENYEBAB TAGIHAN TINGGI — DIAGNOSA ILMIAH</div>'
+    h+='<div style="font-size:13px;line-height:1.6;margin-bottom:14px;color:var(--dark)">Berdasarkan data perangkat dan perbandingan dengan standar konsumsi PLN, berikut analisa ilmiah lengkap:</div>'
 
-  <!-- ══ SIMPAN / KIRIM REPORT ══ -->
-  <div class="rc" style="margin-bottom:12px;border-color:#bae6fd;background:#f0f9ff">
-    <div class="rh">
-      <div class="ri">📤</div>
-      <div><div class="rtl">Simpan & Kirim Laporan</div><div class="rsb">Download PDF atau kirim ke email kamu</div></div>
-    </div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <button onclick="window.print()" style="display:flex;align-items:center;gap:8px;padding:11px 18px;background:linear-gradient(135deg,#0891b2,#0e7490);color:#fff;border:none;border-radius:11px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 3px 10px rgba(8,145,178,.3)" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
-        🖨️ Simpan PDF
-      </button>
-      <div style="flex:1;min-width:200px;display:flex;gap:8px">
-        <input id="emailInput" type="email" placeholder="email@kamu.com"
-          style="flex:1;padding:11px 13px;border-radius:11px;border:1.5px solid var(--light);background:var(--white);font-family:inherit;font-size:13px;color:var(--dark);outline:none;transition:border-color .2s"
-          onfocus="this.style.borderColor='#0891b2'" onblur="this.style.borderColor='var(--light)'">
-        <button onclick="sendEmail()" style="padding:11px 16px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;border:none;border-radius:11px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .2s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
-          📧 Kirim
-        </button>
-      </div>
-    </div>
-    <div id="emailStatus" style="margin-top:8px;font-size:12px;display:none"></div>
-  </div>
+    // Cause 1: Degradasi perangkat tua
+    h+='<div style="border:1.5px solid #fecaca;border-radius:14px;padding:16px;margin-bottom:12px;background:#fff5f5">'
+    h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:50%;background:#fee2e2;color:#dc2626;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900">1</div><strong style="font-size:14px">Degradasi Efisiensi Perangkat — Komponen Menua</strong></div><span style="background:#fecaca;color:#dc2626;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700">PRIORITAS TINGGI</span></div>'
+    h+='<div style="font-size:13px;line-height:1.7">'
+    h+='<div style="margin-bottom:8px"><strong>• Perangkat terdampak:</strong> '+top5.slice(0,3).map(function(d){return d.n}).join(', ')+'</div>'
+    h+='<div style="margin-bottom:8px"><strong>• Prinsip ilmiah:</strong> Hukum Arrhenius menyatakan laju degradasi komponen elektronik meningkat secara eksponensial dengan suhu operasi. Kapasitor elektrolitik kehilangan 1–3% kapasitansi per tahun, menyebabkan ripple current lebih besar dan efisiensi konversi daya menurun. Pada motor AC (kompresor kulkas, motor AC), oksidasi pada lilitan tembaga meningkatkan resistansi (R) — karena daya rugi P_loss = I²R, konsumsi meningkat kuadratik.</div>'
+    h+='<div><strong>• Dampak kuantitatif:</strong> Perangkat berusia >7 tahun kemungkinan mengonsumsi 15–40% di atas rating asli '+suspectDev?.w+'W. Estimasi biaya nyata bisa mencapai '+rp(calcDev(suspectDev?.w||100,suspectDev?.h||4).cost*1.3)+'/bulan.</div>'
+    h+='</div></div>'
 
-  <!-- ══ 6. HUBUNGI WHATSAPP ══ -->
-  <div class="wa-cta">
-    <div class="wa-t">
-      <h4>🔧 Butuh Bantuan Teknisi Listrik?</h4>
-      <p>Audit langsung, perbaikan arus bocor, cek instalasi rumah</p>
-    </div>
-    <a class="wa-btn" href="https://wa.me/6285260409720?text=${waMsg}" target="_blank">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-      Chat WhatsApp
-    </a>
-  </div>
-  `
+    // Cause 2: KWH Meter
+    h+='<div style="border:1.5px solid #fde68a;border-radius:14px;padding:16px;margin-bottom:12px;background:#fffbeb">'
+    h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:50%;background:#fef3c7;color:#d97706;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900">2</div><strong style="font-size:14px">KWH Meter Analog Tidak Akurat — Drift Kalibrasi</strong></div><span style="background:#fef3c7;color:#d97706;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700">PRIORITAS SEDANG</span></div>'
+    h+='<div style="font-size:13px;line-height:1.7">'
+    h+='<div style="margin-bottom:8px"><strong>• Mekanisme kesalahan:</strong> KWH meter analog (Ferraris meter) bekerja berdasarkan induksi elektromagnetik pada disk aluminium. Seiring usia: (1) <strong>Bearing friction drift</strong>: bantalan yang aus meningkatkan gesekan. (2) <strong>Magnetic saturation</strong>: inti besi elektromagnet mengalami perubahan permeabilitas. (3) <strong>Thermal expansion</strong>: ekspansi termal berulang melemahkan presisi mekanis disk.</div>'
+    h+='<div><strong>• Standar PLN:</strong> Toleransi error meter baru ±2% (kelas 2). Setelah 8–10 tahun, error aktual sering mencapai 5–15%. Hubungi PLN 123 untuk pemeriksaan gratis.</div>'
+    h+='</div></div>'
 
-  // Animate dev bars
-  setTimeout(()=>{
-    top5.forEach((d,di)=>{
-      const {cost}=calcDev(d.w,d.h)
-      const pct=Math.round((cost/maxDevCost)*100)
-      const el=document.getElementById('dbar'+di); if(el) el.style.width=pct+'%'
+    // Cause 3: Arus Bocor
+    h+='<div style="border:1.5px solid #fde68a;border-radius:14px;padding:16px;margin-bottom:12px;background:#fffbeb">'
+    h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:50%;background:#ffedd5;color:#ea580c;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900">3</div><strong style="font-size:14px">Arus Bocor (Earth Leakage Current) — 24 Jam Nonstop</strong></div><span style="background:#fef3c7;color:#d97706;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700">PRIORITAS SEDANG</span></div>'
+    h+='<div style="font-size:13px;line-height:1.7">'
+    h+='<div style="margin-bottom:8px"><strong>• Fisika arus bocor:</strong> Berdasarkan Hukum Ohm, arus bocor terjadi ketika ada jalur konduksi tidak terduga antara konduktor bertegangan dan ground (tanah). Isolasi kabel PVC tua mengalami degradasi dielektrik — kapasitansi parasitik antara konduktor dan ground meningkat, memungkinkan arus kapasitif mengalir meski tidak ada beban.</div>'
+    h+='<div><strong>• Tes mandiri:</strong> Matikan semua MCB beban → amati KWH meter. Jika disk/LED masih bergerak = ada arus bocor aktif. Catat kecepatan putaran dan hubungi teknisi.</div>'
+    h+='</div></div>'
+
+    // Cause 4: Instalasi Tua
+    h+='<div style="border:1.5px solid #bfdbfe;border-radius:14px;padding:16px;margin-bottom:12px;background:#eff6ff">'
+    h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:50%;background:#dbeafe;color:#2563eb;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900">4</div><strong style="font-size:14px">Instalasi Listrik Tua — Resistansi Meningkat</strong></div><span style="background:#dbeafe;color:#2563eb;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700">PRIORITAS RENDAH</span></div>'
+    h+='<div style="font-size:13px;line-height:1.7">'
+    h+='<div style="margin-bottom:8px"><strong>• Degradasi kabel:</strong> Kabel NYM/NYA berumur >15 tahun mengalami peningkatan resistansi 5–20% akibat oksidasi tembaga, micro-crack pada isolasi, dan terminal longgar. Power loss = I² × R — semakin besar arus (perangkat banyak menyala bersamaan), semakin besar rugi daya.</div>'
+    h+='<div><strong>• Dampak ganda:</strong> Kabel panas juga meningkatkan suhu lingkungan panel, yang mempercepat degradasi isolasi kabel lain di sekitarnya — efek domino. Berdasarkan PUIL 2011, instalasi listrik harus diinspeksi minimal setiap 5 tahun.</div>'
+    h+='</div></div>'
+    h+='</div>'
+  }
+
+  // ══ SECTION 7: RENCANA AKSI + REKOMENDASI PRODUK ══
+  h+='<div class="rc blue" style="margin-bottom:16px"><div class="rpt-sec">■ RENCANA AKSI PRIORITAS + REKOMENDASI PRODUK HEMAT ENERGI</div>'
+  h+='<div style="font-size:13px;line-height:1.6;margin-bottom:14px;color:var(--dark)">Lima langkah berikut, jika dilakukan secara bertahap, dapat menurunkan tagihan sekitar <strong>'+rp(potentialSaving)+'/bulan</strong>. Setiap aksi dilengkapi rekomendasi produk spesifik yang tersedia di pasaran Indonesia.</div>'
+
+  // Action 1: Timer/reduce usage
+  h+='<div style="border:1.5px solid #a7f3d0;border-radius:14px;padding:16px;margin-bottom:12px;background:#f0fdf4">'
+  h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#059669,#10b981);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900">1</div><strong style="font-size:14px">Kurangi Jam Pakai '+top5.slice(0,2).map(function(d){return d.n}).join(' & ')+'</strong></div><span style="border:1.5px solid #059669;color:#059669;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700">Minggu Ini</span></div>'
+  h+='<div style="font-size:13px;line-height:1.7;margin-bottom:10px">Kurangi 2 jam/hari → estimasi hemat <strong style="color:#059669">'+rp(top5.slice(0,2).reduce(function(a,d){return a+calcDev(d.w,2).cost},0))+'/bulan</strong>. Gunakan timer atau smart plug.</div>'
+  h+='<table style="width:100%;border-collapse:collapse;font-size:12px"><tr style="background:#059669;color:#fff"><th style="padding:8px;text-align:left">Rekomendasi Produk</th><th style="padding:8px;text-align:left">Merk / Model</th><th style="padding:8px;text-align:right">Harga Est.</th><th style="padding:8px;text-align:center">ROI</th></tr>'
+  h+='<tr><td style="padding:8px;border-bottom:1px solid var(--light)">Timer Digital</td><td style="padding:8px;border-bottom:1px solid var(--light);font-weight:700">Broco / Hager EH111</td><td style="padding:8px;text-align:right;border-bottom:1px solid var(--light);color:#059669">Rp 50–150 rb</td><td style="padding:8px;text-align:center;border-bottom:1px solid var(--light)">1–2 bln</td></tr>'
+  h+='<tr><td style="padding:8px;border-bottom:1px solid var(--light)">Smart Plug WiFi</td><td style="padding:8px;border-bottom:1px solid var(--light);font-weight:700">Bardi Smart Plug</td><td style="padding:8px;text-align:right;border-bottom:1px solid var(--light);color:#059669">Rp 100–200 rb</td><td style="padding:8px;text-align:center;border-bottom:1px solid var(--light)">2–4 bln</td></tr>'
+  h+='</table></div>'
+
+  // Action 2: Ganti perangkat boros
+  h+='<div style="border:1.5px solid #fde68a;border-radius:14px;padding:16px;margin-bottom:12px;background:#fffbeb">'
+  h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#d97706,#f59e0b);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900">2</div><strong style="font-size:14px">Ganti atau Servis '+(suspectDev?.n||'Perangkat Boros')+'</strong></div><span style="border:1.5px solid #d97706;color:#d97706;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700">SEGERA — Bulan Ini</span></div>'
+  h+='<div style="font-size:13px;line-height:1.7;margin-bottom:10px">Kontribusi <strong>'+suspectShare+'% total tagihan = '+rp(calcDev(suspectDev?.w||0,suspectDev?.h||0).cost)+'</strong>. Ganti model inverter → hemat 25–40%. ROI 18–24 bulan.</div>'
+  h+='<table style="width:100%;border-collapse:collapse;font-size:12px"><tr style="background:#92400e;color:#fff"><th style="padding:8px;text-align:left">Rekomendasi Produk</th><th style="padding:8px;text-align:left">Merk / Model</th><th style="padding:8px;text-align:right">Harga Est.</th><th style="padding:8px;text-align:center">ROI</th></tr>'
+  h+='<tr><td style="padding:8px;border-bottom:1px solid var(--light)">AC Inverter 1 PK Hemat</td><td style="padding:8px;border-bottom:1px solid var(--light);font-weight:700">Daikin FTKC25UVM4</td><td style="padding:8px;text-align:right;border-bottom:1px solid var(--light);color:#d97706">Rp 4.2–5.0 juta</td><td style="padding:8px;text-align:center;border-bottom:1px solid var(--light)">18–24 bln</td></tr>'
+  h+='<tr><td style="padding:8px;border-bottom:1px solid var(--light)">AC Inverter 1 PK Premium</td><td style="padding:8px;border-bottom:1px solid var(--light);font-weight:700">Panasonic CS-PU10WKJ</td><td style="padding:8px;text-align:right;border-bottom:1px solid var(--light);color:#d97706">Rp 4.5–5.5 juta</td><td style="padding:8px;text-align:center;border-bottom:1px solid var(--light)">18–24 bln</td></tr>'
+  h+='<tr><td style="padding:8px;border-bottom:1px solid var(--light)">AC Inverter 1 PK Terjangkau</td><td style="padding:8px;border-bottom:1px solid var(--light);font-weight:700">Sharp AH-XP10UHY</td><td style="padding:8px;text-align:right;border-bottom:1px solid var(--light);color:#d97706">Rp 3.8–4.5 juta</td><td style="padding:8px;text-align:center;border-bottom:1px solid var(--light)">20–26 bln</td></tr>'
+  h+='</table>'
+  h+='<div style="display:flex;gap:20px;margin-top:8px;font-size:11px;font-weight:700"><span style="color:#059669">■ Est. Hemat: '+rp(Math.round(calcDev(suspectDev?.w||0,suspectDev?.h||0).cost*0.35))+'/bulan</span><span style="color:var(--mid)">■ ROI: 18–24 bln</span></div></div>'
+
+  // Action 3: PLN Meter
+  h+='<div style="border:1.5px solid #a7f3d0;border-radius:14px;padding:16px;margin-bottom:12px;background:#f0fdf4">'
+  h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#0891b2,#06b6d4);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900">3</div><strong style="font-size:14px">Minta PLN Periksa atau Ganti KWH Meter (Call 123)</strong></div><span style="border:1.5px solid #0891b2;color:#0891b2;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700">Minggu Ini — Gratis</span></div>'
+  h+='<div style="font-size:13px;line-height:1.7">Hubungi PLN 123 (gratis). Jika meter >10 tahun, ajukan penggantian resmi. Proses 1–2 minggu dan tidak dipungut biaya untuk pelanggan reguler.</div></div>'
+
+  // Action 4: Ganti kulkas/dispenser
+  h+='<div style="border:1.5px solid #c4b5fd;border-radius:14px;padding:16px;margin-bottom:12px;background:#faf5ff">'
+  h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#7c3aed,#8b5cf6);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900">4</div><strong style="font-size:14px">Ganti Perangkat Boros Lainnya (Kulkas/Dispenser)</strong></div><span style="border:1.5px solid #7c3aed;color:#7c3aed;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700">1–3 Bulan</span></div>'
+  h+='<div style="font-size:13px;line-height:1.7;margin-bottom:10px">Kulkas dan dispenser lama dengan kompresor non-inverter mengonsumsi 50–65% lebih banyak. Kulkas inverter terbaru hanya 50–65W vs 160W model lama.</div>'
+  h+='<table style="width:100%;border-collapse:collapse;font-size:12px"><tr style="background:#6d28d9;color:#fff"><th style="padding:8px;text-align:left">Rekomendasi Produk</th><th style="padding:8px;text-align:left">Merk / Model</th><th style="padding:8px;text-align:right">Harga Est.</th><th style="padding:8px;text-align:center">ROI</th></tr>'
+  h+='<tr><td style="padding:8px;border-bottom:1px solid var(--light)">Kulkas 2P Inverter</td><td style="padding:8px;border-bottom:1px solid var(--light);font-weight:700">LG GN-B392PLGB</td><td style="padding:8px;text-align:right;border-bottom:1px solid var(--light);color:#7c3aed">Rp 4.5–6 juta</td><td style="padding:8px;text-align:center;border-bottom:1px solid var(--light)">30–40 bln</td></tr>'
+  h+='<tr><td style="padding:8px;border-bottom:1px solid var(--light)">Dispenser Hemat Eco</td><td style="padding:8px;border-bottom:1px solid var(--light);font-weight:700">Miyako WD-SP186H</td><td style="padding:8px;text-align:right;border-bottom:1px solid var(--light);color:#7c3aed">Rp 400–600 rb</td><td style="padding:8px;text-align:center;border-bottom:1px solid var(--light)">6–10 bln</td></tr>'
+  h+='</table></div>'
+
+  // Action 5: Audit instalasi
+  h+='<div style="border:1.5px solid #bae6fd;border-radius:14px;padding:16px;margin-bottom:12px;background:#f0f9ff">'
+  h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#0284c7,#0ea5e9);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900">5</div><strong style="font-size:14px">Audit Instalasi & Deteksi Arus Bocor oleh Teknisi</strong></div><span style="border:1.5px solid #0284c7;color:#0284c7;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700">1–3 Bulan</span></div>'
+  h+='<div style="font-size:13px;line-height:1.7;margin-bottom:10px"><strong>• Tes mandiri:</strong> Matikan semua MCB beban → amati KWH meter. Jika disk/LED masih bergerak = ada arus bocor aktif.<br><strong>• Yang harus diperiksa:</strong> (1) Panel distribusi dan MCB — cek terminal longgar. (2) Kotak sambung (doos). (3) Ground system — ukur resistansi <5Ω. (4) Insulasi kabel — gunakan insulation tester (megger).<br><strong>• Regulasi:</strong> Berdasarkan PUIL 2011, instalasi listrik harus diinspeksi minimal setiap 5 tahun.</div>'
+  h+='<table style="width:100%;border-collapse:collapse;font-size:12px"><tr style="background:#0369a1;color:#fff"><th style="padding:8px;text-align:left">Rekomendasi</th><th style="padding:8px;text-align:left">Merk / Model</th><th style="padding:8px;text-align:right">Harga Est.</th><th style="padding:8px;text-align:center">ROI</th></tr>'
+  h+='<tr><td style="padding:8px;border-bottom:1px solid var(--light)">Jasa Inspeksi Instalasi</td><td style="padding:8px;border-bottom:1px solid var(--light);font-weight:700">Teknisi berlisensi SKTTK</td><td style="padding:8px;text-align:right;border-bottom:1px solid var(--light);color:#0284c7">Rp 300–600 rb</td><td style="padding:8px;text-align:center;border-bottom:1px solid var(--light)">2–6 bln</td></tr>'
+  h+='</table></div>'
+  h+='</div>'
+
+  // ══ SECTION 8: SKENARIO PENGHEMATAN ══
+  h+='<div class="rc" style="margin-bottom:16px"><div class="rpt-sec">■ SKENARIO PENGHEMATAN — PERBANDINGAN</div>'
+  h+='<table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:12px">'
+  h+='<tr style="background:#0f172a;color:#fff"><th style="padding:10px;text-align:left">Skenario</th><th style="padding:10px;text-align:left">Aksi yang Dilakukan</th><th style="padding:10px;text-align:right">Tagihan Baru</th><th style="padding:10px;text-align:right;color:#34d399">Hemat/Bulan</th><th style="padding:10px;text-align:right;color:#34d399">Hemat/Tahun</th></tr>'
+  var minSave=Math.round(totalCost*0.14)
+  var modSave=Math.round(totalCost*0.29)
+  var optSave=Math.round(totalCost*0.38)
+  h+='<tr style="background:#f8fafc"><td style="padding:9px;font-weight:700">Minimal (1–2 aksi)</td><td style="padding:9px">Timer + naikkan setpoint suhu AC</td><td style="padding:9px;text-align:right">'+rp(totalCost-minSave)+'</td><td style="padding:9px;text-align:right;color:#059669;font-weight:700">'+rp(minSave)+'</td><td style="padding:9px;text-align:right;color:#059669;font-weight:700">'+rp(minSave*12)+'</td></tr>'
+  h+='<tr><td style="padding:9px;font-weight:700">Moderat (3 aksi)</td><td style="padding:9px">AC baru + meter PLN + dispenser/kulkas baru</td><td style="padding:9px;text-align:right">'+rp(totalCost-modSave)+'</td><td style="padding:9px;text-align:right;color:#059669;font-weight:700">'+rp(modSave)+'</td><td style="padding:9px;text-align:right;color:#059669;font-weight:700">'+rp(modSave*12)+'</td></tr>'
+  h+='<tr style="background:#f0fdf4"><td style="padding:9px;font-weight:700">Optimal (semua aksi)</td><td style="padding:9px">Semua termasuk instalasi + meter</td><td style="padding:9px;text-align:right">'+rp(totalCost-optSave)+'</td><td style="padding:9px;text-align:right;color:#059669;font-weight:800">'+rp(optSave)+'</td><td style="padding:9px;text-align:right;color:#059669;font-weight:800">'+rp(optSave*12)+'</td></tr>'
+  h+='</table></div>'
+
+  // ══ SECTION 9: TIPS ILMIAH ══
+  h+='<div class="rc" style="margin-bottom:16px"><div class="rpt-sec">■ TIPS ILMIAH & KEBIASAAN HEMAT ENERGI</div>'
+
+  h+='<div style="border:1.5px solid #bfdbfe;border-radius:12px;padding:14px;margin-bottom:10px;background:#eff6ff"><div style="font-weight:800;color:#1e40af;margin-bottom:8px">■■ Manajemen AC — Ilmu Termodinamika</div>'
+  h+='<div style="font-size:13px;line-height:1.7">'
+  h+='<strong>• Mode Dry vs Cool:</strong> Mode "Dry" (dehumidifier) mengonsumsi 30–40% lebih sedikit dari mode "Cool" karena kompresor bekerja intermiten.<br>'
+  h+='<strong>• Posisi tirai/gorden:</strong> Paparan sinar matahari langsung meningkatkan beban pendinginan 8–15 BTU/m²/jam. Tutup gorden siang hari → AC tidak perlu bekerja keras.<br>'
+  h+='<strong>• Pembersihan rutin:</strong> Filter AC kotor meningkatkan resistansi aliran udara → kompresor bekerja lebih keras. Bersihkan filter setiap 2 minggu.<br>'
+  h+='<strong>• Insulasi ruangan:</strong> Segel celah di bawah pintu kamar AC dengan door sweep (Rp 15–30 rb). Udara dingin yang bocor = energi terbuang.</div></div>'
+
+  h+='<div style="border:1.5px solid #fecaca;border-radius:12px;padding:14px;margin-bottom:10px;background:#fef2f2"><div style="font-weight:800;color:#991b1b;margin-bottom:8px">■ Phantom Load — Vampir Listrik 24 Jam</div>'
+  h+='<div style="font-size:13px;line-height:1.7">'
+  h+='<strong>• Apa itu phantom load?</strong> Perangkat dalam mode standby tetap mengonsumsi 0.5–15W meskipun tidak digunakan. TV, set top box, charger, dan microwave paling umum.<br>'
+  h+='<strong>• Solusi:</strong> Gunakan power strip dengan saklar → matikan 1 tombol untuk semua perangkat. Estimasi hemat 5–10% tagihan bulanan.</div></div>'
+
+  h+='<div style="border:1.5px solid #a7f3d0;border-radius:12px;padding:14px;margin-bottom:10px;background:#f0fdf4"><div style="font-weight:800;color:#065f46;margin-bottom:8px">■ Kulkas & Dispenser — Optimasi Pola Pemakaian</div>'
+  h+='<div style="font-size:13px;line-height:1.7">'
+  h+='<strong>• Kulkas:</strong> Jangan buka tutup kulkas terlalu sering. Setiap pembukaan pintu memasukkan udara hangat yang harus didinginkan kembali (kerja ekstra 5–7% per pembukaan). Isi kulkas 70–80% untuk efisiensi optimal.<br>'
+  h+='<strong>• Dispenser:</strong> Matikan pemanas malam hari. Atau gunakan termos untuk menyimpan air panas — hemat 40–60% konsumsi dispenser.</div></div>'
+  h+='</div>'
+
+  // ══ SECTION 10: SIMPAN & CTA WHATSAPP ══
+  h+='<div class="rc" style="margin-bottom:16px;border-color:#bae6fd;background:#f0f9ff">'
+  h+='<div class="rpt-sec">■ SIMPAN & KIRIM LAPORAN</div>'
+  h+='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">'
+  h+='<button onclick="window.print()" style="display:flex;align-items:center;gap:8px;padding:11px 18px;background:linear-gradient(135deg,#0891b2,#0e7490);color:#fff;border:none;border-radius:11px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer">🖨️ Simpan PDF</button>'
+  h+='<div style="flex:1;min-width:200px;display:flex;gap:8px"><input id="emailInput" type="email" placeholder="email@kamu.com" style="flex:1;padding:11px 13px;border-radius:11px;border:1.5px solid var(--light);background:var(--white);font-family:inherit;font-size:13px"><button onclick="sendEmail()" style="padding:11px 16px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;border:none;border-radius:11px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer">📧 Kirim</button></div></div>'
+  h+='<div id="emailStatus" style="margin-top:8px;font-size:12px;display:none"></div></div>'
+
+  // WhatsApp CTA
+  h+='<div style="background:linear-gradient(135deg,#25D366,#128C7E);border-radius:16px;padding:22px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:16px">'
+  h+='<div><h4 style="color:#fff;font-size:16px;font-weight:800;margin:0 0 4px">🔧 Butuh Bantuan Teknisi Listrik Berlisensi?</h4><p style="color:rgba(255,255,255,.85);font-size:12px;margin:0">Audit lapangan, perbaikan arus bocor, penggantian instalasi</p></div>'
+  h+='<a style="display:inline-flex;align-items:center;gap:8px;background:#fff;color:#128C7E;font-weight:800;font-size:13px;padding:12px 22px;border-radius:12px;text-decoration:none;white-space:nowrap" href="https://wa.me/6285260409720?text='+waMsg+'" target="_blank">💬 Chat WhatsApp</a></div>'
+
+  // Disclaimer
+  h+='<div style="font-size:11px;color:var(--mid);line-height:1.6;padding:12px 16px;background:var(--light2);border-radius:10px;margin-bottom:8px">'
+  h+='Laporan ini dibuat berdasarkan data yang diinput pengguna dan estimasi konsumsi standar perangkat menggunakan database daya PLN dan referensi ASHRAE, PUIL 2011, serta Permen ESDM No. 27/2017. Harga produk bersifat estimasi dan dapat berubah. Konsultasikan dengan teknisi berlisensi sebelum melakukan modifikasi instalasi.'
+  h+='<br>EnVisor AI — '+reportDate+' — ID: '+reportId+'</div>'
+
+  document.getElementById('rbody').innerHTML=h
+
+  // Animate bars
+  setTimeout(function(){
+    top5.forEach(function(d,di){
+      var pct=Math.round((calcDev(d.w,d.h).cost/maxDevCost)*100)
+      var el=document.getElementById('dbar'+di); if(el) el.style.width=pct+'%'
     })
   },150)
+}
+
+// ── BELL CURVE SVG BUILDER ──────────────────────────────────────
+function buildBellCurveSVG(mean, userKwh, va){
+  var sigma=Math.round(mean*0.28)
+  var w=600, ht=200, pad=40
+  var minX=Math.max(0,mean-3*sigma), maxX=mean+3*sigma
+  var scaleX=function(x){return pad+(x-minX)/(maxX-minX)*(w-2*pad)}
+  var scaleY=function(y){return ht-pad-y*(ht-2*pad)}
+  var gauss=function(x){return Math.exp(-0.5*Math.pow((x-mean)/sigma,2))}
+
+  var svg='<svg viewBox="0 0 '+w+' '+(ht+20)+'" style="width:100%;max-width:600px;height:auto;display:block;margin:0 auto">'
+
+  // Fill zones
+  var zones=[
+    {from:mean-sigma,to:mean+sigma,color:'rgba(16,185,129,0.25)',label:'Normal'},
+    {from:mean+sigma,to:mean+2*sigma,color:'rgba(251,191,36,0.25)',label:'Tinggi'},
+    {from:mean-2*sigma,to:mean-sigma,color:'rgba(251,191,36,0.15)',label:''},
+    {from:mean+2*sigma,to:maxX,color:'rgba(239,68,68,0.25)',label:'Sangat Tinggi'},
+  ]
+  zones.forEach(function(z){
+    var path='M'+scaleX(z.from)+','+scaleY(0)
+    for(var x=z.from;x<=z.to;x+=2){
+      path+=' L'+scaleX(x)+','+scaleY(gauss(x))
+    }
+    path+=' L'+scaleX(z.to)+','+scaleY(0)+' Z'
+    svg+='<path d="'+path+'" fill="'+z.color+'"/>'
+  })
+
+  // Bell curve line
+  var curvePath='M'+scaleX(minX)+','+scaleY(gauss(minX))
+  for(var x=minX;x<=maxX;x+=2){
+    curvePath+=' L'+scaleX(x)+','+scaleY(gauss(x))
+  }
+  svg+='<path d="'+curvePath+'" fill="none" stroke="#0f172a" stroke-width="2.5"/>'
+
+  // Mean line
+  svg+='<line x1="'+scaleX(mean)+'" y1="'+scaleY(0)+'" x2="'+scaleX(mean)+'" y2="'+scaleY(1)+'" stroke="#10b981" stroke-width="1.5" stroke-dasharray="6,4"/>'
+  svg+='<text x="'+scaleX(mean)+'" y="'+(scaleY(1)-8)+'" text-anchor="middle" font-size="11" font-weight="800" fill="#10b981">Rata-rata '+mean+' kWh</text>'
+
+  // User position line
+  svg+='<line x1="'+scaleX(userKwh)+'" y1="'+scaleY(0)+'" x2="'+scaleX(userKwh)+'" y2="'+(scaleY(gauss(userKwh))-5)+'" stroke="#ef4444" stroke-width="2.5"/>'
+  svg+='<circle cx="'+scaleX(userKwh)+'" cy="'+(scaleY(gauss(userKwh))-5)+'" r="6" fill="#ef4444"/>'
+  svg+='<text x="'+scaleX(userKwh)+'" y="'+(scaleY(gauss(userKwh))-18)+'" text-anchor="middle" font-size="11" font-weight="800" fill="#ef4444">Anda: '+Math.round(userKwh)+' kWh</text>'
+
+  // X axis labels
+  for(var i=-2;i<=2;i++){
+    var xVal=mean+i*sigma
+    if(xVal>0){
+      svg+='<text x="'+scaleX(xVal)+'" y="'+(ht+5)+'" text-anchor="middle" font-size="10" fill="#64748b">'+xVal+'</text>'
+    }
+  }
+  svg+='<text x="'+(w/2)+'" y="'+(ht+18)+'" text-anchor="middle" font-size="10" fill="#94a3b8">Konsumsi kWh / bulan</text>'
+
+  // Zone labels at bottom of curve
+  svg+='<text x="'+scaleX(mean)+'" y="'+(scaleY(0)-5)+'" text-anchor="middle" font-size="9" font-weight="700" fill="#10b981">ZONA NORMAL</text>'
+  if(mean+1.5*sigma<maxX) svg+='<text x="'+scaleX(mean+1.5*sigma)+'" y="'+(scaleY(0)-5)+'" text-anchor="middle" font-size="9" font-weight="700" fill="#d97706">TINGGI</text>'
+  if(mean+2.5*sigma<maxX) svg+='<text x="'+scaleX(mean+2.5*sigma)+'" y="'+(scaleY(0)-5)+'" text-anchor="middle" font-size="9" font-weight="700" fill="#ef4444">SANGAT TINGGI</text>'
+
+  svg+='</svg>'
+  return svg
 }
 
 function sendEmail(){
