@@ -7,6 +7,7 @@ const PRESETS=[
 const ICONS=['🏠','🛋️','📺','🍳','🛏️','🧒','🚿','🚗','💻','🫧','🌿','🔧','🎮','📚','🎵','🏋️']
 const VA_OPTIONS=[900,1300,2200,3500,5500,7700]
 
+let kwhMeterCondition=null
 let rooms=[
   {id:'r1',n:'Ruang Tamu',i:'🛋️',devs:[]},
   {id:'r2',n:'Ruang Keluarga',i:'📺',devs:[]},
@@ -220,23 +221,80 @@ function mockNameplate(){
 async function oneFile(files,roomId){
   const imgs=Array.from(files).filter(f=>f.type.startsWith('image/')); if(!imgs.length) return
   const room=rooms.find(r=>r.id===roomId)
-  const isFirst=room.devs.length===0
-  const lbId=isFirst?'lb_'+roomId:'lb2_'+roomId
-  const innId=isFirst?'uzi_'+roomId:'uzi2_'+roomId
-  const lb=document.getElementById(lbId), inn=document.getElementById(innId)
+  const lb=document.getElementById('lb_'+roomId)
+  const inn=document.getElementById('uzi_'+roomId)
   if(lb) lb.classList.add('on')
-  if(inn) inn.innerHTML=`<div class="uz-ico" style="animation:rot .75s linear infinite;display:inline-block">⚡</div><div class="uz-t" style="color:var(--acc)">AI mengidentifikasi...</div><div class="uz-s">Mengenali elektronik dari foto</div>`
+  if(inn) inn.innerHTML='<div class="uz-ico" style="animation:rot .75s linear infinite;display:inline-block">\u26A1</div><div class="uz-t" style="color:var(--acc)">AI mengidentifikasi...</div><div class="uz-s">Mengenali elektronik dari foto</div>'
   try{
     let devs=[]
-    if(API_URL){ // Set API_URL above to enable real AI analysis
+    if(API_URL){
       const b64=await toB64(imgs[0])
       const res=await fetch(API_URL+'/api/analyze/room',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:b64,mediaType:imgs[0].type,roomLabel:room.n})})
-      devs=(await res.json()).devices||[]
-    } else { devs=mockOne(room.n,room.devs.length) }
-    devs.forEach(d=>room.devs.push({n:d.name,w:d.watts,h:d.dailyHours||4,e:emoji(d.name)}))
-  }catch(e){ console.error(e) }
-  if(lb) lb.classList.remove('on')
+      const data=await res.json()
+      devs=data.devices||[]
+      // Check if non-electronic
+      if(devs.length>0 && devs[0].isElectronic===false){
+        if(lb) lb.classList.remove('on')
+        showUploadError(roomId,'\u26A0\uFE0F Foto bukan perangkat elektronik! Silakan upload ulang foto elektronik (AC, kulkas, TV, dll).')
+        return
+      }
+    } else {
+      devs=mockOne(room.n,room.devs.length)
+    }
+    if(lb) lb.classList.remove('on')
+    // Show confirmation dialog
+    if(devs.length>0){
+      showDeviceConfirm(roomId, devs, imgs[0])
+    }
+  }catch(e){
+    console.error(e)
+    if(lb) lb.classList.remove('on')
+    renderTabs(); renderContent(); renderRooms()
+  }
+}
+
+function showUploadError(roomId, msg){
+  const inn=document.getElementById('uzi_'+roomId)
+  if(inn) inn.innerHTML='<div class="uz-ico">\u274C</div><div class="uz-t" style="color:#ef4444;font-size:13px">'+msg+'</div><div class="uz-s" style="color:#ef4444">Klik untuk upload ulang</div>'
+  // Auto-reset after 4 seconds
+  setTimeout(function(){ renderContent() }, 4000)
+}
+
+function showDeviceConfirm(roomId, devs, imgFile){
+  const room=rooms.find(r=>r.id===roomId)
+  const d=devs[0]
+  const inn=document.getElementById('uzi_'+roomId)
+  // Store pending device data
+  window.__pendingDev={roomId:roomId, devs:devs}
+  if(inn) inn.innerHTML='<div style="background:#f0fdf4;border:1.5px solid #a7f3d0;border-radius:12px;padding:14px;text-align:left">'
+    +'<div style="font-size:14px;font-weight:800;color:#065f46;margin-bottom:8px">\u2705 AI Terdeteksi:</div>'
+    +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'
+    +'<div style="font-size:24px">'+(d.emoji||'\uD83D\uDD0C')+'</div>'
+    +'<div><div style="font-size:14px;font-weight:800">'+d.name+'</div>'
+    +'<div style="font-size:12px;color:var(--mid)">'+d.watts+'W \u00B7 '+d.dailyHours+' jam/hari</div></div></div>'
+    +'<div style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:10px">Apa benar perangkat ini?</div>'
+    +'<div style="display:flex;gap:8px">'
+    +'<button onclick="confirmDevice(true)" style="flex:1;padding:10px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer">\u2705 Ya, Benar</button>'
+    +'<button onclick="confirmDevice(false)" style="flex:1;padding:10px;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer">\u274C Bukan, Foto Ulang</button>'
+    +'</div></div>'
+}
+
+function confirmDevice(isCorrect){
+  if(!window.__pendingDev) return
+  const {roomId, devs}=window.__pendingDev
+  const room=rooms.find(r=>r.id===roomId)
+  if(isCorrect && room){
+    devs.forEach(function(d){ room.devs.push({n:d.name,w:d.watts,h:d.dailyHours||4,e:d.emoji||emoji(d.name)}) })
+  }
+  window.__pendingDev=null
   renderTabs(); renderContent(); renderRooms()
+  if(!isCorrect){
+    // Show message to re-upload
+    setTimeout(function(){
+      var inn=document.getElementById('uzi_'+roomId)
+      if(inn) inn.innerHTML='<div class="uz-ico">\uD83D\uDCF7</div><div class="uz-t" style="color:#d97706">Silakan foto ulang perangkat elektronik</div><div class="uz-s">Pastikan foto jelas dan terlihat perangkatnya</div>'
+    },100)
+  }
 }
 
 function updH(rid,idx,val){
@@ -268,10 +326,37 @@ function billUp(buzId,inputId,prevId,icoId,txtId){
     document.getElementById(prevId).src=e.target.result
     document.getElementById(buzId).classList.add('done')
     document.getElementById(icoId).style.display='none'
-    document.getElementById(txtId).textContent='✅ Foto terupload'
+    document.getElementById(txtId).textContent='\u2705 Foto terupload'
+    // If this is the KWH meter photo, also analyze its condition
+    if(inputId==='inp_meter' && API_URL){
+      analyzeKwhMeter(file)
+    }
   }
   reader.readAsDataURL(file)
 }
+
+async function analyzeKwhMeter(file){
+  var statusEl=document.getElementById('meterStatus')
+  if(statusEl){ statusEl.style.display='block'; statusEl.innerHTML='<div style="display:flex;align-items:center;gap:8px"><div class="spin" style="width:18px;height:18px;border-width:2px"></div><span style="font-size:12px;color:var(--acc);font-weight:700">AI menganalisis kondisi KWH meter...</span></div>' }
+  try{
+    var b64=await toB64(file)
+    var res=await fetch(API_URL+'/api/analyze/meter-condition',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:b64,mediaType:file.type})})
+    var data=await res.json()
+    if(data.success && data.condition){
+      kwhMeterCondition=data.condition
+      var cond=data.condition
+      var condColors={baik:'#10b981',cukup:'#d97706',tua:'#ea580c',sangat_tua:'#dc2626'}
+      var condLabels={baik:'Baik',cukup:'Cukup',tua:'Tua',sangat_tua:'Sangat Tua'}
+      var riskColors={rendah:'#10b981',sedang:'#d97706',tinggi:'#ea580c',sangat_tinggi:'#dc2626'}
+      var riskLabels={rendah:'Rendah',sedang:'Sedang',tinggi:'Tinggi',sangat_tinggi:'Sangat Tinggi'}
+      if(statusEl) statusEl.innerHTML='<div style="background:#f0f9ff;border:1.5px solid #bae6fd;border-radius:10px;padding:12px;font-size:12px;line-height:1.6"><div style="font-weight:800;color:#0c4a6e;margin-bottom:6px">\u26A1 Hasil Analisis KWH Meter:</div><div><strong>Tipe:</strong> '+(cond.type==='analog'?'Analog (Ferraris)':'Digital/Prepaid')+'</div><div><strong>Estimasi Usia:</strong> ~'+cond.estimatedAge+' tahun</div><div><strong>Kondisi:</strong> <span style="color:'+(condColors[cond.condition]||'#d97706')+';font-weight:800">'+(condLabels[cond.condition]||cond.condition)+'</span></div>'+(cond.brand?'<div><strong>Merk:</strong> '+cond.brand+'</div>':'')+'<div><strong>Risiko Akurasi:</strong> <span style="color:'+(riskColors[cond.accuracyRisk]||'#d97706')+';font-weight:800">'+(riskLabels[cond.accuracyRisk]||cond.accuracyRisk)+'</span></div>'+(cond.issues&&cond.issues.length>0?'<div><strong>Temuan:</strong> '+cond.issues.join(', ')+'</div>':'')+'</div>'
+    }
+  }catch(e){
+    console.error('Meter analysis error:',e)
+    if(statusEl) statusEl.innerHTML='<div style="font-size:12px;color:var(--mid)">Analisis meter tidak tersedia</div>'
+  }
+}
+
 function step3Summary(){
   const total=rooms.reduce((a,r)=>a+r.devs.reduce((b,d)=>b+calcDev(d.w,d.h).cost,0),0)
   const kwh=rooms.reduce((a,r)=>a+r.devs.reduce((b,d)=>b+calcDev(d.w,d.h).kwh,0),0)
@@ -590,6 +675,87 @@ function buildResults(){
   h+='<strong>• Dispenser:</strong> Matikan pemanas malam hari. Atau gunakan termos untuk menyimpan air panas — hemat 40–60% konsumsi dispenser.</div></div>'
   h+='</div>'
 
+
+  // KWH METER CONDITION SECTION
+  if(kwhMeterCondition){
+    var mc=kwhMeterCondition
+    var condColors={baik:'#10b981',cukup:'#d97706',tua:'#ea580c',sangat_tua:'#dc2626'}
+    var condLabels={baik:'Baik',cukup:'Cukup',tua:'Tua',sangat_tua:'Sangat Tua'}
+    var riskColors={rendah:'#10b981',sedang:'#d97706',tinggi:'#ea580c',sangat_tinggi:'#dc2626'}
+    var riskLabels={rendah:'Rendah',sedang:'Sedang',tinggi:'Tinggi',sangat_tinggi:'Sangat Tinggi'}
+    var meterIsOld=mc.estimatedAge>=8||mc.condition==='tua'||mc.condition==='sangat_tua'||mc.accuracyRisk==='tinggi'||mc.accuracyRisk==='sangat_tinggi'
+    var borderColor=meterIsOld?'#fecaca':'#a7f3d0'
+    var bgColor=meterIsOld?'#fff5f5':'#f0fdf4'
+    h+='<div class="rc" style="margin-bottom:16px;border-color:'+borderColor+';background:'+bgColor+'"><div class="rpt-sec" style="background:linear-gradient(135deg,'+(meterIsOld?'#991b1b,#dc2626':'#065f46,#059669')+')">\u26A1 LAPORAN KONDISI KWH METER</div>'
+    
+    // Meter info card
+    h+='<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px">'
+    h+='<div style="flex:1;min-width:200px;background:var(--white);border-radius:12px;padding:14px;border:1px solid var(--light)">'
+    h+='<div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--mid);margin-bottom:8px">IDENTIFIKASI METER</div>'
+    h+='<table style="font-size:13px;line-height:2">'
+    h+='<tr><td style="font-weight:700;padding-right:14px">Tipe</td><td>'+(mc.type==='analog'?'\u2699\uFE0F Analog (Ferraris Disk)':'\uD83D\uDCDF Digital/Prepaid')+'</td></tr>'
+    h+='<tr><td style="font-weight:700;padding-right:14px">Estimasi Usia</td><td><span style="color:'+(mc.estimatedAge>=10?'#dc2626':mc.estimatedAge>=6?'#d97706':'#10b981')+';font-weight:800">~'+mc.estimatedAge+' tahun</span></td></tr>'
+    h+='<tr><td style="font-weight:700;padding-right:14px">Kondisi</td><td><span style="color:'+(condColors[mc.condition]||'#d97706')+';font-weight:800">'+(condLabels[mc.condition]||mc.condition)+'</span></td></tr>'
+    if(mc.brand) h+='<tr><td style="font-weight:700;padding-right:14px">Merk</td><td>'+mc.brand+'</td></tr>'
+    h+='<tr><td style="font-weight:700;padding-right:14px">Segel Kalibrasi</td><td>'+(mc.hasCalibrationSeal?'\u2705 Ada'+(mc.sealYear?' ('+mc.sealYear+')':''):'\u274C Tidak terlihat')+'</td></tr>'
+    h+='</table></div>'
+    
+    // Risk gauge
+    h+='<div style="flex:1;min-width:200px;background:var(--white);border-radius:12px;padding:14px;border:1px solid var(--light);text-align:center">'
+    h+='<div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--mid);margin-bottom:8px">RISIKO KETIDAKAKURATAN</div>'
+    var riskPct=mc.accuracyRisk==='rendah'?15:mc.accuracyRisk==='sedang'?40:mc.accuracyRisk==='tinggi'?70:90
+    h+='<div style="width:120px;height:120px;border-radius:50%;background:conic-gradient('+(riskColors[mc.accuracyRisk]||'#d97706')+' 0% '+riskPct+'%, var(--light2) '+riskPct+'% 100%);display:flex;align-items:center;justify-content:center;margin:0 auto 8px">'
+    h+='<div style="width:90px;height:90px;border-radius:50%;background:var(--white);display:flex;align-items:center;justify-content:center;flex-direction:column">'
+    h+='<div style="font-size:22px;font-weight:900;color:'+(riskColors[mc.accuracyRisk]||'#d97706')+'">'+(riskLabels[mc.accuracyRisk]||mc.accuracyRisk)+'</div>'
+    h+='</div></div>'
+    h+='<div style="font-size:11px;color:var(--mid)">Kemungkinan error pengukuran: <strong>'+(mc.accuracyRisk==='rendah'?'1-2%':mc.accuracyRisk==='sedang'?'3-5%':mc.accuracyRisk==='tinggi'?'5-15%':'10-20%')+'</strong></div>'
+    h+='</div></div>'
+    
+    // Issues if any
+    if(mc.issues&&mc.issues.length>0){
+      h+='<div style="margin-bottom:12px;padding:12px 14px;background:#fef2f2;border:1px solid #fecaca;border-radius:10px;font-size:13px;line-height:1.7">'
+      h+='<strong style="color:#dc2626">\u26A0\uFE0F Temuan Masalah:</strong><br>'
+      mc.issues.forEach(function(issue){ h+='\u2022 '+issue+'<br>' })
+      h+='</div>'
+    }
+    
+    // Impact analysis
+    if(meterIsOld){
+      h+='<div style="padding:14px;background:#fff5f5;border:1.5px solid #fecaca;border-radius:12px;margin-bottom:12px">'
+      h+='<div style="font-weight:800;color:#991b1b;margin-bottom:8px;font-size:14px">\u26A0\uFE0F DAMPAK PADA TAGIHAN LISTRIK</div>'
+      h+='<div style="font-size:13px;line-height:1.7;color:#7f1d1d">'
+      if(mc.type==='analog'){
+        h+='<strong>KWH meter analog berusia ~'+mc.estimatedAge+' tahun tergolong '+(mc.condition==='sangat_tua'?'sangat':'cukup')+' tua.</strong> '
+        h+='Meter Ferraris bekerja berdasarkan induksi elektromagnetik pada disk aluminium. Seiring waktu, <strong>bearing friction</strong> (gesekan bantalan) berubah, <strong>magnetic flux</strong> pada kumparan mengalami degradasi, dan <strong>brake magnet</strong> melemah. '
+        h+='Kombinasi ini menyebabkan meter bisa <strong>mencatat lebih tinggi dari pemakaian sebenarnya (over-register)</strong> sebesar <strong>'+(mc.accuracyRisk==='sangat_tinggi'?'10-20%':mc.accuracyRisk==='tinggi'?'5-15%':'3-8%')+'</strong>.'
+        h+='<br><br><strong>Estimasi dampak finansial:</strong> Jika total konsumsi Anda '+Math.round(totalKwh)+' kWh/bulan, meter tua bisa menambah <strong>'+rp(Math.round(totalCost*(mc.accuracyRisk==='sangat_tinggi'?0.15:mc.accuracyRisk==='tinggi'?0.10:0.05)))+'/bulan</strong> ke tagihan.'
+      } else {
+        h+='<strong>KWH meter digital berusia ~'+mc.estimatedAge+' tahun.</strong> '
+        h+='Meskipun meter digital umumnya lebih akurat dari analog, komponen elektronik (kapasitor, sensor arus CT) tetap mengalami degradasi. '
+        h+='Risiko error pengukuran: <strong>'+(mc.accuracyRisk==='sangat_tinggi'?'10-15%':mc.accuracyRisk==='tinggi'?'3-8%':'1-3%')+'</strong>.'
+      }
+      h+='</div></div>'
+      
+      // Recommendation
+      h+='<div style="padding:14px;background:#f0fdf4;border:1.5px solid #a7f3d0;border-radius:12px">'
+      h+='<div style="font-weight:800;color:#065f46;margin-bottom:8px;font-size:14px">\u2705 REKOMENDASI</div>'
+      h+='<div style="font-size:13px;line-height:1.7;color:#064e3b">'
+      h+='<strong>1.</strong> Hubungi <strong>PLN 123</strong> untuk minta pemeriksaan dan kalibrasi ulang meter (GRATIS untuk pelanggan reguler).<br>'
+      h+='<strong>2.</strong> Jika meter >15 tahun, ajukan <strong>penggantian meter baru</strong> ke PLN Area terdekat.<br>'
+      h+='<strong>3.</strong> Pertimbangkan upgrade ke <strong>meter digital prepaid</strong> untuk monitoring pemakaian lebih akurat.<br>'
+      h+='<strong>4.</strong> Minta teknisi PLN untuk <strong>tera ulang</strong> — standar PLN mensyaratkan tera setiap 10 tahun (SPLN D3.016-1:2014).'
+      h+='</div></div>'
+    } else {
+      h+='<div style="padding:14px;background:#f0fdf4;border:1.5px solid #a7f3d0;border-radius:12px">'
+      h+='<div style="font-weight:800;color:#065f46;margin-bottom:8px;font-size:14px">\u2705 METER DALAM KONDISI BAIK</div>'
+      h+='<div style="font-size:13px;line-height:1.7;color:#064e3b">'
+      h+='KWH meter Anda dalam kondisi baik dengan risiko ketidakakuratan rendah. Selisih antara estimasi dan tagihan aktual kemungkinan besar bukan disebabkan oleh masalah meter.'
+      h+='</div></div>'
+    }
+    h+='</div>'
+  }
+
+
   // ══ SECTION 10: SIMPAN & CTA WHATSAPP ══
   h+='<div class="rc" style="margin-bottom:16px;border-color:#bae6fd;background:#f0f9ff">'
   h+='<div class="rpt-sec">■ SIMPAN & KIRIM LAPORAN</div>'
@@ -771,6 +937,7 @@ function mockOne(roomName,count){
 }
 
 function restart(){
+  kwhMeterCondition=null
   rooms=[
     {id:'r1',n:'Ruang Tamu',i:'🛋️',devs:[]},
     {id:'r2',n:'Ruang Keluarga',i:'📺',devs:[]},
