@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const upload = require('../middleware/upload');
-const { analyzeDevice, analyzeRoom, analyzeBill, buildSummary } = require('../controllers/analyzeController');
+const { analyzeDevice, analyzeRoom, analyzeBill, buildSummary, analyzeNameplate } = require('../controllers/analyzeController');
 
 // POST /api/analyze/device  — scan a single appliance image (multipart)
 router.post('/device', upload.single('image'), analyzeDevice);
@@ -14,5 +14,8 @@ router.post('/bill', upload.single('image'), analyzeBill);
 
 // POST /api/analyze/summary — compute full analysis from all rooms data
 router.post('/summary', buildSummary);
+
+// POST /api/analyze/nameplate — read nameplate/label sticker for exact specs
+router.post('/nameplate', express.json({ limit: '10mb' }), analyzeNameplate);
 
 module.exports = router;
