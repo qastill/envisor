@@ -15,8 +15,7 @@ let rooms=[
   {id:'r5',n:'Garasi',i:'🚗',devs:[]},
 ]
 let plnVa=1300, jumlahOrang=3, activeRoom='r1', selIco='🏠', customId=0
-const API_URL='' // Leave empty to use mock data, or set to your deployed URL
-
+const API_URL = window.location.origin // use same origin (Vercel backend)
 // ── TARIFF & CALC ──────────────────────────────────────────────────
 function tariff(){ return plnVa<=900?1352:plnVa<=2200?1444:1699 }
 function calcDev(w,h){ const kwh=Math.round(w*h*30/1000*10)/10; return {kwh,cost:Math.round(kwh*tariff())} }
