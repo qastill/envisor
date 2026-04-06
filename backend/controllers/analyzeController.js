@@ -166,9 +166,18 @@ async function analyzeRoom(req, res) {
     const { va = 1300 } = req.body;
     const { kwh, cost } = calcDevice(result.watts, result.dailyHours, Number(va));
 
+    // If not electronic, return rejection
+    if (result.isElectronic === false) {
+      return res.json({
+        success: true,
+        devices: [{ isElectronic: false, name: '', watts: 0, dailyHours: 0, emoji: '' }]
+      });
+    }
+
     return res.json({
       success: true,
       devices: [{
+        isElectronic: true,
         name: result.name,
         watts: result.watts,
         dailyHours: result.dailyHours,
