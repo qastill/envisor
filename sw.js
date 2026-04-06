@@ -1,4 +1,4 @@
-const CACHE_NAME = 'envisor-v3';
+const CACHE_NAME = 'envisor-v4';
 const STATIC = ['/', '/css/style.css', '/js/app.js', '/manifest.json'];
 
 self.addEventListener('install', e => {
