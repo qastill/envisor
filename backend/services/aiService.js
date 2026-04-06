@@ -164,4 +164,64 @@ Return ONLY a JSON object (no markdown):
   }
 }
 
-module.exports = { analyzeDeviceImage, analyzeBillImage, getEmoji };
+
+async function analyzeNameplateImage(imageBuffer, mimeType) {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) throw new Error('OPENAI_API_KEY not set in environment');
+
+  const jpegBuffer = await toJpegBuffer(imageBuffer);
+  const base64 = jpegBuffer.toString('base64');
+  mimeType = 'image/jpeg';
+
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + apiKey,
+    },
+    body: JSON.stringify({
+      model: 'gpt-4o',
+      max_tokens: 400,
+      messages: [
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'image_url',
+              image_url: { url: 'data:' + mimeType + ';base64,' + base64, detail: 'high' },
+            },
+            {
+              type: 'text',
+              text: 'This is a photo of a NAME PLATE / LABEL STICKER on a household appliance. Read the text carefully.\n\nIMPORTANT: Extract the following from the name plate:\n1. Brand/Merk (e.g., Daikin, Samsung, LG, Panasonic, Sharp, Polytron, etc.)\n2. Model number\n3. Wattage (look for W, Watt, Watts, VA, or power consumption)\n4. Type of appliance\n\nRULES:\n- If you see "Input: 220V 4.5A" then watts = 220 * 4.5 = 990W\n- If you see "Power: 780W" then watts = 780\n- If you see "Cooling capacity" in BTU, estimate watts: 5000BTU~500W, 9000BTU~750W, 12000BTU~1000W, 18000BTU~1500W, 24000BTU~2000W\n- If label says power consumption in kW, convert: 1kW = 1000W\n- For AC: differentiate between rated input power (use this) vs cooling capacity\n- dailyHours: estimate typical Indonesian household usage\n\nReturn ONLY valid JSON (no markdown):\n{"name":"Merk + Tipe dalam Bahasa Indonesia (contoh: AC Split Daikin FTC25NV14 1 PK)","watts":number,"dailyHours":number}',
+            },
+          ],
+        },
+      ],
+    }),
+  });
+
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error('OpenAI API error: ' + err);
+  }
+
+  const data = await response.json();
+  const text = data.choices[0].message.content;
+
+  let parsed;
+  try {
+    const clean = text.replace(/```json|```/g, '').trim();
+    parsed = JSON.parse(clean);
+  } catch {
+    parsed = { name: 'Perangkat Elektronik', watts: 100, dailyHours: 4 };
+  }
+
+  return {
+    name: parsed.name || 'Perangkat Elektronik',
+    watts: Number(parsed.watts) || 100,
+    dailyHours: Number(parsed.dailyHours) || 4,
+    emoji: getEmoji(parsed.name || ''),
+  };
+}
+
+module.exports = { analyzeDeviceImage, analyzeBillImage, analyzeNameplateImage, getEmoji };
