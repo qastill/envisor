@@ -142,19 +142,35 @@ function renderContent(){
         }).join('')}
       </div>
       <div class="room-total"><span class="rt-lbl">Total ${room.n}</span><span class="rt-val">${rp(rCost)}/bln</span></div>
-      <div style="margin-top:12px"></div>
     `:''}
-    ${room.devs.length===0?`
+
+    <!-- TAMBAH PERANGKAT + NAME PLATE (always visible) -->
+    <div style="margin-top:14px">
       <input type="file" id="fi_${room.id}" accept="image/*" style="display:none" onchange="oneFile(this.files,'${room.id}')">
+      <input type="file" id="np_${room.id}" accept="image/*" style="display:none" onchange="oneNameplate(this.files,'${room.id}')">
+      
       <div class="uz" ondrop="onDrop(event,'${room.id}')" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" onclick="triggerUpload('fi_${room.id}')">
         <div id="uzi_${room.id}">
-          <div class="uz-ico">📷</div>
-          <div class="uz-t">Foto Elektronik Pertama di ${room.n}</div>
+          <div class="uz-ico">${room.devs.length===0?'📷':'➕'}</div>
+          <div class="uz-t">${room.devs.length===0?'Foto Elektronik Pertama':'+ Tambah Perangkat'} di ${room.n}</div>
           <div class="uz-s">Klik atau drag foto · 1 foto = 1 elektronik</div>
         </div>
         <div class="lbar" id="lb_${room.id}"><div class="lbar-fill"></div></div>
       </div>
-    `:''}
+
+      <div class="np-zone" ondrop="onDropNameplate(event,'${room.id}')" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" onclick="triggerUpload('np_${room.id}')">
+        <div id="npzi_${room.id}">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="font-size:28px">🏷️</div>
+            <div>
+              <div style="font-size:13px;font-weight:800;color:var(--dark)">Foto Name Plate / Label</div>
+              <div style="font-size:11px;color:var(--mid)">AI baca watt, merk & model dari stiker perangkat</div>
+            </div>
+          </div>
+        </div>
+        <div class="lbar" id="nplb_${room.id}"><div class="lbar-fill"></div></div>
+      </div>
+    </div>
   `
   updateSticky()
 }
@@ -171,6 +187,35 @@ function triggerUpload(inputId) {
 }
 function onDrop(e,id){ e.preventDefault(); oneFile(e.dataTransfer.files,id) }
 function onDrop2(e,id){ e.preventDefault(); oneFile(e.dataTransfer.files,id) }
+function onDropNameplate(e,id){ e.preventDefault(); e.currentTarget.classList.remove('drag'); oneNameplate(e.dataTransfer.files,id) }
+
+async function oneNameplate(files,roomId){
+  const imgs=Array.from(files).filter(f=>f.type.startsWith('image/')); if(!imgs.length) return
+  const room=rooms.find(r=>r.id===roomId)
+  const lb=document.getElementById('nplb_'+roomId)
+  const inn=document.getElementById('npzi_'+roomId)
+  if(lb) lb.classList.add('on')
+  if(inn) inn.innerHTML='<div style="display:flex;align-items:center;gap:10px"><div style="font-size:28px;animation:rot .75s linear infinite;display:inline-block">🏷️</div><div><div style="font-size:13px;font-weight:800;color:var(--acc)">AI membaca name plate...</div><div style="font-size:11px;color:var(--mid)">Mendeteksi watt, merk & model</div></div></div>'
+  try{
+    let devs=[]
+    if(API_URL){
+      const b64=await toB64(imgs[0])
+      const res=await fetch(API_URL+'/api/analyze/nameplate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:b64,mediaType:imgs[0].type,roomLabel:room.n})})
+      const data=await res.json()
+      devs=data.devices||[]
+    } else {
+      devs=mockNameplate()
+    }
+    devs.forEach(d=>room.devs.push({n:d.name,w:d.watts,h:d.dailyHours||4,e:emoji(d.name)}))
+  }catch(e){ console.error(e) }
+  if(lb) lb.classList.remove('on')
+  renderTabs(); renderContent(); renderRooms()
+}
+
+function mockNameplate(){
+  return [{name:'AC Split Daikin 1 PK (FTC25NV14)',watts:780,dailyHours:8}]
+}
+
 
 async function oneFile(files,roomId){
   const imgs=Array.from(files).filter(f=>f.type.startsWith('image/')); if(!imgs.length) return
