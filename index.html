@@ -251,15 +251,71 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
 .rpt-tbl th{text-align:left}
 .rpt-tbl td,.rpt-tbl th{padding:9px 10px;border-bottom:1px solid var(--light)}
 @media print{
+  .splash-overlay{display:none!important}
   nav,.sticky,.trust,.hero,.prog{display:none!important}
   .wrap{max-width:100%;margin:0;padding:0}
   .card{box-shadow:none;border-radius:0}
   .panel{display:block!important;page-break-inside:avoid}
   .rc{page-break-inside:avoid}
 }
+
+/* SPLASH DISCLAIMER */
+.splash-overlay{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#0f172a 0%,#1e293b 50%,#0f172a 100%);display:flex;align-items:center;justify-content:center;transition:opacity .5s,visibility .5s}
+.splash-overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.splash-card{max-width:480px;width:90%;text-align:center;padding:40px 32px;animation:splashIn .6s cubic-bezier(.4,0,.2,1)}
+@keyframes splashIn{from{opacity:0;transform:scale(.92) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.splash-logo{font-size:48px;margin-bottom:8px}
+.splash-brand{font-size:28px;font-weight:900;color:#fff;margin-bottom:6px}
+.splash-brand em{color:#f59e0b;font-style:normal}
+.splash-badge{display:inline-block;background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);color:#f59e0b;font-size:11px;font-weight:700;padding:4px 14px;border-radius:20px;letter-spacing:1px;margin-bottom:28px}
+.splash-disclaimer{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:22px 20px;margin-bottom:28px;text-align:left}
+.splash-disclaimer h3{color:#f59e0b;font-size:14px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.splash-disclaimer p{color:rgba(255,255,255,.75);font-size:13px;line-height:1.7}
+.splash-disclaimer strong{color:#fff}
+.splash-error-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.25);color:#fca5a5;font-size:12px;font-weight:700;padding:6px 14px;border-radius:10px;margin:12px 0}
+.splash-benefit{color:rgba(255,255,255,.55);font-size:12px;line-height:1.7;margin-bottom:28px}
+.splash-benefit strong{color:rgba(255,255,255,.85)}
+.splash-cta{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;border:none;padding:15px 40px;border-radius:14px;font-family:inherit;font-size:16px;font-weight:800;cursor:pointer;transition:all .25s;box-shadow:0 6px 24px rgba(245,158,11,.4)}
+.splash-cta:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 10px 32px rgba(245,158,11,.5)}
+.splash-footer{color:rgba(255,255,255,.3);font-size:11px;margin-top:20px}
 </style>
 </head>
 <body>
+
+<div class="splash-overlay" id="splashOverlay">
+  <div class="splash-card">
+    <div class="splash-logo">&#x26A1;</div>
+    <div class="splash-brand">EnVisor<em>.AI</em></div>
+    <div class="splash-badge">ENERGY ESTIMATOR</div>
+
+    <div class="splash-disclaimer">
+      <h3>&#x26A0;&#xFE0F; Penting untuk Kamu Tahu</h3>
+      <p>
+        EnVisor AI adalah alat <strong>estimasi konsumsi listrik</strong>, 
+        <strong>bukan audit energi resmi</strong>. Hasil analisis dihitung berdasarkan 
+        data watt standar perangkat dan jam pemakaian yang kamu input.
+      </p>
+      <div class="splash-error-badge">&#x26A0;&#xFE0F; Margin error estimasi: 5 &#x2013; 20%</div>
+      <p>
+        Untuk hasil presisi, diperlukan <strong>pengukuran langsung</strong> menggunakan 
+        alat ukur seperti clamp meter atau power meter oleh teknisi berlisensi.
+      </p>
+    </div>
+
+    <div class="splash-benefit">
+      Namun, ini adalah <strong>pendekatan terbaik di awal</strong> untuk mengetahui 
+      apakah tagihan listrikmu <strong>anomali</strong> &#x2014; tanpa perlu alat apapun, 
+      cukup foto perangkat elektronikmu.
+    </div>
+
+    <button class="splash-cta" onclick="dismissSplash()">
+      &#x26A1; Ayo Mulai!
+    </button>
+
+    <div class="splash-footer">&#x1F512; Privat &#xB7; foto tidak disimpan &#xB7; 100% gratis</div>
+  </div>
+</div>
+
 
 <nav>
   <div class="logo">⚡ EnVisor<em>.AI</em></div>
@@ -458,5 +514,13 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
 </div>
 
 <script src="/js/app.js"></script>
+
+<script>
+function dismissSplash(){
+  var el=document.getElementById('splashOverlay');
+  if(el) el.classList.add('hidden');
+  setTimeout(function(){ if(el) el.style.display='none' },600);
+}
+</script>
 </body>
 </html>
