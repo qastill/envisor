@@ -154,7 +154,7 @@ function renderContent(){
         </div>
         <div class="lbar" id="lb_${room.id}"><div class="lbar-fill"></div></div>
       </div>
-    `:`}
+    `:''}
   `
   updateSticky()
 }
