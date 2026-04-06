@@ -154,29 +154,7 @@ function renderContent(){
         </div>
         <div class="lbar" id="lb_${room.id}"><div class="lbar-fill"></div></div>
       </div>
-    `:`
-      <div id="addZone_${room.id}">
-        <button id="addBtn_${room.id}" onclick="showAdd('${room.id}')"
-          style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px;border:2px dashed var(--light);border-radius:14px;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--acc);cursor:pointer;transition:all .2s"
-          onmouseover="this.style.background='#fffbeb';this.style.borderColor='var(--acc)'"
-          onmouseout="this.style.background='transparent';this.style.borderColor='var(--light)'">
-          📷 + Tambah Elektronik ke-${room.devs.length+1}
-        </button>
-        <div id="addPanel_${room.id}" style="display:none;margin-top:10px">
-          <div style="font-size:12px;font-weight:700;color:var(--mid);margin-bottom:8px">📷 Foto Elektronik ke-${room.devs.length+1}</div>
-          <input type="file" id="fi2_${room.id}" accept="image/*" style="display:none" onchange="oneFile(this.files,'${room.id}')">
-          <div class="uz" ondrop="onDrop2(event,'${room.id}')" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" onclick="triggerUpload('fi2_${room.id}')">
-            <div id="uzi2_${room.id}">
-              <div class="uz-ico">📱</div>
-              <div class="uz-t">Foto Elektronik Berikutnya</div>
-              <div class="uz-s">AI identifikasi otomatis dari foto</div>
-            </div>
-            <div class="lbar" id="lb2_${room.id}"><div class="lbar-fill"></div></div>
-          </div>
-          <button onclick="hideAdd('${room.id}')" style="background:none;border:none;color:var(--mid);font-size:13px;cursor:pointer;font-family:inherit">Batal</button>
-        </div>
-      </div>
-    `}
+    `:`}
   `
   updateSticky()
 }
