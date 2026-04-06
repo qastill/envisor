@@ -221,4 +221,29 @@ async function analyzeNameplate(req, res) {
   }
 }
 
-module.exports = { analyzeDevice, analyzeRoom, analyzeBill, buildSummary, analyzeNameplate };
+
+/**
+ * POST /api/analyze/meter-condition
+ * Body: JSON { image: base64string, mediaType: 'image/jpeg' }
+ * Returns: { condition: { type, estimatedAge, condition, brand, ... } }
+ * Analyzes the physical condition of a KWH meter to assess accuracy risk
+ */
+async function analyzeMeterCondition(req, res) {
+  try {
+    const { image, mediaType = 'image/jpeg' } = req.body;
+    if (!image) return res.status(400).json({ error: 'No image provided' });
+
+    const base64 = image.replace(/^data:image\/\w+;base64,/, '');
+    const buffer = Buffer.from(base64, 'base64');
+
+    const { analyzeKwhMeterCondition } = require('../services/aiService');
+    const result = await analyzeKwhMeterCondition(buffer, mediaType);
+
+    return res.json({ success: true, condition: result });
+  } catch (err) {
+    console.error('[analyzeMeterCondition]', err.message);
+    return res.status(500).json({ error: err.message });
+  }
+}
+
+module.exports = { analyzeDevice, analyzeRoom, analyzeBill, buildSummary, analyzeNameplate, analyzeMeterCondition };
