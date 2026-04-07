@@ -1,18 +1,18 @@
 const { calcDevice } = require('../config/electricity');
 
 const DEVICE_EMOJI_MAP = {
-  ac: '❄️', 'air con': '❄️', pendingin: '❄️',
-  kulkas: '🧊', refrig: '🧊', freeze: '🧊',
-  tv: '📺', tele: '📺', monitor: '📺',
-  cuci: '🫧', wash: '🫧',
-  lampu: '💡', light: '💡', led: '💡',
-  laptop: '💻', computer: '💻', pc: '💻',
-  heater: '🚿', pemanas: '🚿', water: '🚿',
-  rice: '🍚', nasi: '🍚',
-  microwave: '📡', oven: '📡',
-  kipas: '🌀', fan: '🌀',
-  dispenser: '🥤',
-  pompa: '💧', pump: '💧',
+  ac: 'snowflake', 'air con': 'snowflake', pendingin: 'snowflake',
+  kulkas: 'archive', refrig: 'archive', freeze: 'archive',
+  tv: 'tv', tele: 'tv', monitor: 'tv',
+  cuci: 'waves', wash: 'waves',
+  lampu: 'lightbulb', light: 'lightbulb', led: 'lightbulb',
+  laptop: 'laptop', computer: 'laptop', pc: 'laptop',
+  heater: 'droplets', pemanas: 'droplets', water: 'droplets',
+  rice: 'cooking-pot', nasi: 'cooking-pot',
+  microwave: 'radio', oven: 'radio',
+  kipas: 'fan', fan: 'fan',
+  dispenser: 'glass-water',
+  pompa: 'droplet', pump: 'droplet',
 };
 
 function getEmoji(name) {
@@ -20,7 +20,7 @@ function getEmoji(name) {
   for (const [key, emoji] of Object.entries(DEVICE_EMOJI_MAP)) {
     if (n.includes(key)) return emoji;
   }
-  return '🔌';
+  return 'plug';
 }
 
 async function toJpegBuffer(buffer) {

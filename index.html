@@ -12,6 +12,7 @@
 <script>if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));</script>
 <title>EnVisor AI — Audit Listrik Rumahmu</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -72,7 +73,7 @@ nav{background:var(--white);border-bottom:1px solid var(--light);padding:0 28px;
 .room-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:10px;margin-bottom:14px}
 .room-card{position:relative;border:2px solid var(--light);border-radius:14px;padding:16px 10px;text-align:center;background:var(--bg);transition:all .2s}
 .room-card.done{border-color:var(--green);background:#f0fdf4}
-.r-ico{font-size:30px;margin-bottom:7px}
+.r-ico{font-size:30px;margin-bottom:7px;display:flex;align-items:center;justify-content:center}
 .r-nm{font-size:12px;font-weight:700}
 .r-cnt{font-size:11px;color:var(--green);font-weight:700;margin-top:3px}
 .r-del{position:absolute;top:5px;right:5px;background:rgba(239,68,68,.1);border:none;border-radius:5px;color:#ef4444;width:20px;height:20px;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
@@ -101,7 +102,7 @@ nav{background:var(--white);border-bottom:1px solid var(--light);padding:0 28px;
 .uz{border:2px dashed var(--light);border-radius:16px;padding:28px 20px;text-align:center;cursor:pointer;background:var(--bg);transition:all .2s;margin-bottom:14px;position:relative}
 .uz:hover,.uz.drag{border-color:var(--acc);background:#fffbeb}
 .uz input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.uz-ico{font-size:34px;margin-bottom:8px}
+.uz-ico{font-size:34px;margin-bottom:8px;display:flex;align-items:center;justify-content:center}
 .uz-t{font-size:15px;font-weight:800;margin-bottom:4px}
 .uz-s{font-size:12px;color:var(--mid)}
 .lbar{height:3px;background:var(--light);border-radius:2px;overflow:hidden;margin-top:10px;display:none}
@@ -142,7 +143,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
 .buz:hover{border-color:var(--acc);background:#fffbeb}
 .buz.done{border-color:var(--green);background:#f0fdf4}
 .buz input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.buz-ico{font-size:30px;margin-bottom:7px}
+.buz-ico{font-size:30px;margin-bottom:7px;display:flex;align-items:center;justify-content:center}
 .buz-t{font-size:13px;font-weight:700;margin-bottom:3px}
 .buz-s{font-size:11px;color:var(--mid)}
 .buz-img{width:100%;max-height:100px;object-fit:cover;border-radius:8px;margin-top:8px;display:none}
@@ -278,24 +279,47 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
 .splash-cta{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;border:none;padding:15px 40px;border-radius:14px;font-family:inherit;font-size:16px;font-weight:800;cursor:pointer;transition:all .25s;box-shadow:0 6px 24px rgba(245,158,11,.4)}
 .splash-cta:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 10px 32px rgba(245,158,11,.5)}
 .splash-footer{color:rgba(255,255,255,.3);font-size:11px;margin-top:20px}
+
+/* Lucide SVG icon sizing */
+svg.lucide{display:inline-block;vertical-align:middle;flex-shrink:0}
+.logo svg.lucide{width:20px;height:20px}
+.slbl svg.lucide{width:14px;height:14px}
+.ptitle svg.lucide{width:22px;height:22px}
+.r-ico svg.lucide{width:28px;height:28px;color:var(--acc)}
+.ico-opt svg.lucide{width:22px;height:22px}
+.d-ico svg.lucide{width:20px;height:20px;color:var(--acc)}
+.buz-ico svg.lucide{width:30px;height:30px;color:var(--acc)}
+.uz-ico svg.lucide{width:34px;height:34px;color:var(--acc)}
+.ti svg.lucide{width:15px;height:15px}
+.skip-note svg.lucide{width:16px;height:16px;flex-shrink:0}
+.bbk svg.lucide,.bnx svg.lucide{width:16px;height:16px}
+.preset-item svg.lucide{width:18px;height:18px;color:var(--acc)}
+.rtab svg.lucide{width:14px;height:14px}
+.np-zone svg.lucide{width:28px;height:28px;color:#8b5cf6}
+.splash-logo svg.lucide{width:48px;height:48px;color:var(--acc)}
+.splash-disclaimer h3 svg.lucide{width:18px;height:18px;color:var(--acc)}
+.splash-error-badge svg.lucide{width:14px;height:14px}
+.splash-cta svg.lucide{width:20px;height:20px}
+.splash-footer svg.lucide{width:13px;height:13px}
+.rpt-sec svg.lucide{width:16px;height:16px}
 </style>
 </head>
 <body>
 
 <div class="splash-overlay" id="splashOverlay">
   <div class="splash-card">
-    <div class="splash-logo">&#x26A1;</div>
+    <div class="splash-logo"><i data-lucide="zap"></i></div>
     <div class="splash-brand">EnVisor<em>.AI</em></div>
     <div class="splash-badge">ENERGY ESTIMATOR</div>
 
     <div class="splash-disclaimer">
-      <h3>&#x26A0;&#xFE0F; Penting untuk Kamu Tahu</h3>
+      <h3><i data-lucide="triangle-alert"></i> Penting untuk Kamu Tahu</h3>
       <p>
         EnVisor AI adalah alat <strong>estimasi konsumsi listrik</strong>, 
         <strong>bukan audit energi resmi</strong>. Hasil analisis dihitung berdasarkan 
         data watt standar perangkat dan jam pemakaian yang kamu input.
       </p>
-      <div class="splash-error-badge">&#x26A0;&#xFE0F; Margin error estimasi: 5 &#x2013; 20%</div>
+      <div class="splash-error-badge"><i data-lucide="triangle-alert"></i> Margin error estimasi: 5 &#x2013; 20%</div>
       <p>
         Untuk hasil presisi, diperlukan <strong>pengukuran langsung</strong> menggunakan 
         alat ukur seperti clamp meter atau power meter oleh teknisi berlisensi.
@@ -309,16 +333,16 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
     </div>
 
     <button class="splash-cta" onclick="dismissSplash()">
-      &#x26A1; Ayo Mulai!
+      <i data-lucide="zap"></i> Ayo Mulai!
     </button>
 
-    <div class="splash-footer">&#x1F512; Privat &#xB7; foto tidak disimpan &#xB7; 100% gratis</div>
+    <div class="splash-footer"><i data-lucide="lock"></i> Privat &#xB7; foto tidak disimpan &#xB7; 100% gratis</div>
   </div>
 </div>
 
 
 <nav>
-  <div class="logo">⚡ EnVisor<em>.AI</em></div>
+  <div class="logo"><i data-lucide="zap"></i> EnVisor<em>.AI</em></div>
   <div class="nav-badge">Energy Advisor</div>
 </nav>
 
@@ -333,10 +357,10 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
   <!-- PROGRESS -->
   <div class="prog">
     <div class="step-row">
-      <span class="slbl on" id="s1">📋 Data Rumah</span>
-      <span class="slbl" id="s2">📷 Perangkat</span>
-      <span class="slbl" id="s3">🧾 Tagihan</span>
-      <span class="slbl" id="s4">✅ Hasil</span>
+      <span class="slbl on" id="s1"><i data-lucide="clipboard-list"></i> Data Rumah</span>
+      <span class="slbl" id="s2"><i data-lucide="camera"></i> Perangkat</span>
+      <span class="slbl" id="s3"><i data-lucide="file-text"></i> Tagihan</span>
+      <span class="slbl" id="s4"><i data-lucide="circle-check"></i> Hasil</span>
     </div>
     <div class="track"><div class="fill" id="pf" style="width:25%"></div></div>
   </div>
@@ -345,7 +369,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
        STEP 1 — DATA RUMAH
   ══════════════════════════════════════════════════ -->
   <div class="panel body active" id="p1">
-    <div class="ptitle">🏠 Data Rumah Kamu</div>
+    <div class="ptitle"><i data-lucide="house"></i> Data Rumah Kamu</div>
     <div class="psub">Lengkapi info dasar rumah sebelum scan perangkat</div>
 
     <!-- Daya PLN -->
@@ -376,8 +400,8 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
     <div class="room-grid" id="roomGrid"></div>
 
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
-      <button class="add-preset-btn" onclick="togglePreset()">🏠 + Preset Ruangan</button>
-      <button class="add-custom-btn" onclick="toggleCustom()">✏️ + Custom</button>
+      <button class="add-preset-btn" onclick="togglePreset()"><i data-lucide="house"></i> + Preset Ruangan</button>
+      <button class="add-custom-btn" onclick="toggleCustom()"><i data-lucide="pencil"></i> + Custom</button>
     </div>
 
     <div id="presetBox" style="display:none" class="preset-box">
@@ -404,7 +428,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
   ══════════════════════════════════════════════════ -->
   <div class="panel" id="p2">
     <div class="body" style="padding-bottom:82px">
-      <div class="ptitle">📷 Scan Perangkat</div>
+      <div class="ptitle"><i data-lucide="camera"></i> Scan Perangkat</div>
       <div class="psub">Pilih ruangan → foto 1 elektronik → klik "+ Tambah" untuk foto berikutnya</div>
       <div class="room-tabs" id="roomTabs"></div>
       <div id="roomContent"></div>
@@ -415,20 +439,20 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
        STEP 3 — TAGIHAN
   ══════════════════════════════════════════════════ -->
   <div class="panel body" id="p3">
-    <div class="ptitle">🧾 Upload Tagihan PLN</div>
+    <div class="ptitle"><i data-lucide="file-text"></i> Upload Tagihan PLN</div>
     <div class="psub">Opsional — untuk perbandingan tagihan aktual vs estimasi AI</div>
 
     <div class="bill-grid">
       <input type="file" id="inp_bill" accept="image/*" style="display:none" onchange="billUp('buz1','inp_bill','prev_bill','bico1','btxt1')">
       <div class="buz" id="buz1" onclick="triggerUpload('inp_bill')">
-        <div class="buz-ico" id="bico1">🧾</div>
+        <div class="buz-ico" id="bico1"><i data-lucide="file-text"></i></div>
         <div class="buz-t" id="btxt1">Foto Tagihan / Struk PLN</div>
         <div class="buz-s">Screenshot MyPLN atau struk</div>
         <img class="buz-img" id="prev_bill" src="" alt="">
       </div>
       <input type="file" id="inp_meter" accept="image/*" style="display:none" onchange="billUp('buz2','inp_meter','prev_meter','bico2','btxt2')">
       <div class="buz" id="buz2" onclick="triggerUpload('inp_meter')">
-        <div class="buz-ico" id="bico2">⚡</div>
+        <div class="buz-ico" id="bico2"><i data-lucide="zap"></i></div>
         <div class="buz-t" id="btxt2">Foto KWH Meter</div>
         <div class="buz-s">Angka pada kwh meter rumah</div>
         <img class="buz-img" id="prev_meter" src="" alt="">
@@ -437,7 +461,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
 
     <div id="meterStatus" style="display:none;margin-bottom:12px"></div>
     <div class="skip-note">
-      <span>ℹ️</span>
+      <span><i data-lucide="info"></i></span>
       <span>Tidak punya foto? Tidak apa-apa — klik <strong>Lewati</strong> untuk tetap dapat analisis lengkap.</span>
     </div>
 
@@ -486,12 +510,12 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
        STEP 4 — HASIL
   ══════════════════════════════════════════════════ -->
   <div class="panel body" id="p4">
-    <div class="ptitle">✅ Hasil Analisis Lengkap</div>
+    <div class="ptitle"><i data-lucide="circle-check"></i> Hasil Analisis Lengkap</div>
     <div class="psub" id="rsub"></div>
     <div id="rbody"></div>
     <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-      <button class="bbk" onclick="restart()">🔄 Mulai Ulang</button>
-      <button class="bbk" onclick="window.print()">🖨️ Simpan PDF</button>
+      <button class="bbk" onclick="restart()"><i data-lucide="refresh-cw"></i> Mulai Ulang</button>
+      <button class="bbk" onclick="window.print()"><i data-lucide="printer"></i> Simpan PDF</button>
     </div>
   </div>
 
@@ -499,9 +523,9 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
 </div><!-- /wrap -->
 
 <div class="trust">
-  <div class="ti">🔒 <strong>Privat</strong> · foto tidak disimpan</div>
-  <div class="ti">⚡ <strong>~3 menit</strong> · hasil instan</div>
-  <div class="ti">💸 <strong>Gratis</strong> · tanpa daftar</div>
+  <div class="ti"><i data-lucide="lock"></i> <strong>Privat</strong> · foto tidak disimpan</div>
+  <div class="ti"><i data-lucide="zap"></i> <strong>~3 menit</strong> · hasil instan</div>
+  <div class="ti"><i data-lucide="coins"></i> <strong>Gratis</strong> · tanpa daftar</div>
 </div>
 
 <!-- STICKY TOTAL -->
@@ -514,6 +538,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
 </div>
 
 <script src="/js/app.js"></script>
+<script>document.addEventListener('DOMContentLoaded',function(){if(typeof lucide!=='undefined')lucide.createIcons()})</script>
 
 <script>
 function dismissSplash(){
