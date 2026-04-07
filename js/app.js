@@ -1,29 +1,26 @@
 // ── STATE ──────────────────────────────────────────────────────────
 const PRESETS=[
-  {n:'Ruang Tamu',i:'sofa'},{n:'Ruang Keluarga',i:'tv'},{n:'Dapur',i:'utensils'},
-  {n:'Kamar Utama',i:'bed-double'},{n:'Kamar Anak',i:'user'},{n:'Garasi',i:'car'},
-  {n:'Kamar Mandi',i:'droplets'},{n:'Kantor/Kerja',i:'laptop'},{n:'Laundry',i:'waves'},{n:'Teras',i:'leaf'},
+  {n:'Ruang Tamu',i:'🛋️'},{n:'Ruang Keluarga',i:'📺'},{n:'Dapur',i:'🍳'},
+  {n:'Kamar Utama',i:'🛏️'},{n:'Kamar Anak',i:'🧒'},{n:'Garasi',i:'🚗'},
+  {n:'Kamar Mandi',i:'🚿'},{n:'Kantor/Kerja',i:'💻'},{n:'Laundry',i:'🫧'},{n:'Teras',i:'🌿'},
 ]
-const ICONS=['house','sofa','tv','utensils','bed-double','user','droplets','car','laptop','waves','leaf','wrench','gamepad-2','book-open','music','dumbbell']
+const ICONS=['🏠','🛋️','📺','🍳','🛏️','🧒','🚿','🚗','💻','🫧','🌿','🔧','🎮','📚','🎵','🏋️']
 const VA_OPTIONS=[900,1300,2200,3500,5500,7700]
 
 let kwhMeterCondition=null
 let rooms=[
-  {id:'r1',n:'Ruang Tamu',i:'sofa',devs:[]},
-  {id:'r2',n:'Ruang Keluarga',i:'tv',devs:[]},
-  {id:'r3',n:'Dapur',i:'utensils',devs:[]},
-  {id:'r4',n:'Kamar Utama',i:'bed-double',devs:[]},
-  {id:'r5',n:'Garasi',i:'car',devs:[]},
+  {id:'r1',n:'Ruang Tamu',i:'🛋️',devs:[]},
+  {id:'r2',n:'Ruang Keluarga',i:'📺',devs:[]},
+  {id:'r3',n:'Dapur',i:'🍳',devs:[]},
+  {id:'r4',n:'Kamar Utama',i:'🛏️',devs:[]},
+  {id:'r5',n:'Garasi',i:'🚗',devs:[]},
 ]
-let plnVa=1300, jumlahOrang=3, activeRoom='r1', selIco='house', customId=0
+let plnVa=1300, jumlahOrang=3, activeRoom='r1', selIco='🏠', customId=0
 const API_URL = window.location.origin // use same origin (Vercel backend)
 // ── TARIFF & CALC ──────────────────────────────────────────────────
 function tariff(){ return plnVa<=900?1352:plnVa<=2200?1444:1699 }
 function calcDev(w,h){ const kwh=Math.round(w*h*30/1000*10)/10; return {kwh,cost:Math.round(kwh*tariff())} }
 function rp(n){ return 'Rp '+Math.round(n).toLocaleString('id-ID') }
-function L(name){return '<i data-lucide="'+name+'"></i>'}
-function dot(color){return '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+color+';vertical-align:middle;margin-right:4px"></span>'}
-var _icoTimer;function refreshIcons(){clearTimeout(_icoTimer);_icoTimer=setTimeout(function(){if(typeof lucide!=='undefined')lucide.createIcons()},15)}
 
 // ── STEP NAV ──────────────────────────────────────────────────────
 function go(n){
@@ -57,12 +54,11 @@ function renderRooms(){
   document.getElementById('roomGrid').innerHTML=rooms.map(r=>`
     <div class="room-card${r.devs.length>0?' done':''}">
       <button class="r-del" onclick="removeRoom('${r.id}')">✕</button>
-      <div class="r-ico">${L(r.i)}</div>
+      <div class="r-ico">${r.i}</div>
       <div class="r-nm">${r.n}</div>
-      ${r.devs.length>0?`<div class="r-cnt">${L('check')} ${r.devs.length} perangkat</div>`:''}
+      ${r.devs.length>0?`<div class="r-cnt">✓ ${r.devs.length} perangkat</div>`:''}
     </div>
   `).join('')+`<div style="border:2px dashed var(--light);border-radius:14px;padding:16px 10px;text-align:center;background:transparent;cursor:pointer;color:var(--mid);font-size:11px;font-weight:700;transition:all .2s" onclick="togglePreset()" onmouseover="this.style.borderColor='var(--acc)';this.style.color='var(--acc)'" onmouseout="this.style.borderColor='var(--light)';this.style.color='var(--mid)'"><div style="font-size:26px;margin-bottom:6px">＋</div>Tambah</div>`
-  refreshIcons()
 
   const ok=rooms.length>0
   document.getElementById('btnStep2').disabled=!ok
@@ -77,9 +73,9 @@ function togglePreset(){
   const b=document.getElementById('presetBox'), show=b.style.display==='none'
   b.style.display=show?'block':'none'
   document.getElementById('customBox').style.display='none'
-  if(show){ document.getElementById('presetGrid').innerHTML=PRESETS.map(p=>
-    `<div class="preset-item" onclick="addPreset('${p.n}','${p.i}')">${L(p.i)} ${p.n}</div>`
-  ).join(''); refreshIcons() }
+  if(show) document.getElementById('presetGrid').innerHTML=PRESETS.map(p=>
+    `<div class="preset-item" onclick="addPreset('${p.n}','${p.i}')">${p.i} ${p.n}</div>`
+  ).join('')
 }
 function addPreset(n,i){
   if(!rooms.find(r=>r.n===n)) rooms.push({id:'rp'+(++customId),n,i,devs:[]})
@@ -90,8 +86,8 @@ function toggleCustom(){
   b.style.display=show?'block':'none'
   document.getElementById('presetBox').style.display='none'
   if(show){ document.getElementById('iconPicker').innerHTML=ICONS.map(ic=>
-    `<span class="ico-opt${ic===selIco?' sel':''}" onclick="pickIco('${ic}')">${L(ic)}</span>`
-  ).join(''); refreshIcons() }
+    `<span class="ico-opt${ic===selIco?' sel':''}" onclick="pickIco('${ic}')">${ic}</span>`
+  ).join('') }
 }
 function pickIco(ic){ selIco=ic; toggleCustom(); toggleCustom() }
 function addCustomRoom(){
@@ -106,10 +102,9 @@ function goStep2(){ if(!rooms.length) return; activeRoom=rooms[0].id; go(2) }
 function renderTabs(){
   document.getElementById('roomTabs').innerHTML=rooms.map(r=>
     `<button class="rtab${r.id===activeRoom?' sel':''}${r.devs.length>0?' done':''}" onclick="switchRoom('${r.id}')">
-      ${L(r.i)} ${r.n}${r.devs.length>0?' '+L('check')+r.devs.length:''}
+      ${r.i} ${r.n}${r.devs.length>0?' ✓'+r.devs.length:''}
     </button>`
   ).join('')
-  refreshIcons()
 }
 function switchRoom(id){ activeRoom=id; renderTabs(); renderContent() }
 
@@ -117,12 +112,12 @@ function renderContent(){
   const room=rooms.find(r=>r.id===activeRoom); if(!room) return
   const rCost=room.devs.reduce((a,d)=>a+calcDev(d.w,d.h).cost,0)
   document.getElementById('roomContent').innerHTML=`
-    <div style="font-size:12px;color:var(--mid);margin-bottom:12px;padding:9px 13px;background:var(--light2);border-radius:9px;display:flex;gap:7px;align-items:center">
-      <span>${L('camera')}</span><span>Foto <strong>satu elektronik per foto</strong>. Tiap foto → AI identifikasi 1 perangkat.</span>
+    <div style="font-size:12px;color:var(--mid);margin-bottom:12px;padding:9px 13px;background:var(--light2);border-radius:9px;display:flex;gap:7px">
+      <span>📸</span><span>Foto <strong>satu elektronik per foto</strong>. Tiap foto → AI identifikasi 1 perangkat.</span>
     </div>
     ${room.devs.length>0?`
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <div style="font-size:14px;font-weight:800">${L('zap')} Terdeteksi <span style="font-size:12px;color:var(--mid);font-weight:500">${room.devs.length} perangkat</span></div>
+        <div style="font-size:14px;font-weight:800">⚡ Terdeteksi <span style="font-size:12px;color:var(--mid);font-weight:500">${room.devs.length} perangkat</span></div>
         <span style="font-size:11px;color:var(--mid)">geser slider = jam/hari</span>
       </div>
       <div class="dlist">
@@ -131,7 +126,7 @@ function renderContent(){
           const cc=cost>150000?'#ef4444':cost>60000?'#d97706':'#10b981'
           return `<div class="drow" id="drow_${room.id}_${i}">
             <div class="drow-top">
-              <div class="d-ico">${L(d.e||'plug')}</div>
+              <div class="d-ico">${d.e||'🔌'}</div>
               <div class="d-info"><div class="d-nm">${d.n}</div><div class="d-wt">${d.w}W · ${kwh} kWh/bln</div></div>
               <div class="d-cost" id="dc_${room.id}_${i}" style="color:${cc}">${rp(cost)}</div>
               <button class="dbtn" onclick="delDev('${room.id}',${i})">×</button>
@@ -157,7 +152,7 @@ function renderContent(){
       
       <div class="uz" ondrop="onDrop(event,'${room.id}')" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" onclick="triggerUpload('fi_${room.id}')">
         <div id="uzi_${room.id}">
-          <div class="uz-ico">${room.devs.length===0?L('camera'):L('plus')}</div>
+          <div class="uz-ico">${room.devs.length===0?'📷':'➕'}</div>
           <div class="uz-t">${room.devs.length===0?'Foto Elektronik Pertama':'+ Tambah Perangkat'} di ${room.n}</div>
           <div class="uz-s">Klik atau drag foto · 1 foto = 1 elektronik</div>
         </div>
@@ -167,7 +162,7 @@ function renderContent(){
       <div class="np-zone" ondrop="onDropNameplate(event,'${room.id}')" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" onclick="triggerUpload('np_${room.id}')">
         <div id="npzi_${room.id}">
           <div style="display:flex;align-items:center;gap:10px">
-            <div style="font-size:28px">${L('tag')}</div>
+            <div style="font-size:28px">🏷️</div>
             <div>
               <div style="font-size:13px;font-weight:800;color:var(--dark)">Foto Name Plate / Label</div>
               <div style="font-size:11px;color:var(--mid)">AI baca watt, merk & model dari stiker perangkat</div>
@@ -179,7 +174,6 @@ function renderContent(){
     </div>
   `
   updateSticky()
-  refreshIcons()
 }
 
 function showAdd(id){ document.getElementById('addBtn_'+id).style.display='none'; document.getElementById('addPanel_'+id).style.display='block' }
@@ -202,7 +196,7 @@ async function oneNameplate(files,roomId){
   const lb=document.getElementById('nplb_'+roomId)
   const inn=document.getElementById('npzi_'+roomId)
   if(lb) lb.classList.add('on')
-  if(inn){ inn.innerHTML='<div style="display:flex;align-items:center;gap:10px"><div style="font-size:28px;animation:rot .75s linear infinite;display:inline-block">'+L('tag')+'</div><div><div style="font-size:13px;font-weight:800;color:var(--acc)">AI membaca name plate...</div><div style="font-size:11px;color:var(--mid)">Mendeteksi watt, merk & model</div></div></div>'; refreshIcons() }
+  if(inn) inn.innerHTML='<div style="display:flex;align-items:center;gap:10px"><div style="font-size:28px;animation:rot .75s linear infinite;display:inline-block">🏷️</div><div><div style="font-size:13px;font-weight:800;color:var(--acc)">AI membaca name plate...</div><div style="font-size:11px;color:var(--mid)">Mendeteksi watt, merk & model</div></div></div>'
   try{
     let devs=[]
     if(API_URL){
@@ -230,7 +224,7 @@ async function oneFile(files,roomId){
   const lb=document.getElementById('lb_'+roomId)
   const inn=document.getElementById('uzi_'+roomId)
   if(lb) lb.classList.add('on')
-  if(inn){ inn.innerHTML='<div class="uz-ico" style="animation:rot .75s linear infinite;display:inline-block">'+L('zap')+'</div><div class="uz-t" style="color:var(--acc)">AI mengidentifikasi...</div><div class="uz-s">Mengenali elektronik dari foto</div>'; refreshIcons() }
+  if(inn) inn.innerHTML='<div class="uz-ico" style="animation:rot .75s linear infinite;display:inline-block">\u26A1</div><div class="uz-t" style="color:var(--acc)">AI mengidentifikasi...</div><div class="uz-s">Mengenali elektronik dari foto</div>'
   try{
     let devs=[]
     if(API_URL){
@@ -241,7 +235,7 @@ async function oneFile(files,roomId){
       // Check if non-electronic
       if(devs.length>0 && devs[0].isElectronic===false){
         if(lb) lb.classList.remove('on')
-        showUploadError(roomId,'Foto bukan perangkat elektronik! Silakan upload ulang foto elektronik (AC, kulkas, TV, dll).')
+        showUploadError(roomId,'\u26A0\uFE0F Foto bukan perangkat elektronik! Silakan upload ulang foto elektronik (AC, kulkas, TV, dll).')
         return
       }
     } else {
@@ -261,7 +255,7 @@ async function oneFile(files,roomId){
 
 function showUploadError(roomId, msg){
   const inn=document.getElementById('uzi_'+roomId)
-  if(inn){ inn.innerHTML='<div class="uz-ico">'+L('x-circle')+'</div><div class="uz-t" style="color:#ef4444;font-size:13px">'+msg+'</div><div class="uz-s" style="color:#ef4444">Klik untuk upload ulang</div>'; refreshIcons() }
+  if(inn) inn.innerHTML='<div class="uz-ico">\u274C</div><div class="uz-t" style="color:#ef4444;font-size:13px">'+msg+'</div><div class="uz-s" style="color:#ef4444">Klik untuk upload ulang</div>'
   // Auto-reset after 4 seconds
   setTimeout(function(){ renderContent() }, 4000)
 }
@@ -272,17 +266,17 @@ function showDeviceConfirm(roomId, devs, imgFile){
   const inn=document.getElementById('uzi_'+roomId)
   // Store pending device data
   window.__pendingDev={roomId:roomId, devs:devs}
-  if(inn){ inn.innerHTML='<div style="background:#f0fdf4;border:1.5px solid #a7f3d0;border-radius:12px;padding:14px;text-align:left">'
-    +'<div style="font-size:14px;font-weight:800;color:#065f46;margin-bottom:8px">'+L('circle-check')+' AI Terdeteksi:</div>'
+  if(inn) inn.innerHTML='<div style="background:#f0fdf4;border:1.5px solid #a7f3d0;border-radius:12px;padding:14px;text-align:left">'
+    +'<div style="font-size:14px;font-weight:800;color:#065f46;margin-bottom:8px">\u2705 AI Terdeteksi:</div>'
     +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'
-    +'<div style="font-size:24px">'+L(d.emoji||'plug')+'</div>'
+    +'<div style="font-size:24px">'+(d.emoji||'\uD83D\uDD0C')+'</div>'
     +'<div><div style="font-size:14px;font-weight:800">'+d.name+'</div>'
     +'<div style="font-size:12px;color:var(--mid)">'+d.watts+'W \u00B7 '+d.dailyHours+' jam/hari</div></div></div>'
     +'<div style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:10px">Apa benar perangkat ini?</div>'
     +'<div style="display:flex;gap:8px">'
-    +'<button onclick="confirmDevice(true)" style="flex:1;padding:10px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer">'+L('circle-check')+' Ya, Benar</button>'
-    +'<button onclick="confirmDevice(false)" style="flex:1;padding:10px;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer">'+L('x-circle')+' Bukan, Foto Ulang</button>'
-    +'</div></div>'; refreshIcons() }
+    +'<button onclick="confirmDevice(true)" style="flex:1;padding:10px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer">\u2705 Ya, Benar</button>'
+    +'<button onclick="confirmDevice(false)" style="flex:1;padding:10px;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer">\u274C Bukan, Foto Ulang</button>'
+    +'</div></div>'
 }
 
 function confirmDevice(isCorrect){
@@ -298,7 +292,7 @@ function confirmDevice(isCorrect){
     // Show message to re-upload
     setTimeout(function(){
       var inn=document.getElementById('uzi_'+roomId)
-      if(inn){ inn.innerHTML='<div class="uz-ico">'+L('camera')+'</div><div class="uz-t" style="color:#d97706">Silakan foto ulang perangkat elektronik</div><div class="uz-s">Pastikan foto jelas dan terlihat perangkatnya</div>'; refreshIcons() }
+      if(inn) inn.innerHTML='<div class="uz-ico">\uD83D\uDCF7</div><div class="uz-t" style="color:#d97706">Silakan foto ulang perangkat elektronik</div><div class="uz-s">Pastikan foto jelas dan terlihat perangkatnya</div>'
     },100)
   }
 }
@@ -332,7 +326,7 @@ function billUp(buzId,inputId,prevId,icoId,txtId){
     document.getElementById(prevId).src=e.target.result
     document.getElementById(buzId).classList.add('done')
     document.getElementById(icoId).style.display='none'
-    document.getElementById(txtId).textContent='Foto terupload'
+    document.getElementById(txtId).textContent='\u2705 Foto terupload'
     // If this is the KWH meter photo, also analyze its condition
     if(inputId==='inp_meter' && API_URL){
       analyzeKwhMeter(file)
@@ -355,7 +349,7 @@ async function analyzeKwhMeter(file){
       var condLabels={baik:'Baik',cukup:'Cukup',tua:'Tua',sangat_tua:'Sangat Tua'}
       var riskColors={rendah:'#10b981',sedang:'#d97706',tinggi:'#ea580c',sangat_tinggi:'#dc2626'}
       var riskLabels={rendah:'Rendah',sedang:'Sedang',tinggi:'Tinggi',sangat_tinggi:'Sangat Tinggi'}
-      if(statusEl){ statusEl.innerHTML='<div style="background:#f0f9ff;border:1.5px solid #bae6fd;border-radius:10px;padding:12px;font-size:12px;line-height:1.6"><div style="font-weight:800;color:#0c4a6e;margin-bottom:6px">'+L('zap')+' Hasil Analisis KWH Meter:</div><div><strong>Tipe:</strong> '+(cond.type==='analog'?'Analog (Ferraris)':'Digital/Prepaid')+'</div><div><strong>Estimasi Usia:</strong> ~'+cond.estimatedAge+' tahun</div><div><strong>Kondisi:</strong> <span style="color:'+(condColors[cond.condition]||'#d97706')+';font-weight:800">'+(condLabels[cond.condition]||cond.condition)+'</span></div>'+(cond.brand?'<div><strong>Merk:</strong> '+cond.brand+'</div>':'')+'<div><strong>Risiko Akurasi:</strong> <span style="color:'+(riskColors[cond.accuracyRisk]||'#d97706')+';font-weight:800">'+(riskLabels[cond.accuracyRisk]||cond.accuracyRisk)+'</span></div>'+(cond.issues&&cond.issues.length>0?'<div><strong>Temuan:</strong> '+cond.issues.join(', ')+'</div>':'')+'</div>'; refreshIcons()
+      if(statusEl) statusEl.innerHTML='<div style="background:#f0f9ff;border:1.5px solid #bae6fd;border-radius:10px;padding:12px;font-size:12px;line-height:1.6"><div style="font-weight:800;color:#0c4a6e;margin-bottom:6px">\u26A1 Hasil Analisis KWH Meter:</div><div><strong>Tipe:</strong> '+(cond.type==='analog'?'Analog (Ferraris)':'Digital/Prepaid')+'</div><div><strong>Estimasi Usia:</strong> ~'+cond.estimatedAge+' tahun</div><div><strong>Kondisi:</strong> <span style="color:'+(condColors[cond.condition]||'#d97706')+';font-weight:800">'+(condLabels[cond.condition]||cond.condition)+'</span></div>'+(cond.brand?'<div><strong>Merk:</strong> '+cond.brand+'</div>':'')+'<div><strong>Risiko Akurasi:</strong> <span style="color:'+(riskColors[cond.accuracyRisk]||'#d97706')+';font-weight:800">'+(riskLabels[cond.accuracyRisk]||cond.accuracyRisk)+'</span></div>'+(cond.issues&&cond.issues.length>0?'<div><strong>Temuan:</strong> '+cond.issues.join(', ')+'</div>':'')+'</div>'
     }
   }catch(e){
     console.error('Meter analysis error:',e)
@@ -441,7 +435,7 @@ function buildResults(){
   const potentialSaving=Math.round(totalCost*0.30)
   const pieSlices=activeRooms.map(r=>{
     const rCost=r.devs.reduce((a,d)=>a+calcDev(d.w,d.h).cost,0)
-    return {label:r.n,value:rCost,pct:totalCost>0?Math.round((rCost/totalCost)*100):0,kwh:Math.round(r.devs.reduce((a,d)=>a+calcDev(d.w,d.h).kwh,0)*10)/10,cnt:r.devs.length}
+    return {label:r.i+' '+r.n,value:rCost,pct:totalCost>0?Math.round((rCost/totalCost)*100):0,kwh:Math.round(r.devs.reduce((a,d)=>a+calcDev(d.w,d.h).kwh,0)*10)/10,cnt:r.devs.length}
   }).filter(s=>s.pct>0)
   const {svg:pieSvg,legends:pieLeg}=buildPieChart(pieSlices)
   const waMsg=encodeURIComponent('Halo! Saya baru cek lewat EnVisor AI.\nEstimasi tagihan: '+rp(totalCost)+'/bln\nDaya: '+plnVa+' VA · '+jumlahOrang+' penghuni\nID Laporan: '+reportId+'\nMohon bantu audit listrik rumah saya')
@@ -499,16 +493,16 @@ function buildResults(){
   h+='<table class="rpt-tbl" style="width:100%;margin-top:14px;border-collapse:collapse;font-size:12px">'
   h+='<tr style="background:#0f172a;color:#fff"><th style="padding:10px;text-align:left">INDIKATOR</th><th style="padding:10px;text-align:center">NILAI ANDA</th><th style="padding:10px;text-align:center">NILAI NORMAL</th><th style="padding:10px;text-align:center">SELISIH</th><th style="padding:10px;text-align:center">STATUS</th></tr>'
   var trs=[
-    ['Konsumsi kWh/bulan',Math.round(totalKwh)+' kWh',(jumlahOrang*100)+' kWh',kwhVsWajar>10?'+'+kwhVsWajar+'%':'Normal',kwhVsWajar>10?dot('#ef4444')+' Di atas wajar':dot('#22c55e')+' Normal'],
-    ['Estimasi tagihan',rp(totalCost),rp(wajarCost),kwhVsWajar>10?'+'+kwhVsWajar+'%':'Normal',kwhVsWajar>10?dot('#f97316')+' Perlu perhatian':dot('#22c55e')+' Normal'],
-    ['vs Rata-rata '+plnVa.toLocaleString()+'VA',Math.round(totalKwh)+' kWh',avgKwh+' kWh',vsAvgPct>0?'+'+vsAvgPct+'%':vsAvgPct+'%',isAboveAvg?dot('#ef4444')+' Di atas rata-rata':dot('#22c55e')+' Normal']
+    ['Konsumsi kWh/bulan',Math.round(totalKwh)+' kWh',(jumlahOrang*100)+' kWh',kwhVsWajar>10?'+'+kwhVsWajar+'%':'Normal',kwhVsWajar>10?'🔴 Di atas wajar':'🟢 Normal'],
+    ['Estimasi tagihan',rp(totalCost),rp(wajarCost),kwhVsWajar>10?'+'+kwhVsWajar+'%':'Normal',kwhVsWajar>10?'🟠 Perlu perhatian':'🟢 Normal'],
+    ['vs Rata-rata '+plnVa.toLocaleString()+'VA',Math.round(totalKwh)+' kWh',avgKwh+' kWh',vsAvgPct>0?'+'+vsAvgPct+'%':vsAvgPct+'%',isAboveAvg?'🔴 Di atas rata-rata':'🟢 Normal']
   ]
-  if(actualBill>0) trs.push(['Tagihan aktual vs estimasi',rp(actualBill),rp(totalCost),(isOver?'+':'')+diffPct+'% / '+rp(diff),isOver?L('triangle-alert')+' Mencurigakan':dot('#22c55e')+' Sesuai'])
+  if(actualBill>0) trs.push(['Tagihan aktual vs estimasi',rp(actualBill),rp(totalCost),(isOver?'+':'')+diffPct+'% / '+rp(diff),isOver?'⚠️ Mencurigakan':'🟢 Sesuai'])
   trs.forEach(function(row,ri){
     h+='<tr style="background:'+(ri%2===0?'#f8fafc':'#fff')+'">'
     row.forEach(function(cell,ci){
       var align=ci===0?'left':'center'
-      var color=ci===4?(cell.includes('#ef4444')||cell.includes('triangle-alert')?'#dc2626':cell.includes('#f97316')?'#d97706':'#059669'):'var(--dark)'
+      var color=ci===4?(cell.includes('🔴')||cell.includes('⚠️')?'#dc2626':cell.includes('🟠')?'#d97706':'#059669'):'var(--dark)'
       var fw=ci===4||ci===3?'700':'400'
       h+='<td style="padding:9px 10px;text-align:'+align+';border-bottom:1px solid var(--light);color:'+color+';font-weight:'+fw+'">'+cell+'</td>'
     })
@@ -546,7 +540,7 @@ function buildResults(){
     var dc=calcDev(d.w,d.h)
     var pct=Math.round((dc.cost/maxDevCost)*100)
     var cols=['linear-gradient(90deg,#ef4444,#f97316)','linear-gradient(90deg,#f59e0b,#ef4444)','linear-gradient(90deg,#fbbf24,#f59e0b)','linear-gradient(90deg,#a3e635,#10b981)','linear-gradient(90deg,#38bdf8,#0891b2)']
-    h+='<div><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><div style="font-size:12px;font-weight:700">'+L(d.e||'plug')+' '+d.n+' <span style="font-size:10px;color:var(--mid);font-weight:500">· '+d.room.n+' · '+d.h+'j/hr</span></div><div style="font-size:12px;font-weight:800;color:#ef4444">'+rp(dc.cost)+'</div></div>'
+    h+='<div><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><div style="font-size:12px;font-weight:700">'+(d.e||'🔌')+' '+d.n+' <span style="font-size:10px;color:var(--mid);font-weight:500">· '+d.room.n+' · '+d.h+'j/hr</span></div><div style="font-size:12px;font-weight:800;color:#ef4444">'+rp(dc.cost)+'</div></div>'
     h+='<div style="height:22px;background:var(--light2);border-radius:20px;overflow:hidden;position:relative"><div id="dbar'+di+'" style="height:100%;width:0;border-radius:20px;background:'+cols[di]+';transition:width 1s cubic-bezier(.4,0,.2,1)"></div><span style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:10px;font-weight:800;color:var(--mid)">'+dc.kwh+' kWh</span></div></div>'
   })
   h+='</div>'
@@ -556,10 +550,10 @@ function buildResults(){
   top5.forEach(function(d,di){
     var dc=calcDev(d.w,d.h)
     var share=totalCost>0?Math.round(dc.cost/totalCost*100):0
-    h+='<tr style="background:'+(di%2===0?'#fffbeb':'#fff')+'"><td style="padding:8px;text-align:center;font-weight:800;color:#fff;background:'+(di<2?'#ef4444':di<4?'#f59e0b':'#0891b2')+';border-radius:6px">'+(di+1)+'</td><td style="padding:8px;font-weight:700">'+L(d.e||'plug')+' '+d.n+'</td><td style="padding:8px">'+d.room.n+'</td><td style="padding:8px;text-align:center">'+d.w+'W</td><td style="padding:8px;text-align:center">'+d.h+'</td><td style="padding:8px;text-align:center">'+dc.kwh+'</td><td style="padding:8px;text-align:right;font-weight:800;color:#ef4444">'+rp(dc.cost)+'</td><td style="padding:8px;text-align:center;font-weight:700">'+share+'%</td></tr>'
+    h+='<tr style="background:'+(di%2===0?'#fffbeb':'#fff')+'"><td style="padding:8px;text-align:center;font-weight:800;color:#fff;background:'+(di<2?'#ef4444':di<4?'#f59e0b':'#0891b2')+';border-radius:6px">'+(di+1)+'</td><td style="padding:8px;font-weight:700">'+(d.e||'🔌')+' '+d.n+'</td><td style="padding:8px">'+d.room.n+'</td><td style="padding:8px;text-align:center">'+d.w+'W</td><td style="padding:8px;text-align:center">'+d.h+'</td><td style="padding:8px;text-align:center">'+dc.kwh+'</td><td style="padding:8px;text-align:right;font-weight:800;color:#ef4444">'+rp(dc.cost)+'</td><td style="padding:8px;text-align:center;font-weight:700">'+share+'%</td></tr>'
   })
   h+='</table>'
-  h+='<div style="padding:10px 14px;background:var(--white);border-radius:10px;border:1.5px solid var(--light);font-size:12px;color:var(--mid)">'+L('lightbulb')+' <strong style="color:var(--dark)">'+L(suspectDev?.e||'plug')+' '+(suspectDev?.n||'—')+'</strong> menyumbang <strong style="color:#ef4444">'+suspectShare+'%</strong> total tagihan bulanan</div></div>'
+  h+='<div style="padding:10px 14px;background:var(--white);border-radius:10px;border:1.5px solid var(--light);font-size:12px;color:var(--mid)">💡 <strong style="color:var(--dark)">'+(suspectDev?.e||'🔌')+' '+(suspectDev?.n||'—')+'</strong> menyumbang <strong style="color:#ef4444">'+suspectShare+'%</strong> total tagihan bulanan</div></div>'
 
   // ══ SECTION 6: ANALISA PENYEBAB TAGIHAN TINGGI (ILMIAH) ══
   if(showWarning){
@@ -692,18 +686,18 @@ function buildResults(){
     var meterIsOld=mc.estimatedAge>=8||mc.condition==='tua'||mc.condition==='sangat_tua'||mc.accuracyRisk==='tinggi'||mc.accuracyRisk==='sangat_tinggi'
     var borderColor=meterIsOld?'#fecaca':'#a7f3d0'
     var bgColor=meterIsOld?'#fff5f5':'#f0fdf4'
-    h+='<div class="rc" style="margin-bottom:16px;border-color:'+borderColor+';background:'+bgColor+'"><div class="rpt-sec" style="background:linear-gradient(135deg,'+(meterIsOld?'#991b1b,#dc2626':'#065f46,#059669'))+'">'+L('zap')+' LAPORAN KONDISI KWH METER</div>'
+    h+='<div class="rc" style="margin-bottom:16px;border-color:'+borderColor+';background:'+bgColor+'"><div class="rpt-sec" style="background:linear-gradient(135deg,'+(meterIsOld?'#991b1b,#dc2626':'#065f46,#059669')+')">\u26A1 LAPORAN KONDISI KWH METER</div>'
     
     // Meter info card
     h+='<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px">'
     h+='<div style="flex:1;min-width:200px;background:var(--white);border-radius:12px;padding:14px;border:1px solid var(--light)">'
     h+='<div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--mid);margin-bottom:8px">IDENTIFIKASI METER</div>'
     h+='<table style="font-size:13px;line-height:2">'
-    h+='<tr><td style="font-weight:700;padding-right:14px">Tipe</td><td>'+(mc.type==='analog'?L('settings')+' Analog (Ferraris Disk)':L('cpu')+' Digital/Prepaid')+'</td></tr>'
+    h+='<tr><td style="font-weight:700;padding-right:14px">Tipe</td><td>'+(mc.type==='analog'?'\u2699\uFE0F Analog (Ferraris Disk)':'\uD83D\uDCDF Digital/Prepaid')+'</td></tr>'
     h+='<tr><td style="font-weight:700;padding-right:14px">Estimasi Usia</td><td><span style="color:'+(mc.estimatedAge>=10?'#dc2626':mc.estimatedAge>=6?'#d97706':'#10b981')+';font-weight:800">~'+mc.estimatedAge+' tahun</span></td></tr>'
     h+='<tr><td style="font-weight:700;padding-right:14px">Kondisi</td><td><span style="color:'+(condColors[mc.condition]||'#d97706')+';font-weight:800">'+(condLabels[mc.condition]||mc.condition)+'</span></td></tr>'
     if(mc.brand) h+='<tr><td style="font-weight:700;padding-right:14px">Merk</td><td>'+mc.brand+'</td></tr>'
-    h+='<tr><td style="font-weight:700;padding-right:14px">Segel Kalibrasi</td><td>'+(mc.hasCalibrationSeal?L('circle-check')+' Ada'+(mc.sealYear?' ('+mc.sealYear+')':''):L('x-circle')+' Tidak terlihat')+'</td></tr>'
+    h+='<tr><td style="font-weight:700;padding-right:14px">Segel Kalibrasi</td><td>'+(mc.hasCalibrationSeal?'\u2705 Ada'+(mc.sealYear?' ('+mc.sealYear+')':''):'\u274C Tidak terlihat')+'</td></tr>'
     h+='</table></div>'
     
     // Risk gauge
@@ -720,7 +714,7 @@ function buildResults(){
     // Issues if any
     if(mc.issues&&mc.issues.length>0){
       h+='<div style="margin-bottom:12px;padding:12px 14px;background:#fef2f2;border:1px solid #fecaca;border-radius:10px;font-size:13px;line-height:1.7">'
-      h+='<strong style="color:#dc2626">'+L('triangle-alert')+' Temuan Masalah:</strong><br>'
+      h+='<strong style="color:#dc2626">\u26A0\uFE0F Temuan Masalah:</strong><br>'
       mc.issues.forEach(function(issue){ h+='\u2022 '+issue+'<br>' })
       h+='</div>'
     }
@@ -728,7 +722,7 @@ function buildResults(){
     // Impact analysis
     if(meterIsOld){
       h+='<div style="padding:14px;background:#fff5f5;border:1.5px solid #fecaca;border-radius:12px;margin-bottom:12px">'
-      h+='<div style="font-weight:800;color:#991b1b;margin-bottom:8px;font-size:14px">'+L('triangle-alert')+' DAMPAK PADA TAGIHAN LISTRIK</div>'
+      h+='<div style="font-weight:800;color:#991b1b;margin-bottom:8px;font-size:14px">\u26A0\uFE0F DAMPAK PADA TAGIHAN LISTRIK</div>'
       h+='<div style="font-size:13px;line-height:1.7;color:#7f1d1d">'
       if(mc.type==='analog'){
         h+='<strong>KWH meter analog berusia ~'+mc.estimatedAge+' tahun tergolong '+(mc.condition==='sangat_tua'?'sangat':'cukup')+' tua.</strong> '
@@ -744,7 +738,7 @@ function buildResults(){
       
       // Recommendation
       h+='<div style="padding:14px;background:#f0fdf4;border:1.5px solid #a7f3d0;border-radius:12px">'
-      h+='<div style="font-weight:800;color:#065f46;margin-bottom:8px;font-size:14px">'+L('circle-check')+' REKOMENDASI</div>'
+      h+='<div style="font-weight:800;color:#065f46;margin-bottom:8px;font-size:14px">\u2705 REKOMENDASI</div>'
       h+='<div style="font-size:13px;line-height:1.7;color:#064e3b">'
       h+='<strong>1.</strong> Hubungi <strong>PLN 123</strong> untuk minta pemeriksaan dan kalibrasi ulang meter (GRATIS untuk pelanggan reguler).<br>'
       h+='<strong>2.</strong> Jika meter >15 tahun, ajukan <strong>penggantian meter baru</strong> ke PLN Area terdekat.<br>'
@@ -753,7 +747,7 @@ function buildResults(){
       h+='</div></div>'
     } else {
       h+='<div style="padding:14px;background:#f0fdf4;border:1.5px solid #a7f3d0;border-radius:12px">'
-      h+='<div style="font-weight:800;color:#065f46;margin-bottom:8px;font-size:14px">'+L('circle-check')+' METER DALAM KONDISI BAIK</div>'
+      h+='<div style="font-weight:800;color:#065f46;margin-bottom:8px;font-size:14px">\u2705 METER DALAM KONDISI BAIK</div>'
       h+='<div style="font-size:13px;line-height:1.7;color:#064e3b">'
       h+='KWH meter Anda dalam kondisi baik dengan risiko ketidakakuratan rendah. Selisih antara estimasi dan tagihan aktual kemungkinan besar bukan disebabkan oleh masalah meter.'
       h+='</div></div>'
@@ -766,14 +760,14 @@ function buildResults(){
   h+='<div class="rc" style="margin-bottom:16px;border-color:#bae6fd;background:#f0f9ff">'
   h+='<div class="rpt-sec">■ SIMPAN & KIRIM LAPORAN</div>'
   h+='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">'
-  h+='<button onclick="window.print()" style="display:flex;align-items:center;gap:8px;padding:11px 18px;background:linear-gradient(135deg,#0891b2,#0e7490);color:#fff;border:none;border-radius:11px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer">'+L('printer')+' Simpan PDF</button>'
-  h+='<div style="flex:1;min-width:200px;display:flex;gap:8px"><input id="emailInput" type="email" placeholder="email@kamu.com" style="flex:1;padding:11px 13px;border-radius:11px;border:1.5px solid var(--light);background:var(--white);font-family:inherit;font-size:13px"><button onclick="sendEmail()" style="padding:11px 16px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;border:none;border-radius:11px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer">'+L('mail')+' Kirim</button></div></div>'
+  h+='<button onclick="window.print()" style="display:flex;align-items:center;gap:8px;padding:11px 18px;background:linear-gradient(135deg,#0891b2,#0e7490);color:#fff;border:none;border-radius:11px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer">🖨️ Simpan PDF</button>'
+  h+='<div style="flex:1;min-width:200px;display:flex;gap:8px"><input id="emailInput" type="email" placeholder="email@kamu.com" style="flex:1;padding:11px 13px;border-radius:11px;border:1.5px solid var(--light);background:var(--white);font-family:inherit;font-size:13px"><button onclick="sendEmail()" style="padding:11px 16px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;border:none;border-radius:11px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer">📧 Kirim</button></div></div>'
   h+='<div id="emailStatus" style="margin-top:8px;font-size:12px;display:none"></div></div>'
 
   // WhatsApp CTA
   h+='<div style="background:linear-gradient(135deg,#25D366,#128C7E);border-radius:16px;padding:22px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:16px">'
-  h+='<div><h4 style="color:#fff;font-size:16px;font-weight:800;margin:0 0 4px">'+L('wrench')+' Butuh Bantuan Teknisi Listrik Berlisensi?</h4><p style="color:rgba(255,255,255,.85);font-size:12px;margin:0">Audit lapangan, perbaikan arus bocor, penggantian instalasi</p></div>'
-  h+='<a style="display:inline-flex;align-items:center;gap:8px;background:#fff;color:#128C7E;font-weight:800;font-size:13px;padding:12px 22px;border-radius:12px;text-decoration:none;white-space:nowrap" href="https://wa.me/6285260409720?text='+waMsg+'" target="_blank">'+L('message-circle')+' Chat WhatsApp</a></div>'
+  h+='<div><h4 style="color:#fff;font-size:16px;font-weight:800;margin:0 0 4px">🔧 Butuh Bantuan Teknisi Listrik Berlisensi?</h4><p style="color:rgba(255,255,255,.85);font-size:12px;margin:0">Audit lapangan, perbaikan arus bocor, penggantian instalasi</p></div>'
+  h+='<a style="display:inline-flex;align-items:center;gap:8px;background:#fff;color:#128C7E;font-weight:800;font-size:13px;padding:12px 22px;border-radius:12px;text-decoration:none;white-space:nowrap" href="https://wa.me/6285260409720?text='+waMsg+'" target="_blank">💬 Chat WhatsApp</a></div>'
 
   // Disclaimer
   h+='<div style="font-size:11px;color:var(--mid);line-height:1.6;padding:12px 16px;background:var(--light2);border-radius:10px;margin-bottom:8px">'
@@ -781,7 +775,6 @@ function buildResults(){
   h+='<br>EnVisor AI — '+reportDate+' — ID: '+reportId+'</div>'
 
   document.getElementById('rbody').innerHTML=h
-  refreshIcons()
 
   // Animate bars
   setTimeout(function(){
@@ -858,7 +851,7 @@ function sendEmail(){
   const status=document.getElementById('emailStatus')
   if(!email||!email.includes('@')){
     status.style.display='block'; status.style.color='#ef4444'
-    status.textContent='Masukkan alamat email yang valid'; return
+    status.textContent='⚠️ Masukkan alamat email yang valid'; return
   }
   // Build report text
   const allDevs=rooms.flatMap(r=>r.devs.map(d=>({...d,room:r})))
@@ -879,7 +872,7 @@ function sendEmail(){
   const subject=encodeURIComponent(`Laporan Audit Listrik Rumah — EnVisor AI`)
   window.open(`mailto:${email}?subject=${subject}&body=${body}`)
   status.style.display='block'; status.style.color='#10b981'
-  status.textContent='Membuka aplikasi email kamu...'
+  status.textContent='✅ Membuka aplikasi email kamu...'
   setTimeout(()=>{ status.style.display='none' },4000)
 }
 
@@ -888,19 +881,19 @@ function toB64(file){ return new Promise((res,rej)=>{ const r=new FileReader(); 
 
 function emoji(name){
   const n=name.toLowerCase()
-  if(n.includes('ac')||n.includes('air con')||n.includes('pendingin')) return 'snowflake'
-  if(n.includes('kulkas')||n.includes('refrig')||n.includes('freeze')) return 'archive'
-  if(n.includes('tv')||n.includes('tele')||n.includes('monitor')) return 'tv'
-  if(n.includes('cuci')||n.includes('wash')) return 'waves'
-  if(n.includes('lampu')||n.includes('light')||n.includes('led')) return 'lightbulb'
-  if(n.includes('laptop')||n.includes('computer')||n.includes('pc')) return 'laptop'
-  if(n.includes('heater')||n.includes('pemanas')||n.includes('water')) return 'droplets'
-  if(n.includes('rice')||n.includes('nasi')) return 'cooking-pot'
-  if(n.includes('microwave')||n.includes('oven')) return 'radio'
-  if(n.includes('kipas')||n.includes('fan')) return 'fan'
-  if(n.includes('dispenser')) return 'glass-water'
-  if(n.includes('pompa')||n.includes('pump')) return 'droplet'
-  return 'plug'
+  if(n.includes('ac')||n.includes('air con')||n.includes('pendingin')) return '❄️'
+  if(n.includes('kulkas')||n.includes('refrig')||n.includes('freeze')) return '🧊'
+  if(n.includes('tv')||n.includes('tele')||n.includes('monitor')) return '📺'
+  if(n.includes('cuci')||n.includes('wash')) return '🫧'
+  if(n.includes('lampu')||n.includes('light')||n.includes('led')) return '💡'
+  if(n.includes('laptop')||n.includes('computer')||n.includes('pc')) return '💻'
+  if(n.includes('heater')||n.includes('pemanas')||n.includes('water')) return '🚿'
+  if(n.includes('rice')||n.includes('nasi')) return '🍚'
+  if(n.includes('microwave')||n.includes('oven')) return '📡'
+  if(n.includes('kipas')||n.includes('fan')) return '🌀'
+  if(n.includes('dispenser')) return '🥤'
+  if(n.includes('pompa')||n.includes('pump')) return '💧'
+  return '🔌'
 }
 
 function mockOne(roomName,count){
@@ -946,11 +939,11 @@ function mockOne(roomName,count){
 function restart(){
   kwhMeterCondition=null
   rooms=[
-    {id:'r1',n:'Ruang Tamu',i:'sofa',devs:[]},
-    {id:'r2',n:'Ruang Keluarga',i:'tv',devs:[]},
-    {id:'r3',n:'Dapur',i:'utensils',devs:[]},
-    {id:'r4',n:'Kamar Utama',i:'bed-double',devs:[]},
-    {id:'r5',n:'Garasi',i:'car',devs:[]},
+    {id:'r1',n:'Ruang Tamu',i:'🛋️',devs:[]},
+    {id:'r2',n:'Ruang Keluarga',i:'📺',devs:[]},
+    {id:'r3',n:'Dapur',i:'🍳',devs:[]},
+    {id:'r4',n:'Kamar Utama',i:'🛏️',devs:[]},
+    {id:'r5',n:'Garasi',i:'🚗',devs:[]},
   ]
   plnVa=1300; jumlahOrang=3; activeRoom='r1'
   ;['buz1','buz2'].forEach(id=>document.getElementById(id).classList.remove('done'))
