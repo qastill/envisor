@@ -888,13 +888,63 @@ function sendEmail(){
     status.style.display='block'; status.style.color='#ef4444'
     status.textContent='⚠️ Masukkan alamat email yang valid'; return
   }
+  // Premium report requires payment first
+  showPaymentModal(email)
+}
+
+function showPaymentModal(email){
+  window.__paidEmail=email
+  const existing=document.getElementById('paymentModal')
+  if(existing) existing.remove()
+  const modal=document.createElement('div')
+  modal.id='paymentModal'
+  modal.style.cssText='position:fixed;inset:0;background:rgba(15,23,42,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);font-family:inherit'
+  modal.innerHTML='<div style="background:#fff;border-radius:18px;max-width:380px;width:100%;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,0.3);text-align:center;max-height:90vh;overflow-y:auto">'
+    +'<div style="display:inline-block;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#fff;font-size:11px;font-weight:800;padding:4px 12px;border-radius:999px;margin-bottom:8px;letter-spacing:0.5px">⭐ LAPORAN PREMIUM</div>'
+    +'<div style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:4px">Laporan Lengkap Audit Listrik</div>'
+    +'<div style="font-size:28px;font-weight:900;color:#0891b2;margin-bottom:6px">Rp 99.000</div>'
+    +'<div style="font-size:12px;color:#64748b;margin-bottom:16px;line-height:1.5">Akan dikirim ke<br><b style="color:#0f172a">'+email+'</b></div>'
+    +'<div style="background:#f0fdf4;border:2px dashed #10b981;border-radius:14px;padding:16px;margin-bottom:14px">'
+    +'<div style="font-size:11px;font-weight:800;color:#065f46;margin-bottom:10px;letter-spacing:0.5px">📱 SCAN QR UNTUK BAYAR</div>'
+    +'<div style="background:#fff;padding:10px;border-radius:10px;display:inline-block">'
+    +'<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=00020101021126570011ID.DANA.WWW011893600915ENVISOR9900052047299530360054069900058115802ID5907ENVISOR6007JAKARTA61051234062070703A0163041234&color=059669-ffffff" alt="QR Pembayaran" style="width:180px;height:180px;display:block"/>'
+    +'</div>'
+    +'<div style="font-size:11px;color:#065f46;margin-top:10px;font-weight:700">QRIS · GoPay · OVO · DANA · ShopeePay</div>'
+    +'</div>'
+    +'<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:10px;margin-bottom:14px">'
+    +'<div style="font-size:11px;color:#92400e;line-height:1.5">💡 Yang akan kamu dapatkan:</div>'
+    +'<div style="font-size:11px;color:#78350f;margin-top:4px;text-align:left;line-height:1.6">'
+    +'✓ Laporan PDF lengkap per ruangan<br>'
+    +'✓ Rincian biaya & efisiensi semua perangkat<br>'
+    +'✓ Rekomendasi penghematan personalisasi<br>'
+    +'✓ Akses konsultasi via WhatsApp'
+    +'</div></div>'
+    +'<div style="display:flex;gap:8px">'
+    +'<button onclick="closePaymentModal()" style="flex:1;padding:12px;background:#f1f5f9;color:#475569;border:none;border-radius:11px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer">Batal</button>'
+    +'<button onclick="confirmPayment()" style="flex:2;padding:12px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:11px;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer">✅ Saya Sudah Bayar</button>'
+    +'</div>'
+    +'</div>'
+  modal.addEventListener('click',function(e){ if(e.target===modal) closePaymentModal() })
+  document.body.appendChild(modal)
+}
+
+function closePaymentModal(){
+  const modal=document.getElementById('paymentModal')
+  if(modal) modal.remove()
+}
+
+function confirmPayment(){
+  const email=window.__paidEmail
+  if(!email){ closePaymentModal(); return }
+  closePaymentModal()
+  const status=document.getElementById('emailStatus')
   // Build report text
   const allDevs=rooms.flatMap(r=>r.devs.map(d=>({...d,room:r})))
   const totalKwh=Math.round(allDevs.reduce((a,d)=>a+calcDev(d.w,d.h).kwh,0))
   const totalCost=allDevs.reduce((a,d)=>a+calcDev(d.w,d.h).cost,0)
   const sorted=[...allDevs].sort((a,b)=>calcDev(b.w,b.h).cost-calcDev(a.w,a.h).cost)
   const lines=[
-    `LAPORAN AUDIT LISTRIK — EnVisor AI`,``,
+    `LAPORAN AUDIT LISTRIK PREMIUM — EnVisor AI`,``,
     `Daya PLN : ${plnVa.toLocaleString()} VA`,
     `Penghuni : ${jumlahOrang} orang`,
     `Total kWh : ${totalKwh} kWh/bulan`,
@@ -904,11 +954,14 @@ function sendEmail(){
     `Laporan lengkap: https://envisor.ai`
   ]
   const body=encodeURIComponent(lines.join('\n'))
-  const subject=encodeURIComponent(`Laporan Audit Listrik Rumah — EnVisor AI`)
+  const subject=encodeURIComponent(`Laporan Audit Listrik Rumah PREMIUM — EnVisor AI`)
   window.open(`mailto:${email}?subject=${subject}&body=${body}`)
-  status.style.display='block'; status.style.color='#10b981'
-  status.textContent='✅ Membuka aplikasi email kamu...'
-  setTimeout(()=>{ status.style.display='none' },4000)
+  if(status){
+    status.style.display='block'; status.style.color='#10b981'
+    status.textContent='✅ Pembayaran diterima! Membuka aplikasi email...'
+    setTimeout(()=>{ status.style.display='none' },5000)
+  }
+  window.__paidEmail=null
 }
 
 // ── HELPERS ───────────────────────────────────────────────────────
