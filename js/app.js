@@ -286,9 +286,13 @@ function editWattValue(){
   const d=window.__pendingDev.devs[0]
   const info=document.getElementById('wattInfo')
   if(!info) return
-  info.innerHTML='<div style="display:flex;align-items:center;gap:6px;margin-top:2px">'
-    +'<input id="editWatts" type="number" min="1" value="'+d.watts+'" onfocus="this.select()" oninput="updateWattEstimate(this.value)" style="width:72px;padding:4px 6px;border:1.5px solid #f59e0b;border-radius:6px;font-family:inherit;font-size:13px;font-weight:800;text-align:center;background:#fffbeb;color:#92400e;outline:none"/>'
-    +'<span style="font-size:12px;color:var(--mid)">W \u00B7 '+d.dailyHours+' jam/hari</span>'
+  info.innerHTML='<div style="background:#fffbeb;border:1.5px solid #f59e0b;border-radius:8px;padding:10px;margin-top:6px">'
+    +'<div style="font-size:11px;font-weight:700;color:#92400e;margin-bottom:6px">\u270F\uFE0F Masukkan daya watt yang benar:</div>'
+    +'<div style="display:flex;align-items:center;gap:6px">'
+    +'<input id="editWatts" type="number" min="1" value="'+d.watts+'" onfocus="this.select()" oninput="updateWattEstimate(this.value)" style="flex:1;padding:8px 10px;border:1.5px solid #f59e0b;border-radius:6px;font-family:inherit;font-size:15px;font-weight:800;text-align:center;background:#fff;color:#92400e;outline:none"/>'
+    +'<span style="font-size:13px;font-weight:700;color:#92400e">Watt</span>'
+    +'</div>'
+    +'<div style="font-size:11px;color:#92400e;margin-top:6px">Estimasi baru: <span id="liveEst" style="font-weight:800">'+d.watts+'W \u00B7 '+d.dailyHours+' jam/hari</span></div>'
     +'</div>'
   const inp=document.getElementById('editWatts')
   if(inp){ inp.focus(); inp.select() }
@@ -297,7 +301,12 @@ function editWattValue(){
 function updateWattEstimate(val){
   if(!window.__pendingDev) return
   const w=parseFloat(val)
-  if(!isNaN(w) && w>0 && window.__pendingDev.devs[0]) window.__pendingDev.devs[0].watts=w
+  const d=window.__pendingDev.devs[0]
+  if(!isNaN(w) && w>0 && d){
+    d.watts=w
+    const live=document.getElementById('liveEst')
+    if(live) live.textContent=w+'W \u00B7 '+d.dailyHours+' jam/hari'
+  }
 }
 
 function confirmDevice(isCorrect){
