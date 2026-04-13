@@ -271,10 +271,10 @@ function showDeviceConfirm(roomId, devs, imgFile){
     +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'
     +'<div style="font-size:24px">'+(d.emoji||'\uD83D\uDD0C')+'</div>'
     +'<div style="flex:1"><div style="font-size:14px;font-weight:800">'+d.name+'</div>'
-    +'<div style="font-size:12px;color:var(--mid);display:flex;align-items:center;gap:4px;flex-wrap:wrap">'
-    +'<input id="editWatts" type="number" min="1" value="'+d.watts+'" onfocus="this.select()" style="width:56px;padding:3px 6px;border:1.5px solid #a7f3d0;border-radius:6px;font-family:inherit;font-size:12px;font-weight:700;text-align:center;background:#fff;color:#065f46"/>'
-    +'<span>W \u00B7 '+d.dailyHours+' jam/hari</span>'
-    +'<span style="font-size:11px;color:#10b981">(bisa diubah)</span>'
+    +'<div id="wattDisplay" style="font-size:12px;color:var(--mid)">'+d.watts+'W \u00B7 '+d.dailyHours+' jam/hari <a href="javascript:void(0)" onclick="enableWattEdit()" style="color:#059669;font-weight:700;text-decoration:underline;margin-left:4px">Ubah watt</a></div>'
+    +'<div id="wattEdit" style="display:none;font-size:12px;color:var(--mid);align-items:center;gap:6px;margin-top:4px">'
+    +'<input id="editWatts" type="number" min="1" value="'+d.watts+'" onfocus="this.select()" style="width:64px;padding:4px 6px;border:1.5px solid #a7f3d0;border-radius:6px;font-family:inherit;font-size:12px;font-weight:700;text-align:center;background:#fff;color:#065f46"/>'
+    +'<span>Watt \u00B7 '+d.dailyHours+' jam/hari</span>'
     +'</div></div></div>'
     +'<div style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:10px">Apa benar perangkat ini?</div>'
     +'<div style="display:flex;gap:8px">'
@@ -283,15 +283,25 @@ function showDeviceConfirm(roomId, devs, imgFile){
     +'</div></div>'
 }
 
+function enableWattEdit(){
+  const disp=document.getElementById('wattDisplay')
+  const edit=document.getElementById('wattEdit')
+  if(disp) disp.style.display='none'
+  if(edit){ edit.style.display='flex'; const i=document.getElementById('editWatts'); if(i){ i.focus(); i.select() } }
+}
+
 function confirmDevice(isCorrect){
   if(!window.__pendingDev) return
   const {roomId, devs}=window.__pendingDev
   const room=rooms.find(r=>r.id===roomId)
   if(isCorrect && room){
-    const editInput=document.getElementById('editWatts')
-    if(editInput && devs[0]){
-      const newW=parseFloat(editInput.value)
-      if(!isNaN(newW) && newW>0) devs[0].watts=newW
+    const editWrap=document.getElementById('wattEdit')
+    if(editWrap && editWrap.style.display!=='none' && devs[0]){
+      const editInput=document.getElementById('editWatts')
+      if(editInput){
+        const newW=parseFloat(editInput.value)
+        if(!isNaN(newW) && newW>0) devs[0].watts=newW
+      }
     }
     devs.forEach(function(d){ room.devs.push({n:d.name,w:d.watts,h:d.dailyHours||4,e:d.emoji||emoji(d.name)}) })
   }
