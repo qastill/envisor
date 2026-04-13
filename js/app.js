@@ -268,24 +268,36 @@ function showDeviceConfirm(roomId, devs, imgFile){
   window.__pendingDev={roomId:roomId, devs:devs}
   if(inn) inn.innerHTML='<div style="background:#f0fdf4;border:1.5px solid #a7f3d0;border-radius:12px;padding:14px;text-align:left">'
     +'<div style="font-size:14px;font-weight:800;color:#065f46;margin-bottom:8px">\u2705 AI Terdeteksi:</div>'
-    +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'
+    +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'
     +'<div style="font-size:24px">'+(d.emoji||'\uD83D\uDD0C')+'</div>'
     +'<div style="flex:1"><div style="font-size:14px;font-weight:800">'+d.name+'</div>'
-    +'<div style="font-size:11px;color:var(--mid)">Estimasi AI: '+d.watts+'W \u00B7 '+d.dailyHours+' jam/hari</div>'
+    +'<div id="wattInfo" style="font-size:12px;color:var(--mid)">'+d.watts+'W \u00B7 '+d.dailyHours+' jam/hari</div>'
     +'</div></div>'
-    +'<div style="background:#fff;border:1.5px solid #a7f3d0;border-radius:10px;padding:10px 12px;margin-bottom:10px">'
-    +'<label for="editWatts" style="display:block;font-size:12px;font-weight:700;color:#065f46;margin-bottom:6px">Kapasitas daya (Watt)</label>'
-    +'<div style="display:flex;align-items:center;gap:8px">'
-    +'<input id="editWatts" type="number" min="1" value="'+d.watts+'" onfocus="this.select()" style="flex:1;padding:8px 10px;border:1.5px solid #d1fae5;border-radius:8px;font-family:inherit;font-size:15px;font-weight:800;text-align:center;background:#f0fdf4;color:#065f46;outline:none"/>'
-    +'<span style="font-size:13px;font-weight:700;color:#065f46">Watt</span>'
-    +'</div>'
-    +'<div style="font-size:11px;color:var(--mid);margin-top:6px">\u270F\uFE0F Ubah jika estimasi AI tidak sesuai (cek label perangkat)</div>'
-    +'</div>'
     +'<div style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:10px">Apa benar perangkat ini?</div>'
-    +'<div style="display:flex;gap:8px">'
-    +'<button onclick="confirmDevice(true)" style="flex:1;padding:10px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer">\u2705 Ya, Benar</button>'
-    +'<button onclick="confirmDevice(false)" style="flex:1;padding:10px;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer">\u274C Bukan, Foto Ulang</button>'
+    +'<div style="display:flex;gap:6px">'
+    +'<button onclick="confirmDevice(true)" style="flex:1;padding:10px 4px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:12px;font-weight:800;cursor:pointer">\u2705 Ya, Benar</button>'
+    +'<button onclick="editWattValue()" style="flex:1;padding:10px 4px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:12px;font-weight:800;cursor:pointer">\u270F\uFE0F Edit Daya</button>'
+    +'<button onclick="confirmDevice(false)" style="flex:1;padding:10px 4px;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:12px;font-weight:800;cursor:pointer">\u274C Foto Ulang</button>'
     +'</div></div>'
+}
+
+function editWattValue(){
+  if(!window.__pendingDev) return
+  const d=window.__pendingDev.devs[0]
+  const info=document.getElementById('wattInfo')
+  if(!info) return
+  info.innerHTML='<div style="display:flex;align-items:center;gap:6px;margin-top:2px">'
+    +'<input id="editWatts" type="number" min="1" value="'+d.watts+'" onfocus="this.select()" oninput="updateWattEstimate(this.value)" style="width:72px;padding:4px 6px;border:1.5px solid #f59e0b;border-radius:6px;font-family:inherit;font-size:13px;font-weight:800;text-align:center;background:#fffbeb;color:#92400e;outline:none"/>'
+    +'<span style="font-size:12px;color:var(--mid)">W \u00B7 '+d.dailyHours+' jam/hari</span>'
+    +'</div>'
+  const inp=document.getElementById('editWatts')
+  if(inp){ inp.focus(); inp.select() }
+}
+
+function updateWattEstimate(val){
+  if(!window.__pendingDev) return
+  const w=parseFloat(val)
+  if(!isNaN(w) && w>0 && window.__pendingDev.devs[0]) window.__pendingDev.devs[0].watts=w
 }
 
 function confirmDevice(isCorrect){
