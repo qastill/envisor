@@ -1,148 +1,107 @@
 # EnVisor — Kuesioner Market Validation
-### Untuk PLN Innovation Gateway 2026 · Section B (Customer Validation & Traction)
+### Fokus: gali masalah tagihan listrik & willingness to pay · PLN Innovation Gateway 2026 (Section B)
 
-Dua kuesioner: **A. Pelanggan Rumah Tangga (B2C)** dan **B. Pelanggan Industri / Unit PLN (B2B/B2G)**.
-Tujuan: memvalidasi **masalah** (problem validation) dan **minat atas solusi** (solution validation), bukan sekadar mengumpulkan pujian.
+Dua kuesioner: **A. Pelanggan Rumah Tangga (B2C)** dan **B. Pelanggan Industri (B2B) — Jasa Audit Energi**.
+Versi interaktif (bisa diisi langsung): **/kuesioner.html**
 
-> **Cara pakai:** salin ke Google Forms / Tally / SurveyMonkey, atau cetak. Skala = Likert 1–5 (1 = sangat tidak setuju, 5 = sangat setuju) kecuali disebut lain. Pertanyaan bertanda ⭐ adalah *killer question* yang paling menentukan go/no-go.
+> **Cara pakai:** salin ke Google Forms / Tally, atau cetak. Skala = Likert 1–5 (1 = sangat tidak setuju, 5 = sangat setuju) kecuali disebut lain. ⭐ = *killer question* penentu go/no-go.
 
----
-
-## Prinsip metodologi (baca dulu)
-
-- **Pisahkan problem vs solution.** Validasi dulu apakah masalahnya nyata sebelum bertanya soal solusi.
-- **Hindari pertanyaan menggiring.** Jangan "Apakah Anda suka ide aplikasi audit listrik AI?" → bias positif. Tanyakan perilaku & pengalaman nyata.
-- **Tanya perilaku masa lalu, bukan niat masa depan.** "Apa yang Anda lakukan terakhir kali tagihan melonjak?" lebih valid daripada "Apakah Anda akan…".
-- **Validasi harga dengan Van Westendorp** (4 pertanyaan harga), bukan satu pertanyaan "mau bayar berapa".
-- **Target sampel pilot:** Rumah ≥ 100 responden (beragam daya VA), Industri ≥ 15–20 wawancara mendalam + ≥ 30 survei.
-- **Selalu rekam:** consent, kontak (opsional) untuk pilot, dan 1 kutipan verbatim per responden.
+## Prinsip metodologi
+- Pisahkan **problem validation** (apakah masalah nyata) dari **willingness to pay**.
+- Hindari pertanyaan menggiring — tanyakan perilaku & pengalaman nyata.
+- Validasi harga dengan **Van Westendorp** (4 pertanyaan), bukan satu pertanyaan "mau bayar berapa".
+- Target: Rumah ≥ 100 responden; Industri ≥ 20 responden (wawancara + survei).
 
 ---
 
-# A. KUESIONER PELANGGAN RUMAH TANGGA (B2C)
+# A. PELANGGAN RUMAH TANGGA (B2C) — 3–5 menit
 
-**Estimasi waktu: 4–6 menit · Mode: online (PWA/WA) atau tatap muka**
+### 1. Sekilas tentang Anda
+- **1.1** Daya listrik terpasang: ☐ 450 ☐ 900 ☐ 1300 ☐ 2200 ☐ 3500 VA+ ☐ Tidak tahu
+- **1.2** Tagihan/token per bulan: ☐ <200rb ☐ 200–400rb ☐ 400–700rb ☐ 700rb–1,2jt ☐ >1,2jt
+- **1.3** Status meteran: ☐ Pascabayar ☐ Prabayar
 
-### Bagian 0 — Persetujuan
-- **0.1** Apakah Anda bersedia jawabannya digunakan untuk riset pengembangan produk (anonim)? ☐ Ya ☐ Tidak
-
-### Bagian 1 — Profil & Screening
-- **1.1** Lokasi (Kota/Kabupaten): ____________
-- **1.2** Daya listrik terpasang di rumah: ☐ 450 VA ☐ 900 VA ☐ 1300 VA ☐ 2200 VA ☐ 3500 VA+ ☐ Tidak tahu
-- **1.3** Rata-rata tagihan/pembelian token listrik per bulan: ☐ < Rp 200rb ☐ Rp 200–400rb ☐ Rp 400–700rb ☐ Rp 700rb–1,2jt ☐ > Rp 1,2jt
-- **1.4** Jumlah penghuni rumah: ☐ 1–2 ☐ 3–4 ☐ 5–6 ☐ > 6
-- **1.5** Status meteran: ☐ Pascabayar ☐ Prabayar (token)
-- **1.6** Seberapa nyaman Anda menggunakan aplikasi di HP? (1–5): ___
-
-### Bagian 2 — Problem Validation
-- **2.1** ⭐ Dalam 6 bulan terakhir, seberapa sering Anda terkejut tagihan/token listrik lebih boros dari perkiraan? ☐ Tidak pernah ☐ 1–2x ☐ 3–5x ☐ Hampir tiap bulan
-- **2.2** "Saya tahu persis perangkat mana di rumah yang paling boros listrik." (1–5): ___
+### 2. Gali masalah
+- **2.1** ⭐ Dalam 6 bulan terakhir, seberapa sering tagihan lebih boros dari perkiraan? ☐ Tidak pernah ☐ 1–2x ☐ 3–5x ☐ Hampir tiap bulan
+- **2.2** "Saya tahu persis perangkat mana yang paling boros." (1–5): ___
 - **2.3** "Saya pernah merasa tagihan listrik saya tidak wajar/janggal." (1–5): ___
-- **2.4** Saat tagihan melonjak, apa yang biasanya Anda lakukan? (boleh pilih >1) ☐ Tidak melakukan apa-apa ☐ Cek/cabut perangkat tertentu ☐ Tanya tetangga/keluarga ☐ Komplain ke PLN ☐ Cari info di internet ☐ Lainnya: ___
-- **2.5** Seberapa mengganggu masalah tagihan listrik yang tidak terkontrol bagi keuangan rumah Anda? (1–5): ___
-- **2.6** ⭐ Jika ada cara mengetahui penyebab borosnya **tanpa alat ukur**, seberapa berharga itu bagi Anda? (1–5): ___
+- **2.4** Saat tagihan melonjak, apa yang Anda lakukan? (boleh >1) ☐ Tidak apa-apa ☐ Cek/cabut perangkat ☐ Tanya orang ☐ Komplain PLN ☐ Cari info internet
+- **2.5** Seberapa mengganggu bagi keuangan rumah Anda? (1–5): ___
+- **2.6** ⭐ Mengetahui penyebab borosnya **tanpa alat ukur** — seberapa berharga? (1–5): ___
+- **2.7** Ceritakan pengalaman tagihan yang paling bikin pusing (opsional): ___
 
-### Bagian 3 — Perilaku Saat Ini
-- **3.1** Apakah Anda pernah melakukan/menggunakan audit atau kalkulator listrik? ☐ Belum pernah ☐ Pernah, kalkulator online ☐ Pernah, panggil teknisi ☐ Lainnya: ___
-- **3.2** Jika pernah, apa yang membuat Anda berhenti / tidak puas? ____________
-- **3.3** Dari mana biasanya Anda cari info soal hemat listrik? ☐ Media sosial ☐ YouTube ☐ Teman/keluarga ☐ PLN ☐ Tidak pernah cari
+### 3. Willingness to Pay — laporan premium (diagnosa lengkap + rekomendasi)
+- **3.1** Harga **terlalu mahal** sehingga tidak beli? Rp ___
+- **3.2** Harga **mulai mahal** tapi masih dipertimbangkan? Rp ___
+- **3.3** Harga terasa **murah/worth it**? Rp ___
+- **3.4** Harga **terlalu murah** sampai ragu kualitas? Rp ___
+- **3.5** ⭐ Bersedia membayar **Rp 99.000** untuk laporan premium? ☐ Ya ☐ Mungkin ☐ Tidak
+- **3.6** Jika tidak/mungkin, harga yang pantas: Rp ___
+- **3.7** Tertarik di-rujuk ke layanan? ☐ Tambah/turun daya ☐ Solar PV ☐ Perangkat hemat ☐ SPKLU/EV ☐ Tidak
 
-### Bagian 4 — Solution Validation
-*(Tunjukkan deskripsi singkat/mockup EnVisor Home: "foto tiap elektronik → AI estimasi watt & biaya → bandingkan dengan tagihan → rekomendasi hemat".)*
-- **4.1** ⭐ Setelah melihat ini, seberapa besar kemungkinan Anda mencobanya? (1–5): ___
-- **4.2** Fitur mana yang paling menarik bagi Anda? (urutkan 1–3) ☐ Estimasi biaya per perangkat ☐ Deteksi anomali tagihan ☐ Rekomendasi hemat ☐ Bandingkan dengan rumah sejenis ☐ Laporan lengkap
-- **4.3** Apa kekhawatiran terbesar Anda? (boleh >1) ☐ Akurasi hasil ☐ Privasi foto ☐ Ribet/makan waktu ☐ Tidak percaya AI ☐ Tidak ada
-- **4.4** "Saya lebih percaya hasilnya jika tertera EnVisor adalah alat estimasi (bukan audit resmi) dengan margin error 5–20%." (1–5): ___
-
-### Bagian 5 — Willingness to Pay (Van Westendorp untuk Laporan Premium)
-*(Laporan premium = diagnosa lengkap + rekomendasi terinci + perbandingan.)*
-- **5.1** Pada harga berapa laporan ini terasa **terlalu mahal** sehingga Anda tidak membelinya? Rp ___
-- **5.2** Pada harga berapa terasa **mulai mahal** tapi masih Anda pertimbangkan? Rp ___
-- **5.3** Pada harga berapa terasa **murah/worth it**? Rp ___
-- **5.4** Pada harga berapa terasa **terlalu murah** sampai Anda ragu kualitasnya? Rp ___
-- **5.5** ⭐ Apakah Anda bersedia membayar **Rp 99.000** untuk laporan premium ini? ☐ Ya ☐ Mungkin ☐ Tidak — alasan: ___
-- **5.6** Selain laporan, Anda tertarik di-rujuk ke layanan apa? ☐ Tambah/turun daya ☐ Solar panel (PLTS atap) ☐ Perangkat hemat energi ☐ SPKLU/kendaraan listrik ☐ Tidak
-
-### Bagian 6 — Penutup
-- **6.1** Seberapa besar kemungkinan Anda merekomendasikan EnVisor ke teman/keluarga? (0–10) [NPS]: ___
-- **6.2** Boleh kami hubungi untuk uji coba gratis (pilot)? ☐ Ya, no. WA: ___ ☐ Tidak
-- **6.3** Satu hal yang akan membuat Anda **pasti** memakai aplikasi ini: ____________
+### 4. Penutup
+- **4.1** NPS (0–10): ___
+- **4.2** Boleh dihubungi untuk uji coba gratis? No. WA: ___
+- **4.3** Satu hal yang membuat Anda **pasti** memakai aplikasi ini: ___
 
 ---
 
-# B. KUESIONER PELANGGAN INDUSTRI / UNIT PLN (B2B/B2G)
+# B. PELANGGAN INDUSTRI (B2B) — JASA AUDIT ENERGI · 7–12 menit
 
-**Estimasi waktu: 10–15 menit · Mode: wawancara mendalam + survei**
-**Responden ideal:** Manajer Pemeliharaan/Maintenance, Manajer Energi/Utility, HSE, Plant Manager, atau pengelola aset unit PLN.
+> **Konteks:** EnVisor menyediakan **jasa audit energi** (analisis tagihan + pengukuran/AI) untuk menemukan penghematan biaya listrik yang terukur. Responden ideal: Manajer Utility/Energi, Plant Manager, HSE.
 
-### Bagian 0 — Persetujuan
-- **0.1** Bersedia jawaban digunakan untuk riset (data perusahaan dirahasiakan)? ☐ Ya ☐ Tidak
+### 1. Profil responden & perusahaan
+- **1.1** Jabatan/peran: ___
+- **1.2** Sektor: ☐ Manufaktur ☐ FMCG/F&B ☐ Pertambangan ☐ Properti/Gedung ☐ Hotel/RS ☐ Lainnya
+- **1.3** Golongan tarif / daya tersambung (mis. I-3, I-4, B-3): ___
+- **1.4** Nama perusahaan (opsional): ___
 
-### Bagian 1 — Profil Responden & Organisasi
-- **1.1** Jabatan/peran: ____________
-- **1.2** Sektor: ☐ Manufaktur ☐ FMCG/F&B ☐ Pertambangan ☐ Properti/Gedung ☐ Kawasan industri ☐ Unit operasional PLN ☐ Lainnya: ___
-- **1.3** Jumlah karyawan: ☐ < 50 ☐ 50–250 ☐ 250–1000 ☐ > 1000
-- **1.4** Golongan tarif / daya tersambung PLN: ____________ (mis. I-3, I-4, B-3)
-- **1.5** Perkiraan jumlah aset kelistrikan kritikal (trafo, panel, switchgear, gardu): ☐ < 10 ☐ 10–50 ☐ 50–200 ☐ > 200
-- **1.6** Lokasi operasi: ____________
+### 2. Tagihan & beban listrik
+- **2.1** Biaya listrik per bulan: ☐ <100jt ☐ 100–500jt ☐ 500jt–2M ☐ >2M
+- **2.2** ⭐ Porsi biaya listrik thd total biaya operasional: ☐ <5% ☐ 5–15% ☐ 15–30% ☐ >30% ☐ Tidak tahu
+- **2.3** Tren biaya listrik 12 bulan terakhir: ☐ Naik ☐ Stabil ☐ Turun
+- **2.4** "Biaya listrik adalah beban signifikan bagi operasional kami." (1–5): ___
+- **2.5** Proses/peralatan yang diduga paling boros listrik: ___
 
-### Bagian 2 — Problem Validation: Inspeksi & Pemeliharaan Aset
-- **2.1** Bagaimana inspeksi aset kelistrikan dilakukan saat ini? (boleh >1) ☐ Visual manual terjadwal ☐ Thermografi oleh pihak ketiga ☐ Sensor/IoT ☐ Hanya saat ada gangguan ☐ Tidak rutin
-- **2.2** ⭐ Dalam 12 bulan terakhir, berapa kali terjadi gangguan/downtime kelistrikan tak terduga? ☐ 0 ☐ 1–2 ☐ 3–5 ☐ > 5
-- **2.3** ⭐ Perkiraan biaya rata-rata **1 jam downtime** bagi operasi Anda: ☐ < Rp 5jt ☐ Rp 5–25jt ☐ Rp 25–100jt ☐ > Rp 100jt ☐ Tidak tahu
-- **2.4** "Kami sering baru tahu ada masalah aset (hotspot, koneksi longgar) setelah terjadi gangguan." (1–5): ___
-- **2.5** "Metode inspeksi kami saat ini cukup andal mendeteksi dini kerusakan." (1–5): ___
-- **2.6** Pendekatan pemeliharaan dominan saat ini: ☐ Reaktif (saat rusak) ☐ Preventif (terjadwal) ☐ Prediktif (berbasis kondisi/data)
+### 3. Upaya efisiensi energi
+- **3.1** ⭐ Sudah ada upaya efisiensi energi? ☐ Belum ada ☐ Sedikit/sporadis ☐ Aktif ☐ Program terstruktur
+- **3.2** Upaya yang dilakukan (boleh >1): ☐ Capacitor bank/power factor ☐ Ganti peralatan hemat ☐ Manajemen beban ☐ Lampu LED ☐ Solar PV ☐ VSD/inverter motor ☐ Belum ada
+- **3.3** Seberapa efektif menurunkan tagihan? (1–5): ___
+- **3.4** Hambatan utama (boleh >1): ☐ Biaya investasi ☐ Tidak tahu mulai dari mana ☐ Tidak ada SDM/ahli ☐ Sulit ukur dampak ☐ Bukan prioritas
 
-### Bagian 3 — Problem Validation: Efisiensi Energi
-- **3.1** Biaya listrik per bulan: ☐ < Rp 100jt ☐ Rp 100–500jt ☐ Rp 500jt–2M ☐ > Rp 2M
-- **3.2** Apakah pernah melakukan audit energi? ☐ Belum ☐ Pernah (internal) ☐ Pernah (konsultan eksternal)
-- **3.3** Apakah menerapkan sistem manajemen energi (ISO 50001)? ☐ Ya ☐ Sedang proses ☐ Tidak
-- **3.4** ⭐ Perkiraan potensi pemborosan energi yang belum tergarap di fasilitas Anda: ☐ < 5% ☐ 5–10% ☐ 10–20% ☐ > 20% ☐ Tidak tahu
+### 4. Praktik audit energi saat ini
+- **4.1** ⭐ Pernah melakukan audit energi? ☐ Belum pernah ☐ Internal ☐ Konsultan eksternal
+- **4.2** Jika pernah, terakhir kapan? ☐ <1thn ☐ 1–3thn ☐ >3thn
+- **4.3** Bagaimana dilakukan? (boleh >1) ☐ Walk-through visual ☐ Pengukuran instrumen ☐ Analisis tagihan ☐ Pemodelan ☐ Tidak tahu
+- **4.4** Menerapkan ISO 50001? ☐ Ya ☐ Sedang proses ☐ Tidak
+- **4.5** ⭐ Potensi penghematan listrik yang belum tergarap: ☐ <5% ☐ 5–10% ☐ 10–20% ☐ >20% ☐ Tidak tahu
+- **4.6** Kenapa audit sebelumnya kurang bermanfaat/tak ditindaklanjuti: ___
 
-### Bagian 4 — Problem Validation: SLO & Compliance
-- **4.1** Apakah pernah proses SLO/perizinan instalasi tertunda? ☐ Tidak pernah ☐ Jarang ☐ Sering
-- **4.2** Penyebab penundaan tersering (boleh >1): ☐ Dokumen/gambar tak lengkap ☐ Instalasi belum laik ☐ NIDI ☐ Jadwal LIT ☐ Lainnya: ___
-- **4.3** Perkiraan pengeluaran SLO & inspeksi instalasi per tahun: ☐ < Rp 10jt ☐ Rp 10–50jt ☐ Rp 50–200jt ☐ > Rp 200jt
-- **4.4** "Mengurus kesiapan & dokumen SLO menyita waktu/biaya yang signifikan." (1–5): ___
+### 5. Minat jasa audit energi EnVisor & WTP
+- **5.1** ⭐ Seberapa tertarik memakai jasa audit energi yang menemukan penghematan terukur? (1–5): ___
+- **5.2** ⭐ Model harga yang paling sesuai: ☐ Fixed fee per audit ☐ Shared-savings (% penghematan) ☐ Langganan monitoring ☐ Belum tahu
+- **5.3** Porsi shared-savings yang wajar bagi penyedia: ☐ 10–20% ☐ 20–30% ☐ 30–40% ☐ Tergantung hasil
+- **5.4** Anggaran wajar untuk satu kali audit (fixed fee): ☐ <25jt ☐ 25–75jt ☐ 75–200jt ☐ >200jt ☐ Belum ada
+- **5.5** ⭐ Bersedia fasilitas menjadi **pilot audit energi**? ☐ Ya ☐ Mungkin ☐ Tidak
+- **5.6** Pengambil keputusan (boleh >1): ☐ Saya ☐ Atasan/Direksi ☐ Procurement ☐ Korporat/pusat
 
-### Bagian 5 — Solution Validation
-*(Paparkan modul EnVisor Industri & SLO Readiness.)*
-- **5.1** ⭐ Urutkan modul berdasarkan nilai bagi Anda (1 = paling penting):
-  ___ ThermoVision AI (inspeksi termal/visual aset)
-  ___ Drone/AssetScan patroli gardu & jaringan
-  ___ FactoryAudit (efisiensi energi AI+IoT)
-  ___ AR FieldAssist (panduan teknisi)
-  ___ SLO Readiness & Compliance
-- **5.2** "Solusi prediktif berbasis AI seperti ini akan mengurangi gangguan/biaya kami secara signifikan." (1–5): ___
-- **5.3** Hambatan adopsi terbesar? (boleh >1) ☐ Akurasi/kepercayaan AI ☐ Keamanan data ☐ Integrasi sistem existing ☐ Biaya ☐ SDM/perubahan proses ☐ Regulasi
-- **5.4** Apakah Anda saat ini memakai solusi sejenis (vendor)? ☐ Tidak ☐ Ya: ___ — apa yang kurang? ___
-
-### Bagian 6 — Buying Process & Willingness to Pay
-- **6.1** ⭐ Model harga yang paling sesuai bagi Anda: ☐ Langganan SaaS (per aset/site) ☐ Bayar per inspeksi ☐ Bundle hardware+software ☐ **Shared-savings** (bayar dari penghematan terbukti) ☐ Lisensi tahunan
-- **6.2** Kisaran anggaran untuk solusi ini per tahun: ☐ < Rp 50jt ☐ Rp 50–200jt ☐ Rp 200jt–1M ☐ > Rp 1M ☐ Belum ada anggaran
-- **6.3** Siapa pengambil keputusan pembelian? (boleh >1) ☐ Saya ☐ Atasan/Direksi ☐ Procurement ☐ Komite teknis ☐ Korporat/pusat
-- **6.4** Berapa lama tipikal proses pengadaan solusi baru? ☐ < 1 bln ☐ 1–3 bln ☐ 3–6 bln ☐ > 6 bln
-- **6.5** ⭐ Bersediakah fasilitas Anda menjadi **pilot project** (uji coba terbatas)? ☐ Ya ☐ Mungkin ☐ Tidak
-- **6.6** Bersedia menandatangani **LOI/MoU** jika pilot berhasil? ☐ Ya ☐ Perlu diskusi ☐ Tidak
-
-### Bagian 7 — Penutup
-- **7.1** Seberapa besar kemungkinan merekomendasikan solusi ini ke kolega industri? (0–10) [NPS]: ___
-- **7.2** Kontak untuk tindak lanjut: Nama ___ · Email/No. ___ · Perusahaan ___
-- **7.3** Satu syarat utama agar Anda **pasti** mengadopsi solusi ini: ____________
+### 6. Penutup
+- **6.1** NPS (0–10): ___
+- **6.2** Kontak tindak lanjut: nama · email/No. · perusahaan: ___
+- **6.3** Satu syarat utama agar **pasti** memakai jasa audit energi ini: ___
 
 ---
 
-## Lampiran — Cara membaca hasil (scoring)
+## Cara membaca hasil (go / no-go)
 
-| Sinyal | Indikator GO | Indikator NO-GO |
+| Sinyal | GO | NO-GO |
 |---|---|---|
-| Problem nyata (Rumah) | ≥ 60% kaget tagihan ≥ 3x/thn & skor 2.6 ≥ 4 | Mayoritas "tidak terganggu" |
-| WTP (Rumah) | ≥ 25% "Ya" bayar Rp 99k; Van Westendorp OPP dekat Rp 99k | "Ya" < 10% |
-| Problem nyata (Industri) | Downtime ≥ 3x/thn & biaya/jam ≥ Rp 25jt | Aset sedikit & downtime nihil |
-| Intent (Industri) | ≥ 30% bersedia pilot; ≥ 5 kandidat LOI | Pilot < 10% |
+| Masalah nyata — Rumah | ≥ 60% kaget tagihan ≥ 3x/thn & Q2.6 ≥ 4 | Mayoritas "tidak terganggu" |
+| WTP — Rumah | ≥ 25% "Ya" bayar Rp 99k; OPP dekat Rp 99k | "Ya" < 10% |
+| Masalah nyata — Industri | Listrik ≥ 15% biaya operasi & potensi hemat ≥ 10% | Listrik beban kecil & sudah optimal |
+| Minat jasa audit — Industri | Q5.1 ≥ 4 & ≥ 30% bersedia pilot | Minat rendah / pilot < 10% |
 | NPS | ≥ +30 | ≤ 0 |
 
-**Van Westendorp:** plot 4 kurva (5.1–5.4) → titik potong = rentang harga optimal (OPP) & batas (PMC/PME). Bandingkan dengan Rp 99k.
+**Van Westendorp (Rumah):** plot 4 jawaban harga (Q3.1–3.4) → titik potong = rentang harga optimal (OPP); bandingkan dengan Rp 99k.
 
-*Disusun untuk EnVisor.AI — PLN Innovation Gateway 2026. Hasil survei wajib disajikan apa adanya (termasuk yang negatif) saat sesi panel.*
+*Disusun untuk EnVisor.AI — PLN Innovation Gateway 2026. Sajikan hasil apa adanya, termasuk yang negatif.*
