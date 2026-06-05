@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0f172a">
 <title>EnVisor — Kuesioner Market Validation (Rumah & Industri)</title>
-<meta name="description" content="Kuesioner market validation EnVisor untuk pelanggan rumah tangga (B2C) & industri (B2B/B2G): problem validation, solution validation, Van Westendorp pricing.">
+<meta name="description" content="Kuesioner market validation EnVisor: gali masalah tagihan listrik & willingness to pay. Untuk pelanggan rumah (B2C) dan industri (B2B/B2G, jasa audit energi).">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -24,77 +24,101 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;width:10
 .logo{font-weight:900;font-size:19px}.logo em{color:var(--acc);font-style:normal}
 .nback{font-size:13px;font-weight:700;color:var(--mid)}.nback:hover{color:var(--dark)}
 
-.hero{background:radial-gradient(900px 420px at 80% -10%,rgba(99,102,241,.22),transparent),linear-gradient(160deg,#0f172a,#1e293b 60%,#0f172a);color:#fff;padding:54px 0 56px}
+.hero{background:radial-gradient(900px 420px at 80% -10%,rgba(99,102,241,.22),transparent),linear-gradient(160deg,#0f172a,#1e293b 60%,#0f172a);color:#fff;padding:50px 0 52px}
 .crumb{font-size:12px;color:#94a3b8;font-weight:700;margin-bottom:16px}.crumb a{color:#818cf8}
-.pill{display:inline-flex;gap:8px;background:rgba(99,102,241,.16);border:1px solid rgba(99,102,241,.4);color:#a5b4fc;font-size:12px;font-weight:800;padding:6px 15px;border-radius:30px;letter-spacing:.5px;margin-bottom:18px}
-.hero h1{font-size:clamp(26px,4.5vw,42px);font-weight:900;line-height:1.12;letter-spacing:-.5px;max-width:760px}
-.hero p{font-size:clamp(14px,2vw,17px);color:#cbd5e1;max-width:680px;margin-top:14px}
-.tools{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:11px;font-weight:800;font-size:14px;cursor:pointer;border:none;transition:transform .15s}
-.btn:hover{transform:translateY(-2px)}
-.btn-p{background:linear-gradient(135deg,var(--indigo),var(--violet));color:#fff}
-.btn-g{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2)}
-
-/* methodology */
-.method{background:#fffbeb;border:1px solid #fde68a;border-radius:16px;padding:22px 24px;margin-top:34px}
-.method b{color:#854d0e;font-size:14px}
-.method ul{margin:10px 0 0 0;list-style:none;display:flex;flex-direction:column;gap:7px}
-.method li{font-size:13px;color:#854d0e;padding-left:18px;position:relative}
-.method li::before{content:'✓';position:absolute;left:0;font-weight:900}
+.pill{display:inline-flex;gap:8px;background:rgba(99,102,241,.16);border:1px solid rgba(99,102,241,.4);color:#a5b4fc;font-size:12px;font-weight:800;padding:6px 15px;border-radius:30px;letter-spacing:.5px;margin-bottom:16px}
+.hero h1{font-size:clamp(25px,4.5vw,40px);font-weight:900;line-height:1.12;letter-spacing:-.5px;max-width:760px}
+.hero p{font-size:clamp(14px,2vw,16px);color:#cbd5e1;max-width:700px;margin-top:12px}
 
 /* tabs */
-.tabs{display:flex;gap:10px;margin:40px 0 0;position:sticky;top:60px;background:var(--bg);padding:14px 0;z-index:50}
-.tab{flex:1;padding:14px;border-radius:13px;border:2px solid var(--light);background:var(--white);font-family:inherit;font-weight:800;font-size:15px;cursor:pointer;color:var(--mid);transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.tabs{display:flex;gap:10px;margin:30px 0 0;position:sticky;top:60px;background:var(--bg);padding:14px 0;z-index:50}
+.tab{flex:1;padding:14px;border-radius:13px;border:2px solid var(--light);background:var(--white);font-family:inherit;font-weight:800;font-size:14.5px;cursor:pointer;color:var(--mid);transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px}
 .tab.on.home{border-color:var(--acc);background:#fffbeb;color:#92400e}
 .tab.on.ind{border-color:var(--indigo);background:#eef2ff;color:#3730a3}
 
 .panel{display:none}.panel.show{display:block;animation:fade .3s ease}
 @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-.meta-row{display:flex;gap:10px;flex-wrap:wrap;margin:24px 0 8px}
+.meta-row{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0 4px}
 .chip{font-size:12px;font-weight:700;background:var(--white);border:1px solid var(--light);border-radius:20px;padding:6px 14px;color:var(--mid)}
+.intro{font-size:13px;color:var(--mid);background:var(--white);border:1px solid var(--light);border-radius:12px;padding:14px 16px;margin-top:14px}
+.intro.svc{background:#eef2ff;border-color:#c7d2fe;color:#3730a3;font-weight:600}
 
 .qsec{background:var(--white);border:1px solid var(--light);border-radius:18px;padding:8px 0;margin-top:18px;overflow:hidden}
-.qsec-head{display:flex;align-items:center;gap:12px;padding:16px 22px;background:linear-gradient(90deg,var(--dark),#1e293b);color:#fff;margin:-8px 0 0}
-.qsec-head .n{width:28px;height:28px;border-radius:8px;background:var(--acc);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:#0f172a;flex-shrink:0}
+.qsec-head{display:flex;align-items:center;gap:12px;padding:15px 22px;background:linear-gradient(90deg,var(--dark),#1e293b);color:#fff;margin:-8px 0 0}
+.qsec-head .n{width:27px;height:27px;border-radius:8px;background:var(--acc);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#0f172a;flex-shrink:0}
 .ind .qsec-head .n{background:var(--indigo);color:#fff}
-.qsec-head h3{font-size:15px;font-weight:800}
-.qsec-head .sub{font-size:11.5px;color:#94a3b8;font-weight:600;margin-left:auto}
+.qsec-head h3{font-size:14.5px;font-weight:800}
 .q{padding:14px 22px;border-bottom:1px solid var(--light2)}
 .q:last-child{border-bottom:none}
-.q .qt{font-size:14px;font-weight:700;display:flex;gap:8px}
+.q .qt{font-size:14px;font-weight:700;display:flex;gap:8px;line-height:1.45}
 .q .code{font-weight:900;color:var(--blue);flex-shrink:0;font-variant-numeric:tabular-nums}
 .ind .q .code{color:var(--indigo)}
 .star{color:var(--acc2);font-weight:900}
-.opts{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px;padding-left:30px}
-.opt{font-size:12.5px;color:var(--mid);border:1px solid var(--light);border-radius:8px;padding:5px 11px;background:var(--bg)}
-.scale{display:inline-flex;gap:5px;margin-top:9px;margin-left:30px}
-.scale span{width:30px;height:30px;border-radius:8px;border:1.5px solid var(--light);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--mid);background:var(--bg)}
-.fill{margin-top:9px;margin-left:30px;height:30px;border:1.5px dashed var(--light);border-radius:8px;background:repeating-linear-gradient(90deg,transparent,transparent 18px,var(--light) 18px,var(--light) 19px);max-width:340px}
-.note{font-size:12px;color:var(--mid);font-style:italic;padding:0 22px 10px 52px}
+.hint{font-size:11.5px;color:var(--mid);font-weight:500;font-style:italic}
 
-.vw{background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:14px 18px;margin:6px 22px 10px}
-.vw b{color:#1e40af;font-size:13px}
-.vw p{font-size:12.5px;color:#1e3a8a;margin-top:4px}
+/* selectable options */
+.opts{display:flex;flex-wrap:wrap;gap:8px;margin-top:11px;padding-left:30px}
+.opt{cursor:pointer;position:relative}
+.opt input{position:absolute;opacity:0;width:0;height:0}
+.opt span{display:inline-block;font-size:12.5px;color:var(--mid);border:1.5px solid var(--light);border-radius:9px;padding:7px 13px;background:var(--bg);transition:all .12s;user-select:none}
+.opt input:checked+span{border-color:var(--acc);background:#fffbeb;color:#92400e;font-weight:800}
+.ind .opt input:checked+span{border-color:var(--indigo);background:#eef2ff;color:#3730a3}
+.opt input:focus-visible+span{outline:2px solid var(--indigo);outline-offset:2px}
+
+/* likert */
+.likert{display:flex;gap:7px;margin-top:11px;margin-left:30px;flex-wrap:wrap;align-items:center}
+.likert .lk{cursor:pointer;position:relative}
+.likert .lk input{position:absolute;opacity:0;width:0;height:0}
+.likert .lk span{display:flex;align-items:center;justify-content:center;width:42px;height:38px;border:1.5px solid var(--light);border-radius:9px;font-size:14px;font-weight:800;color:var(--mid);background:var(--bg);transition:all .12s}
+.likert .lk input:checked+span{border-color:var(--acc);background:var(--acc);color:#fff}
+.ind .likert .lk input:checked+span{border-color:var(--indigo);background:var(--indigo);color:#fff}
+.lk-ends{font-size:11px;color:var(--mid);margin-left:4px}
+
+/* nps */
+.nps{display:flex;gap:5px;margin-top:11px;margin-left:30px;flex-wrap:wrap}
+.nps .lk span{width:34px;height:34px;font-size:13px}
+
+/* inputs */
+.inp,.txta{width:100%;max-width:420px;margin-top:10px;margin-left:30px;padding:10px 13px;border:1.5px solid var(--light);border-radius:10px;background:var(--bg);font-family:inherit;font-size:14px;color:var(--dark);outline:none;transition:border-color .15s}
+.txta{max-width:100%;min-height:64px;resize:vertical}
+.inp:focus,.txta:focus{border-color:var(--indigo);background:#fff}
+.inp.rp{max-width:240px}
+
+/* submit + result */
+.submit-row{margin:26px 0 0;display:flex;justify-content:center}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 26px;border-radius:12px;font-weight:800;font-size:14.5px;cursor:pointer;border:none;font-family:inherit;transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn-go{background:linear-gradient(135deg,var(--indigo),var(--violet));color:#fff;box-shadow:0 8px 24px rgba(99,102,241,.35);font-size:16px;padding:15px 38px}
+.btn-wa{background:linear-gradient(135deg,#25D366,#128C7E);color:#fff}
+.btn-p2{background:var(--dark);color:#fff}
+.btn-g2{background:var(--white);color:var(--dark);border:1.5px solid var(--light)}
+.result{display:none;margin-top:24px;background:var(--white);border:2px solid var(--green);border-radius:18px;padding:22px}
+.result h3{font-size:17px;font-weight:900;color:#065f46}
+.result pre{white-space:pre-wrap;word-wrap:break-word;font-family:inherit;font-size:12.5px;color:#334155;background:var(--light2);border-radius:12px;padding:16px;margin:14px 0;max-height:320px;overflow:auto}
+.res-btns{display:flex;gap:10px;flex-wrap:wrap}
+.muted{font-size:12px;color:var(--mid);margin-top:12px}
+
+/* tools row */
+.tools{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.tlbtn{display:inline-flex;align-items:center;gap:7px;padding:11px 18px;border-radius:11px;font-weight:800;font-size:13.5px;cursor:pointer;border:none;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2)}
 
 /* scoring */
-.score{background:var(--white);border:1px solid var(--light);border-radius:18px;padding:8px;margin-top:30px;overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:13px;min-width:560px}
+.score{background:var(--white);border:1px solid var(--light);border-radius:18px;padding:8px;margin-top:34px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:540px}
 th{text-align:left;font-size:11px;font-weight:800;color:var(--mid);text-transform:uppercase;letter-spacing:.5px;padding:12px 14px;border-bottom:2px solid var(--light)}
 td{padding:11px 14px;border-bottom:1px solid var(--light2);vertical-align:top}
-tr:last-child td{border-bottom:none}
+tr:last-child td{border-bottom:none}.t-strong{font-weight:800}
 .go{color:var(--green);font-weight:700}.nogo{color:var(--acc2);font-weight:700}
 
-footer{background:#0f172a;color:#94a3b8;padding:34px 0 26px;font-size:13px;margin-top:50px}
+footer{background:#0f172a;color:#94a3b8;padding:32px 0 24px;font-size:13px;margin-top:46px}
 footer a{color:#94a3b8}footer a:hover{color:#fff}
-.foot-note{border-top:1px solid rgba(255,255,255,.08);margin-top:18px;padding-top:16px;font-size:11.5px;color:#64748b}
+.foot-note{border-top:1px solid rgba(255,255,255,.08);margin-top:16px;padding-top:14px;font-size:11.5px;color:#64748b}
 
 @media print{
-  nav,.hero .tools,.tabs,footer .foot-note{display:none!important}
-  .panel{display:block!important}
-  .tabs{display:none}
-  body{background:#fff}
-  .qsec,.method,.score{box-shadow:none;break-inside:avoid}
+  nav,.tabs,.hero .tools,.submit-row,.res-btns,footer .foot-note{display:none!important}
+  .panel{display:block!important}body{background:#fff}
+  .qsec,.score,.result{box-shadow:none;break-inside:avoid}
   .qsec-head{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 </style>
@@ -111,184 +135,510 @@ footer a{color:#94a3b8}footer a:hover{color:#fff}
 <header class="hero">
   <div class="wrap">
     <div class="crumb"><a href="/bisnis.html">Bisnis</a> · Customer Validation</div>
-    <span class="pill">📋 KUESIONER MARKET VALIDATION</span>
-    <h1>Validasi pasar EnVisor — Rumah &amp; Industri</h1>
-    <p>Dua kuesioner siap pakai untuk Section B proposal (Customer Validation &amp; Traction): memvalidasi <strong>masalah</strong> dan <strong>minat solusi</strong> dengan metodologi yang benar — bukan sekadar mengumpulkan pujian.</p>
+    <span class="pill">📋 KUESIONER — BISA DIISI LANGSUNG</span>
+    <h1>Validasi pasar EnVisor — gali masalah &amp; willingness to pay</h1>
+    <p>Isi langsung di halaman ini, lalu <strong>kirim jawaban via WhatsApp</strong> atau salin/cetak. Fokus: seberapa nyata masalah tagihan listrik &amp; seberapa besar kesediaan membayar solusinya.</p>
     <div class="tools">
-      <button class="btn btn-p" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
-      <a class="btn btn-g" href="/downloads/EnVisor-Kuesioner-Market-Validation.md" download>📝 Unduh (.md) untuk Google Forms</a>
-      <a class="btn btn-g" href="/bisnis.html#download">📊 Proposal</a>
+      <button class="tlbtn" onclick="window.print()">🖨️ Cetak / PDF kosong</button>
+      <a class="tlbtn" href="/downloads/EnVisor-Kuesioner-Market-Validation.md" download>📝 Unduh (.md) untuk Google Forms</a>
     </div>
   </div>
 </header>
 
 <main class="wrap">
 
-  <div class="method">
-    <b>⚙️ Prinsip metodologi (baca dulu)</b>
-    <ul>
-      <li>Pisahkan <strong>problem validation</strong> (apakah masalahnya nyata) dari <strong>solution validation</strong> (apakah solusinya diminati).</li>
-      <li>Hindari pertanyaan menggiring — tanyakan <strong>perilaku &amp; pengalaman nyata</strong>, bukan "apakah Anda suka ide ini?".</li>
-      <li>Validasi harga dengan <strong>Van Westendorp</strong> (4 pertanyaan), bukan satu pertanyaan "mau bayar berapa".</li>
-      <li>Pertanyaan bertanda <span class="star">⭐</span> = <em>killer question</em> penentu go/no-go. Skala = Likert 1–5 (1 sangat tidak setuju … 5 sangat setuju) kecuali disebut lain.</li>
-      <li>Target sampel: Rumah ≥ 100 responden (beragam daya VA); Industri ≥ 15–20 wawancara mendalam + ≥ 30 survei.</li>
-    </ul>
-  </div>
-
   <div class="tabs">
     <button class="tab home on" id="tab-home" onclick="show('home')">🏠 Pelanggan Rumah (B2C)</button>
-    <button class="tab ind" id="tab-ind" onclick="show('ind')">🏭 Pelanggan Industri (B2B/B2G)</button>
+    <button class="tab ind" id="tab-ind" onclick="show('ind')">🏭 Industri — Audit Energi (B2B)</button>
   </div>
 
-  <!-- ============ HOME ============ -->
-  <section class="panel show home" id="panel-home">
+  <!-- ===================== HOME ===================== -->
+  <form class="panel show home" id="form-home" onsubmit="submitForm('home');return false">
     <div class="meta-row">
-      <span class="chip">⏱️ 4–6 menit</span>
-      <span class="chip">📱 Online (PWA/WA) atau tatap muka</span>
+      <span class="chip">⏱️ 3–5 menit</span>
       <span class="chip">🎯 Target ≥ 100 responden</span>
+      <span class="chip">⭐ = pertanyaan penentu</span>
     </div>
 
     <div class="qsec">
-      <div class="qsec-head"><span class="n">1</span><h3>Profil &amp; Screening</h3><span class="sub">Konteks responden</span></div>
-      <div class="q"><div class="qt"><span class="code">1.1</span> Lokasi (Kota/Kabupaten)</div><div class="fill"></div></div>
-      <div class="q"><div class="qt"><span class="code">1.2</span> Daya listrik terpasang di rumah</div><div class="opts"><span class="opt">450 VA</span><span class="opt">900 VA</span><span class="opt">1300 VA</span><span class="opt">2200 VA</span><span class="opt">3500 VA+</span><span class="opt">Tidak tahu</span></div></div>
-      <div class="q"><div class="qt"><span class="code">1.3</span> Rata-rata tagihan/token listrik per bulan</div><div class="opts"><span class="opt">&lt; Rp 200rb</span><span class="opt">200–400rb</span><span class="opt">400–700rb</span><span class="opt">700rb–1,2jt</span><span class="opt">&gt; 1,2jt</span></div></div>
-      <div class="q"><div class="qt"><span class="code">1.4</span> Jumlah penghuni rumah</div><div class="opts"><span class="opt">1–2</span><span class="opt">3–4</span><span class="opt">5–6</span><span class="opt">&gt; 6</span></div></div>
-      <div class="q"><div class="qt"><span class="code">1.5</span> Status meteran</div><div class="opts"><span class="opt">Pascabayar</span><span class="opt">Prabayar (token)</span></div></div>
-      <div class="q"><div class="qt"><span class="code">1.6</span> Seberapa nyaman Anda memakai aplikasi di HP?</div><div class="scale"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div></div>
+      <div class="qsec-head"><span class="n">1</span><h3>Sekilas tentang Anda</h3></div>
+      <div class="q" data-q="1.1" data-label="Daya listrik">
+        <div class="qt"><span class="code">1.1</span> Daya listrik terpasang di rumah</div>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="h11" value="450 VA"><span>450 VA</span></label>
+          <label class="opt"><input type="radio" name="h11" value="900 VA"><span>900 VA</span></label>
+          <label class="opt"><input type="radio" name="h11" value="1300 VA"><span>1300 VA</span></label>
+          <label class="opt"><input type="radio" name="h11" value="2200 VA"><span>2200 VA</span></label>
+          <label class="opt"><input type="radio" name="h11" value="3500 VA+"><span>3500 VA+</span></label>
+          <label class="opt"><input type="radio" name="h11" value="Tidak tahu"><span>Tidak tahu</span></label>
+        </div>
+      </div>
+      <div class="q" data-q="1.2" data-label="Tagihan/token per bulan">
+        <div class="qt"><span class="code">1.2</span> Rata-rata tagihan/pembelian token listrik per bulan</div>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="h12" value="<200rb"><span>&lt; Rp 200rb</span></label>
+          <label class="opt"><input type="radio" name="h12" value="200-400rb"><span>200–400rb</span></label>
+          <label class="opt"><input type="radio" name="h12" value="400-700rb"><span>400–700rb</span></label>
+          <label class="opt"><input type="radio" name="h12" value="700rb-1,2jt"><span>700rb–1,2jt</span></label>
+          <label class="opt"><input type="radio" name="h12" value=">1,2jt"><span>&gt; 1,2jt</span></label>
+        </div>
+      </div>
+      <div class="q" data-q="1.3" data-label="Status meteran">
+        <div class="qt"><span class="code">1.3</span> Status meteran</div>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="h13" value="Pascabayar"><span>Pascabayar</span></label>
+          <label class="opt"><input type="radio" name="h13" value="Prabayar"><span>Prabayar (token)</span></label>
+        </div>
+      </div>
     </div>
 
     <div class="qsec">
-      <div class="qsec-head"><span class="n">2</span><h3>Problem Validation</h3><span class="sub">Apakah masalahnya nyata?</span></div>
-      <div class="q"><div class="qt"><span class="code">2.1</span> <span class="star">⭐</span> Dalam 6 bulan terakhir, seberapa sering Anda terkejut tagihan/token lebih boros dari perkiraan?</div><div class="opts"><span class="opt">Tidak pernah</span><span class="opt">1–2x</span><span class="opt">3–5x</span><span class="opt">Hampir tiap bulan</span></div></div>
-      <div class="q"><div class="qt"><span class="code">2.2</span> "Saya tahu persis perangkat mana yang paling boros listrik."</div><div class="scale"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div></div>
-      <div class="q"><div class="qt"><span class="code">2.3</span> "Saya pernah merasa tagihan listrik saya tidak wajar/janggal."</div><div class="scale"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div></div>
-      <div class="q"><div class="qt"><span class="code">2.4</span> Saat tagihan melonjak, apa yang biasanya Anda lakukan? <em>(boleh &gt;1)</em></div><div class="opts"><span class="opt">Tidak melakukan apa-apa</span><span class="opt">Cek/cabut perangkat</span><span class="opt">Tanya orang lain</span><span class="opt">Komplain ke PLN</span><span class="opt">Cari info internet</span><span class="opt">Lainnya</span></div></div>
-      <div class="q"><div class="qt"><span class="code">2.5</span> Seberapa mengganggu masalah tagihan tak terkontrol bagi keuangan rumah Anda?</div><div class="scale"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div></div>
-      <div class="q"><div class="qt"><span class="code">2.6</span> <span class="star">⭐</span> Mengetahui penyebab borosnya <strong>tanpa alat ukur</strong> — seberapa berharga bagi Anda?</div><div class="scale"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div></div>
+      <div class="qsec-head"><span class="n">2</span><h3>Gali masalah — apakah masalahnya nyata?</h3></div>
+      <div class="q" data-q="2.1" data-label="Frekuensi kaget tagihan (6 bln)">
+        <div class="qt"><span class="code">2.1</span> <span class="star">⭐</span> Dalam 6 bulan terakhir, seberapa sering tagihan/token lebih boros dari perkiraan?</div>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="h21" value="Tidak pernah"><span>Tidak pernah</span></label>
+          <label class="opt"><input type="radio" name="h21" value="1-2x"><span>1–2x</span></label>
+          <label class="opt"><input type="radio" name="h21" value="3-5x"><span>3–5x</span></label>
+          <label class="opt"><input type="radio" name="h21" value="Hampir tiap bulan"><span>Hampir tiap bulan</span></label>
+        </div>
+      </div>
+      <div class="q" data-q="2.2" data-label="Tahu perangkat boros (1-5)">
+        <div class="qt"><span class="code">2.2</span> "Saya tahu persis perangkat mana yang paling boros listrik." <span class="hint">(1 tidak setuju – 5 setuju)</span></div>
+        <div class="likert">
+          <label class="lk"><input type="radio" name="h22" value="1"><span>1</span></label>
+          <label class="lk"><input type="radio" name="h22" value="2"><span>2</span></label>
+          <label class="lk"><input type="radio" name="h22" value="3"><span>3</span></label>
+          <label class="lk"><input type="radio" name="h22" value="4"><span>4</span></label>
+          <label class="lk"><input type="radio" name="h22" value="5"><span>5</span></label>
+        </div>
+      </div>
+      <div class="q" data-q="2.3" data-label="Pernah merasa tagihan janggal (1-5)">
+        <div class="qt"><span class="code">2.3</span> "Saya pernah merasa tagihan listrik saya tidak wajar/janggal."</div>
+        <div class="likert">
+          <label class="lk"><input type="radio" name="h23" value="1"><span>1</span></label>
+          <label class="lk"><input type="radio" name="h23" value="2"><span>2</span></label>
+          <label class="lk"><input type="radio" name="h23" value="3"><span>3</span></label>
+          <label class="lk"><input type="radio" name="h23" value="4"><span>4</span></label>
+          <label class="lk"><input type="radio" name="h23" value="5"><span>5</span></label>
+        </div>
+      </div>
+      <div class="q" data-q="2.4" data-label="Tindakan saat tagihan melonjak">
+        <div class="qt"><span class="code">2.4</span> Saat tagihan melonjak, apa yang biasanya Anda lakukan? <span class="hint">(boleh &gt;1)</span></div>
+        <div class="opts">
+          <label class="opt"><input type="checkbox" name="h24" value="Tidak melakukan apa-apa"><span>Tidak melakukan apa-apa</span></label>
+          <label class="opt"><input type="checkbox" name="h24" value="Cek/cabut perangkat"><span>Cek/cabut perangkat</span></label>
+          <label class="opt"><input type="checkbox" name="h24" value="Tanya orang lain"><span>Tanya orang lain</span></label>
+          <label class="opt"><input type="checkbox" name="h24" value="Komplain ke PLN"><span>Komplain ke PLN</span></label>
+          <label class="opt"><input type="checkbox" name="h24" value="Cari info internet"><span>Cari info internet</span></label>
+        </div>
+      </div>
+      <div class="q" data-q="2.5" data-label="Seberapa mengganggu keuangan (1-5)">
+        <div class="qt"><span class="code">2.5</span> Seberapa mengganggu masalah tagihan tak terkontrol bagi keuangan rumah Anda?</div>
+        <div class="likert">
+          <label class="lk"><input type="radio" name="h25" value="1"><span>1</span></label>
+          <label class="lk"><input type="radio" name="h25" value="2"><span>2</span></label>
+          <label class="lk"><input type="radio" name="h25" value="3"><span>3</span></label>
+          <label class="lk"><input type="radio" name="h25" value="4"><span>4</span></label>
+          <label class="lk"><input type="radio" name="h25" value="5"><span>5</span></label>
+        </div>
+      </div>
+      <div class="q" data-q="2.6" data-label="Nilai tahu penyebab tanpa alat (1-5)">
+        <div class="qt"><span class="code">2.6</span> <span class="star">⭐</span> Mengetahui penyebab borosnya <strong>tanpa alat ukur</strong> — seberapa berharga bagi Anda?</div>
+        <div class="likert">
+          <label class="lk"><input type="radio" name="h26" value="1"><span>1</span></label>
+          <label class="lk"><input type="radio" name="h26" value="2"><span>2</span></label>
+          <label class="lk"><input type="radio" name="h26" value="3"><span>3</span></label>
+          <label class="lk"><input type="radio" name="h26" value="4"><span>4</span></label>
+          <label class="lk"><input type="radio" name="h26" value="5"><span>5</span></label>
+        </div>
+      </div>
+      <div class="q" data-q="2.7" data-label="Cerita pengalaman">
+        <div class="qt"><span class="code">2.7</span> Ceritakan pengalaman tagihan listrik yang paling bikin pusing <span class="hint">(opsional)</span></div>
+        <textarea class="txta" name="h27" placeholder="Tulis di sini…"></textarea>
+      </div>
     </div>
 
     <div class="qsec">
-      <div class="qsec-head"><span class="n">3</span><h3>Perilaku Saat Ini</h3><span class="sub">Solusi alternatif</span></div>
-      <div class="q"><div class="qt"><span class="code">3.1</span> Pernah memakai audit/kalkulator listrik?</div><div class="opts"><span class="opt">Belum pernah</span><span class="opt">Kalkulator online</span><span class="opt">Panggil teknisi</span><span class="opt">Lainnya</span></div></div>
-      <div class="q"><div class="qt"><span class="code">3.2</span> Jika pernah, apa yang membuat Anda berhenti / tidak puas?</div><div class="fill"></div></div>
-      <div class="q"><div class="qt"><span class="code">3.3</span> Dari mana biasanya Anda cari info hemat listrik?</div><div class="opts"><span class="opt">Media sosial</span><span class="opt">YouTube</span><span class="opt">Teman/keluarga</span><span class="opt">PLN</span><span class="opt">Tidak pernah</span></div></div>
+      <div class="qsec-head"><span class="n">3</span><h3>Willingness to Pay — laporan premium</h3></div>
+      <div class="intro" style="margin:14px 22px 0">Bayangkan EnVisor memberi <strong>laporan diagnosa lengkap</strong>: perangkat paling boros, estimasi biaya per perangkat, dan rekomendasi hemat terinci.</div>
+      <div class="q" data-q="3.1" data-label="VW terlalu mahal (Rp)">
+        <div class="qt"><span class="code">3.1</span> Pada harga berapa laporan ini <strong>terlalu mahal</strong> hingga Anda tidak beli?</div>
+        <input class="inp rp" type="number" inputmode="numeric" name="h31" placeholder="Rp …">
+      </div>
+      <div class="q" data-q="3.2" data-label="VW mulai mahal (Rp)">
+        <div class="qt"><span class="code">3.2</span> Pada harga berapa <strong>mulai mahal</strong> tapi masih dipertimbangkan?</div>
+        <input class="inp rp" type="number" inputmode="numeric" name="h32" placeholder="Rp …">
+      </div>
+      <div class="q" data-q="3.3" data-label="VW murah/worth it (Rp)">
+        <div class="qt"><span class="code">3.3</span> Pada harga berapa terasa <strong>murah / worth it</strong>?</div>
+        <input class="inp rp" type="number" inputmode="numeric" name="h33" placeholder="Rp …">
+      </div>
+      <div class="q" data-q="3.4" data-label="VW terlalu murah (Rp)">
+        <div class="qt"><span class="code">3.4</span> Pada harga berapa <strong>terlalu murah</strong> sampai ragu kualitasnya?</div>
+        <input class="inp rp" type="number" inputmode="numeric" name="h34" placeholder="Rp …">
+      </div>
+      <div class="q" data-q="3.5" data-label="Mau bayar Rp 99.000?">
+        <div class="qt"><span class="code">3.5</span> <span class="star">⭐</span> Bersediakah Anda membayar <strong>Rp 99.000</strong> untuk laporan premium ini?</div>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="h35" value="Ya"><span>Ya</span></label>
+          <label class="opt"><input type="radio" name="h35" value="Mungkin"><span>Mungkin</span></label>
+          <label class="opt"><input type="radio" name="h35" value="Tidak"><span>Tidak</span></label>
+        </div>
+      </div>
+      <div class="q" data-q="3.6" data-label="Harga yang pantas (Rp)">
+        <div class="qt"><span class="code">3.6</span> Jika "Tidak/Mungkin", harga yang menurut Anda pantas?</div>
+        <input class="inp rp" type="number" inputmode="numeric" name="h36" placeholder="Rp …">
+      </div>
+      <div class="q" data-q="3.7" data-label="Tertarik dirujuk ke layanan">
+        <div class="qt"><span class="code">3.7</span> Tertarik di-rujuk ke layanan apa? <span class="hint">(boleh &gt;1)</span></div>
+        <div class="opts">
+          <label class="opt"><input type="checkbox" name="h37" value="Tambah/turun daya"><span>Tambah/turun daya</span></label>
+          <label class="opt"><input type="checkbox" name="h37" value="Solar panel"><span>Solar panel (PLTS)</span></label>
+          <label class="opt"><input type="checkbox" name="h37" value="Perangkat hemat"><span>Perangkat hemat</span></label>
+          <label class="opt"><input type="checkbox" name="h37" value="SPKLU/EV"><span>SPKLU / EV</span></label>
+          <label class="opt"><input type="checkbox" name="h37" value="Tidak"><span>Tidak</span></label>
+        </div>
+      </div>
     </div>
 
     <div class="qsec">
-      <div class="qsec-head"><span class="n">4</span><h3>Solution Validation</h3><span class="sub">Tunjukkan mockup EnVisor Home</span></div>
-      <div class="note">Paparkan: "foto tiap elektronik → AI estimasi watt &amp; biaya → bandingkan dengan tagihan → rekomendasi hemat".</div>
-      <div class="q"><div class="qt"><span class="code">4.1</span> <span class="star">⭐</span> Setelah melihat ini, seberapa besar kemungkinan Anda mencobanya?</div><div class="scale"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div></div>
-      <div class="q"><div class="qt"><span class="code">4.2</span> Fitur mana yang paling menarik? <em>(urutkan 1–3)</em></div><div class="opts"><span class="opt">Biaya per perangkat</span><span class="opt">Deteksi anomali tagihan</span><span class="opt">Rekomendasi hemat</span><span class="opt">Bandingkan rumah sejenis</span><span class="opt">Laporan lengkap</span></div></div>
-      <div class="q"><div class="qt"><span class="code">4.3</span> Kekhawatiran terbesar Anda? <em>(boleh &gt;1)</em></div><div class="opts"><span class="opt">Akurasi hasil</span><span class="opt">Privasi foto</span><span class="opt">Ribet/makan waktu</span><span class="opt">Tidak percaya AI</span><span class="opt">Tidak ada</span></div></div>
-      <div class="q"><div class="qt"><span class="code">4.4</span> "Saya lebih percaya jika tertera ini alat estimasi (bukan audit resmi), margin error 5–20%."</div><div class="scale"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div></div>
+      <div class="qsec-head"><span class="n">4</span><h3>Penutup</h3></div>
+      <div class="q" data-q="4.1" data-label="NPS (0-10)">
+        <div class="qt"><span class="code">4.1</span> Kemungkinan Anda merekomendasikan EnVisor ke teman/keluarga? <span class="hint">(0–10)</span></div>
+        <div class="nps">
+          <label class="lk"><input type="radio" name="h41" value="0"><span>0</span></label>
+          <label class="lk"><input type="radio" name="h41" value="1"><span>1</span></label>
+          <label class="lk"><input type="radio" name="h41" value="2"><span>2</span></label>
+          <label class="lk"><input type="radio" name="h41" value="3"><span>3</span></label>
+          <label class="lk"><input type="radio" name="h41" value="4"><span>4</span></label>
+          <label class="lk"><input type="radio" name="h41" value="5"><span>5</span></label>
+          <label class="lk"><input type="radio" name="h41" value="6"><span>6</span></label>
+          <label class="lk"><input type="radio" name="h41" value="7"><span>7</span></label>
+          <label class="lk"><input type="radio" name="h41" value="8"><span>8</span></label>
+          <label class="lk"><input type="radio" name="h41" value="9"><span>9</span></label>
+          <label class="lk"><input type="radio" name="h41" value="10"><span>10</span></label>
+        </div>
+      </div>
+      <div class="q" data-q="4.2" data-label="Kontak WA (pilot)">
+        <div class="qt"><span class="code">4.2</span> Boleh kami hubungi untuk uji coba gratis? Nomor WhatsApp <span class="hint">(opsional)</span></div>
+        <input class="inp" type="text" name="h42" placeholder="08xx…">
+      </div>
+      <div class="q" data-q="4.3" data-label="Syarat pasti pakai">
+        <div class="qt"><span class="code">4.3</span> Satu hal yang membuat Anda <strong>pasti</strong> memakai aplikasi ini:</div>
+        <textarea class="txta" name="h43" placeholder="Tulis di sini…"></textarea>
+      </div>
     </div>
 
-    <div class="qsec">
-      <div class="qsec-head"><span class="n">5</span><h3>Willingness to Pay</h3><span class="sub">Van Westendorp · laporan premium</span></div>
-      <div class="vw"><b>Van Westendorp Price Sensitivity</b><p>Empat pertanyaan harga untuk laporan premium (diagnosa lengkap + rekomendasi terinci). Plot 4 jawaban → temukan rentang harga optimal.</p></div>
-      <div class="q"><div class="qt"><span class="code">5.1</span> Pada harga berapa <strong>terlalu mahal</strong> sehingga Anda tidak beli? (Rp)</div><div class="fill"></div></div>
-      <div class="q"><div class="qt"><span class="code">5.2</span> Pada harga berapa <strong>mulai mahal</strong> tapi masih dipertimbangkan? (Rp)</div><div class="fill"></div></div>
-      <div class="q"><div class="qt"><span class="code">5.3</span> Pada harga berapa terasa <strong>murah/worth it</strong>? (Rp)</div><div class="fill"></div></div>
-      <div class="q"><div class="qt"><span class="code">5.4</span> Pada harga berapa <strong>terlalu murah</strong> sampai ragu kualitasnya? (Rp)</div><div class="fill"></div></div>
-      <div class="q"><div class="qt"><span class="code">5.5</span> <span class="star">⭐</span> Bersediakah membayar <strong>Rp 99.000</strong> untuk laporan premium ini?</div><div class="opts"><span class="opt">Ya</span><span class="opt">Mungkin</span><span class="opt">Tidak — alasan: ___</span></div></div>
-      <div class="q"><div class="qt"><span class="code">5.6</span> Tertarik di-rujuk ke layanan apa?</div><div class="opts"><span class="opt">Tambah/turun daya</span><span class="opt">Solar panel (PLTS)</span><span class="opt">Perangkat hemat</span><span class="opt">SPKLU / EV</span><span class="opt">Tidak</span></div></div>
-    </div>
+    <div class="submit-row"><button type="submit" class="btn btn-go">✅ Lihat &amp; Kirim Jawaban</button></div>
 
-    <div class="qsec">
-      <div class="qsec-head"><span class="n">6</span><h3>Penutup</h3><span class="sub">NPS &amp; pilot</span></div>
-      <div class="q"><div class="qt"><span class="code">6.1</span> Kemungkinan merekomendasikan EnVisor ke teman/keluarga? <em>(NPS 0–10)</em></div><div class="scale"><span>0</span><span>…</span><span>5</span><span>…</span><span>10</span></div></div>
-      <div class="q"><div class="qt"><span class="code">6.2</span> Boleh kami hubungi untuk uji coba gratis (pilot)?</div><div class="opts"><span class="opt">Ya, No. WA: ___</span><span class="opt">Tidak</span></div></div>
-      <div class="q"><div class="qt"><span class="code">6.3</span> Satu hal yang membuat Anda <strong>pasti</strong> memakai aplikasi ini:</div><div class="fill"></div></div>
+    <div class="result" id="result-home">
+      <h3>✅ Jawaban terkumpul</h3>
+      <pre id="summary-home"></pre>
+      <div class="res-btns">
+        <button type="button" class="btn btn-wa" onclick="waShare('home')">📲 Kirim via WhatsApp</button>
+        <button type="button" class="btn btn-p2" onclick="copyAns('home')">📋 Salin Jawaban</button>
+        <button type="button" class="btn btn-g2" onclick="window.print()">🖨️ Cetak / PDF</button>
+      </div>
+      <p class="muted">Kirim ringkasan ini ke tim EnVisor untuk direkap. Tidak ada data yang tersimpan otomatis di server.</p>
     </div>
-  </section>
+  </form>
 
-  <!-- ============ INDUSTRI ============ -->
-  <section class="panel ind" id="panel-ind">
+  <!-- ===================== INDUSTRI ===================== -->
+  <form class="panel ind" id="form-ind" onsubmit="submitForm('ind');return false">
     <div class="meta-row">
-      <span class="chip">⏱️ 10–15 menit</span>
-      <span class="chip">🗣️ Wawancara mendalam + survei</span>
-      <span class="chip">🎯 ≥ 15–20 wawancara + ≥ 30 survei</span>
+      <span class="chip">⏱️ 7–12 menit</span>
+      <span class="chip">🗣️ Wawancara + survei</span>
+      <span class="chip">🎯 ≥ 20 responden</span>
     </div>
-    <div class="note" style="padding-left:0">Responden ideal: Manajer Pemeliharaan, Manajer Energi/Utility, HSE, Plant Manager, atau pengelola aset unit PLN.</div>
+    <div class="intro svc">⚡ Konteks: <strong>EnVisor menyediakan jasa audit energi</strong> (analisis tagihan + pengukuran/AI) untuk menemukan penghematan biaya listrik yang terukur. Kuesioner ini menggali biaya listrik, upaya efisiensi, dan praktik audit energi Anda saat ini.</div>
 
     <div class="qsec ind">
-      <div class="qsec-head"><span class="n">1</span><h3>Profil Responden &amp; Organisasi</h3></div>
-      <div class="q"><div class="qt"><span class="code">1.1</span> Jabatan/peran</div><div class="fill"></div></div>
-      <div class="q"><div class="qt"><span class="code">1.2</span> Sektor</div><div class="opts"><span class="opt">Manufaktur</span><span class="opt">FMCG/F&amp;B</span><span class="opt">Pertambangan</span><span class="opt">Properti/Gedung</span><span class="opt">Kawasan industri</span><span class="opt">Unit PLN</span><span class="opt">Lainnya</span></div></div>
-      <div class="q"><div class="qt"><span class="code">1.3</span> Jumlah karyawan</div><div class="opts"><span class="opt">&lt; 50</span><span class="opt">50–250</span><span class="opt">250–1000</span><span class="opt">&gt; 1000</span></div></div>
-      <div class="q"><div class="qt"><span class="code">1.4</span> Golongan tarif / daya tersambung PLN <em>(mis. I-3, I-4, B-3)</em></div><div class="fill"></div></div>
-      <div class="q"><div class="qt"><span class="code">1.5</span> Jumlah aset kelistrikan kritikal (trafo, panel, switchgear, gardu)</div><div class="opts"><span class="opt">&lt; 10</span><span class="opt">10–50</span><span class="opt">50–200</span><span class="opt">&gt; 200</span></div></div>
-      <div class="q"><div class="qt"><span class="code">1.6</span> Lokasi operasi</div><div class="fill"></div></div>
-    </div>
-
-    <div class="qsec ind">
-      <div class="qsec-head"><span class="n">2</span><h3>Problem — Inspeksi &amp; Pemeliharaan Aset</h3></div>
-      <div class="q"><div class="qt"><span class="code">2.1</span> Inspeksi aset kelistrikan saat ini dilakukan bagaimana? <em>(boleh &gt;1)</em></div><div class="opts"><span class="opt">Visual manual terjadwal</span><span class="opt">Thermografi pihak ketiga</span><span class="opt">Sensor/IoT</span><span class="opt">Hanya saat gangguan</span><span class="opt">Tidak rutin</span></div></div>
-      <div class="q"><div class="qt"><span class="code">2.2</span> <span class="star">⭐</span> Dalam 12 bulan terakhir, berapa kali gangguan/downtime kelistrikan tak terduga?</div><div class="opts"><span class="opt">0</span><span class="opt">1–2</span><span class="opt">3–5</span><span class="opt">&gt; 5</span></div></div>
-      <div class="q"><div class="qt"><span class="code">2.3</span> <span class="star">⭐</span> Perkiraan biaya rata-rata <strong>1 jam downtime</strong></div><div class="opts"><span class="opt">&lt; Rp 5jt</span><span class="opt">5–25jt</span><span class="opt">25–100jt</span><span class="opt">&gt; 100jt</span><span class="opt">Tidak tahu</span></div></div>
-      <div class="q"><div class="qt"><span class="code">2.4</span> "Kami sering baru tahu ada masalah aset setelah terjadi gangguan."</div><div class="scale"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div></div>
-      <div class="q"><div class="qt"><span class="code">2.5</span> "Metode inspeksi kami saat ini cukup andal mendeteksi dini kerusakan."</div><div class="scale"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div></div>
-      <div class="q"><div class="qt"><span class="code">2.6</span> Pendekatan pemeliharaan dominan</div><div class="opts"><span class="opt">Reaktif</span><span class="opt">Preventif (terjadwal)</span><span class="opt">Prediktif (berbasis kondisi)</span></div></div>
-    </div>
-
-    <div class="qsec ind">
-      <div class="qsec-head"><span class="n">3</span><h3>Problem — Efisiensi Energi</h3></div>
-      <div class="q"><div class="qt"><span class="code">3.1</span> Biaya listrik per bulan</div><div class="opts"><span class="opt">&lt; Rp 100jt</span><span class="opt">100–500jt</span><span class="opt">500jt–2M</span><span class="opt">&gt; 2M</span></div></div>
-      <div class="q"><div class="qt"><span class="code">3.2</span> Pernah melakukan audit energi?</div><div class="opts"><span class="opt">Belum</span><span class="opt">Internal</span><span class="opt">Konsultan eksternal</span></div></div>
-      <div class="q"><div class="qt"><span class="code">3.3</span> Menerapkan ISO 50001?</div><div class="opts"><span class="opt">Ya</span><span class="opt">Sedang proses</span><span class="opt">Tidak</span></div></div>
-      <div class="q"><div class="qt"><span class="code">3.4</span> <span class="star">⭐</span> Perkiraan potensi pemborosan energi yang belum tergarap</div><div class="opts"><span class="opt">&lt; 5%</span><span class="opt">5–10%</span><span class="opt">10–20%</span><span class="opt">&gt; 20%</span><span class="opt">Tidak tahu</span></div></div>
-    </div>
-
-    <div class="qsec ind">
-      <div class="qsec-head"><span class="n">4</span><h3>Problem — SLO &amp; Compliance</h3></div>
-      <div class="q"><div class="qt"><span class="code">4.1</span> Pernah proses SLO/perizinan instalasi tertunda?</div><div class="opts"><span class="opt">Tidak pernah</span><span class="opt">Jarang</span><span class="opt">Sering</span></div></div>
-      <div class="q"><div class="qt"><span class="code">4.2</span> Penyebab penundaan tersering <em>(boleh &gt;1)</em></div><div class="opts"><span class="opt">Dokumen/gambar tak lengkap</span><span class="opt">Instalasi belum laik</span><span class="opt">NIDI</span><span class="opt">Jadwal LIT</span><span class="opt">Lainnya</span></div></div>
-      <div class="q"><div class="qt"><span class="code">4.3</span> Pengeluaran SLO &amp; inspeksi instalasi per tahun</div><div class="opts"><span class="opt">&lt; Rp 10jt</span><span class="opt">10–50jt</span><span class="opt">50–200jt</span><span class="opt">&gt; 200jt</span></div></div>
-      <div class="q"><div class="qt"><span class="code">4.4</span> "Mengurus kesiapan &amp; dokumen SLO menyita waktu/biaya signifikan."</div><div class="scale"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div></div>
+      <div class="qsec-head"><span class="n">1</span><h3>Profil responden &amp; perusahaan</h3></div>
+      <div class="q" data-q="1.1" data-label="Jabatan/peran">
+        <div class="qt"><span class="code">1.1</span> Jabatan / peran Anda</div>
+        <input class="inp" type="text" name="i11" placeholder="mis. Manajer Utility / Plant Manager">
+      </div>
+      <div class="q" data-q="1.2" data-label="Sektor">
+        <div class="qt"><span class="code">1.2</span> Sektor</div>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="i12" value="Manufaktur"><span>Manufaktur</span></label>
+          <label class="opt"><input type="radio" name="i12" value="FMCG/F&B"><span>FMCG/F&amp;B</span></label>
+          <label class="opt"><input type="radio" name="i12" value="Pertambangan"><span>Pertambangan</span></label>
+          <label class="opt"><input type="radio" name="i12" value="Properti/Gedung"><span>Properti/Gedung</span></label>
+          <label class="opt"><input type="radio" name="i12" value="Hotel/RS"><span>Hotel/RS</span></label>
+          <label class="opt"><input type="radio" name="i12" value="Lainnya"><span>Lainnya</span></label>
+        </div>
+      </div>
+      <div class="q" data-q="1.3" data-label="Golongan tarif/daya">
+        <div class="qt"><span class="code">1.3</span> Golongan tarif / daya tersambung PLN <span class="hint">(mis. I-3, I-4, B-3)</span></div>
+        <input class="inp" type="text" name="i13" placeholder="mis. I-3 / 555 kVA">
+      </div>
+      <div class="q" data-q="1.4" data-label="Nama perusahaan">
+        <div class="qt"><span class="code">1.4</span> Nama perusahaan <span class="hint">(opsional)</span></div>
+        <input class="inp" type="text" name="i14" placeholder="…">
+      </div>
     </div>
 
     <div class="qsec ind">
-      <div class="qsec-head"><span class="n">5</span><h3>Solution Validation</h3><span class="sub">Paparkan modul EnVisor</span></div>
-      <div class="q"><div class="qt"><span class="code">5.1</span> <span class="star">⭐</span> Urutkan modul berdasarkan nilai (1 = paling penting): ThermoVision AI · Drone/AssetScan · FactoryAudit · AR FieldAssist · SLO Readiness</div><div class="fill" style="max-width:100%"></div></div>
-      <div class="q"><div class="qt"><span class="code">5.2</span> "Solusi prediktif AI seperti ini akan mengurangi gangguan/biaya kami signifikan."</div><div class="scale"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div></div>
-      <div class="q"><div class="qt"><span class="code">5.3</span> Hambatan adopsi terbesar? <em>(boleh &gt;1)</em></div><div class="opts"><span class="opt">Akurasi/kepercayaan AI</span><span class="opt">Keamanan data</span><span class="opt">Integrasi sistem</span><span class="opt">Biaya</span><span class="opt">SDM/perubahan proses</span><span class="opt">Regulasi</span></div></div>
-      <div class="q"><div class="qt"><span class="code">5.4</span> Saat ini memakai solusi sejenis (vendor)?</div><div class="opts"><span class="opt">Tidak</span><span class="opt">Ya: ___ (apa yang kurang?)</span></div></div>
+      <div class="qsec-head"><span class="n">2</span><h3>Tagihan &amp; beban listrik</h3></div>
+      <div class="q" data-q="2.1" data-label="Biaya listrik per bulan">
+        <div class="qt"><span class="code">2.1</span> Biaya listrik per bulan</div>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="i21" value="<100jt"><span>&lt; Rp 100jt</span></label>
+          <label class="opt"><input type="radio" name="i21" value="100-500jt"><span>100–500jt</span></label>
+          <label class="opt"><input type="radio" name="i21" value="500jt-2M"><span>500jt–2M</span></label>
+          <label class="opt"><input type="radio" name="i21" value=">2M"><span>&gt; 2M</span></label>
+        </div>
+      </div>
+      <div class="q" data-q="2.2" data-label="Porsi listrik thd biaya operasi">
+        <div class="qt"><span class="code">2.2</span> <span class="star">⭐</span> Porsi biaya listrik terhadap total biaya operasional</div>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="i22" value="<5%"><span>&lt; 5%</span></label>
+          <label class="opt"><input type="radio" name="i22" value="5-15%"><span>5–15%</span></label>
+          <label class="opt"><input type="radio" name="i22" value="15-30%"><span>15–30%</span></label>
+          <label class="opt"><input type="radio" name="i22" value=">30%"><span>&gt; 30%</span></label>
+          <label class="opt"><input type="radio" name="i22" value="Tidak tahu"><span>Tidak tahu</span></label>
+        </div>
+      </div>
+      <div class="q" data-q="2.3" data-label="Tren biaya 12 bln">
+        <div class="qt"><span class="code">2.3</span> Tren biaya listrik 12 bulan terakhir</div>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="i23" value="Naik"><span>Naik</span></label>
+          <label class="opt"><input type="radio" name="i23" value="Stabil"><span>Stabil</span></label>
+          <label class="opt"><input type="radio" name="i23" value="Turun"><span>Turun</span></label>
+        </div>
+      </div>
+      <div class="q" data-q="2.4" data-label="Listrik jadi beban signifikan (1-5)">
+        <div class="qt"><span class="code">2.4</span> "Biaya listrik adalah beban yang signifikan bagi operasional kami."</div>
+        <div class="likert">
+          <label class="lk"><input type="radio" name="i24" value="1"><span>1</span></label>
+          <label class="lk"><input type="radio" name="i24" value="2"><span>2</span></label>
+          <label class="lk"><input type="radio" name="i24" value="3"><span>3</span></label>
+          <label class="lk"><input type="radio" name="i24" value="4"><span>4</span></label>
+          <label class="lk"><input type="radio" name="i24" value="5"><span>5</span></label>
+        </div>
+      </div>
+      <div class="q" data-q="2.5" data-label="Proses paling boros listrik">
+        <div class="qt"><span class="code">2.5</span> Proses / peralatan apa yang Anda duga paling boros listrik? <span class="hint">(opsional)</span></div>
+        <textarea class="txta" name="i25" placeholder="mis. kompresor, chiller, oven, motor pompa…"></textarea>
+      </div>
     </div>
 
     <div class="qsec ind">
-      <div class="qsec-head"><span class="n">6</span><h3>Buying Process &amp; Willingness to Pay</h3></div>
-      <div class="q"><div class="qt"><span class="code">6.1</span> <span class="star">⭐</span> Model harga yang paling sesuai</div><div class="opts"><span class="opt">Langganan SaaS (per aset/site)</span><span class="opt">Bayar per inspeksi</span><span class="opt">Bundle hardware+software</span><span class="opt">Shared-savings</span><span class="opt">Lisensi tahunan</span></div></div>
-      <div class="q"><div class="qt"><span class="code">6.2</span> Kisaran anggaran untuk solusi ini per tahun</div><div class="opts"><span class="opt">&lt; Rp 50jt</span><span class="opt">50–200jt</span><span class="opt">200jt–1M</span><span class="opt">&gt; 1M</span><span class="opt">Belum ada</span></div></div>
-      <div class="q"><div class="qt"><span class="code">6.3</span> Siapa pengambil keputusan pembelian? <em>(boleh &gt;1)</em></div><div class="opts"><span class="opt">Saya</span><span class="opt">Atasan/Direksi</span><span class="opt">Procurement</span><span class="opt">Komite teknis</span><span class="opt">Korporat/pusat</span></div></div>
-      <div class="q"><div class="qt"><span class="code">6.4</span> Tipikal lama proses pengadaan solusi baru</div><div class="opts"><span class="opt">&lt; 1 bln</span><span class="opt">1–3 bln</span><span class="opt">3–6 bln</span><span class="opt">&gt; 6 bln</span></div></div>
-      <div class="q"><div class="qt"><span class="code">6.5</span> <span class="star">⭐</span> Bersediakah fasilitas Anda menjadi <strong>pilot project</strong>?</div><div class="opts"><span class="opt">Ya</span><span class="opt">Mungkin</span><span class="opt">Tidak</span></div></div>
-      <div class="q"><div class="qt"><span class="code">6.6</span> Bersedia menandatangani <strong>LOI/MoU</strong> jika pilot berhasil?</div><div class="opts"><span class="opt">Ya</span><span class="opt">Perlu diskusi</span><span class="opt">Tidak</span></div></div>
+      <div class="qsec-head"><span class="n">3</span><h3>Upaya efisiensi energi</h3></div>
+      <div class="q" data-q="3.1" data-label="Tingkat upaya efisiensi">
+        <div class="qt"><span class="code">3.1</span> <span class="star">⭐</span> Apakah sudah ada upaya efisiensi energi di fasilitas Anda?</div>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="i31" value="Belum ada"><span>Belum ada</span></label>
+          <label class="opt"><input type="radio" name="i31" value="Sedikit/sporadis"><span>Sedikit/sporadis</span></label>
+          <label class="opt"><input type="radio" name="i31" value="Aktif"><span>Aktif</span></label>
+          <label class="opt"><input type="radio" name="i31" value="Program terstruktur"><span>Program terstruktur</span></label>
+        </div>
+      </div>
+      <div class="q" data-q="3.2" data-label="Upaya yang dilakukan">
+        <div class="qt"><span class="code">3.2</span> Upaya apa saja yang sudah dilakukan? <span class="hint">(boleh &gt;1)</span></div>
+        <div class="opts">
+          <label class="opt"><input type="checkbox" name="i32" value="Capacitor bank / perbaikan power factor"><span>Capacitor bank / power factor</span></label>
+          <label class="opt"><input type="checkbox" name="i32" value="Penggantian peralatan hemat"><span>Ganti peralatan hemat</span></label>
+          <label class="opt"><input type="checkbox" name="i32" value="Manajemen/penjadwalan beban"><span>Manajemen beban</span></label>
+          <label class="opt"><input type="checkbox" name="i32" value="Lampu LED"><span>Lampu LED</span></label>
+          <label class="opt"><input type="checkbox" name="i32" value="Solar PV"><span>Solar PV</span></label>
+          <label class="opt"><input type="checkbox" name="i32" value="VSD/inverter motor"><span>VSD/inverter motor</span></label>
+          <label class="opt"><input type="checkbox" name="i32" value="Belum ada"><span>Belum ada</span></label>
+        </div>
+      </div>
+      <div class="q" data-q="3.3" data-label="Efektivitas upaya menurunkan tagihan (1-5)">
+        <div class="qt"><span class="code">3.3</span> Seberapa efektif upaya tersebut menurunkan tagihan?</div>
+        <div class="likert">
+          <label class="lk"><input type="radio" name="i33" value="1"><span>1</span></label>
+          <label class="lk"><input type="radio" name="i33" value="2"><span>2</span></label>
+          <label class="lk"><input type="radio" name="i33" value="3"><span>3</span></label>
+          <label class="lk"><input type="radio" name="i33" value="4"><span>4</span></label>
+          <label class="lk"><input type="radio" name="i33" value="5"><span>5</span></label>
+        </div>
+      </div>
+      <div class="q" data-q="3.4" data-label="Hambatan efisiensi">
+        <div class="qt"><span class="code">3.4</span> Hambatan utama melakukan efisiensi energi? <span class="hint">(boleh &gt;1)</span></div>
+        <div class="opts">
+          <label class="opt"><input type="checkbox" name="i34" value="Biaya investasi"><span>Biaya investasi</span></label>
+          <label class="opt"><input type="checkbox" name="i34" value="Tidak tahu mulai dari mana"><span>Tidak tahu mulai dari mana</span></label>
+          <label class="opt"><input type="checkbox" name="i34" value="Tidak ada SDM/ahli"><span>Tidak ada SDM/ahli</span></label>
+          <label class="opt"><input type="checkbox" name="i34" value="Sulit ukur dampak"><span>Sulit ukur dampak</span></label>
+          <label class="opt"><input type="checkbox" name="i34" value="Bukan prioritas"><span>Bukan prioritas</span></label>
+        </div>
+      </div>
     </div>
 
     <div class="qsec ind">
-      <div class="qsec-head"><span class="n">7</span><h3>Penutup</h3></div>
-      <div class="q"><div class="qt"><span class="code">7.1</span> Kemungkinan merekomendasikan ke kolega industri? <em>(NPS 0–10)</em></div><div class="scale"><span>0</span><span>…</span><span>5</span><span>…</span><span>10</span></div></div>
-      <div class="q"><div class="qt"><span class="code">7.2</span> Kontak tindak lanjut: Nama · Email/No. · Perusahaan</div><div class="fill" style="max-width:100%"></div></div>
-      <div class="q"><div class="qt"><span class="code">7.3</span> Satu syarat utama agar Anda <strong>pasti</strong> mengadopsi solusi ini:</div><div class="fill" style="max-width:100%"></div></div>
+      <div class="qsec-head"><span class="n">4</span><h3>Praktik audit energi saat ini</h3></div>
+      <div class="q" data-q="4.1" data-label="Pernah audit energi?">
+        <div class="qt"><span class="code">4.1</span> <span class="star">⭐</span> Apakah pernah melakukan audit energi?</div>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="i41" value="Belum pernah"><span>Belum pernah</span></label>
+          <label class="opt"><input type="radio" name="i41" value="Internal"><span>Pernah — internal</span></label>
+          <label class="opt"><input type="radio" name="i41" value="Konsultan eksternal"><span>Pernah — konsultan</span></label>
+        </div>
+      </div>
+      <div class="q" data-q="4.2" data-label="Kapan audit terakhir">
+        <div class="qt"><span class="code">4.2</span> Jika pernah, kapan audit terakhir?</div>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="i42" value="<1thn"><span>&lt; 1 tahun</span></label>
+          <label class="opt"><input type="radio" name="i42" value="1-3thn"><span>1–3 tahun</span></label>
+          <label class="opt"><input type="radio" name="i42" value=">3thn"><span>&gt; 3 tahun</span></label>
+          <label class="opt"><input type="radio" name="i42" value="Belum pernah"><span>Belum pernah</span></label>
+        </div>
+      </div>
+      <div class="q" data-q="4.3" data-label="Cara audit dilakukan">
+        <div class="qt"><span class="code">4.3</span> Bagaimana audit dilakukan? <span class="hint">(boleh &gt;1)</span></div>
+        <div class="opts">
+          <label class="opt"><input type="checkbox" name="i43" value="Walk-through visual"><span>Walk-through visual</span></label>
+          <label class="opt"><input type="checkbox" name="i43" value="Pengukuran instrumen (clamp/power meter)"><span>Pengukuran instrumen</span></label>
+          <label class="opt"><input type="checkbox" name="i43" value="Analisis tagihan"><span>Analisis tagihan</span></label>
+          <label class="opt"><input type="checkbox" name="i43" value="Pemodelan/simulasi"><span>Pemodelan/simulasi</span></label>
+          <label class="opt"><input type="checkbox" name="i43" value="Tidak tahu detailnya"><span>Tidak tahu detailnya</span></label>
+        </div>
+      </div>
+      <div class="q" data-q="4.4" data-label="Menerapkan ISO 50001">
+        <div class="qt"><span class="code">4.4</span> Menerapkan sistem manajemen energi (ISO 50001)?</div>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="i44" value="Ya"><span>Ya</span></label>
+          <label class="opt"><input type="radio" name="i44" value="Sedang proses"><span>Sedang proses</span></label>
+          <label class="opt"><input type="radio" name="i44" value="Tidak"><span>Tidak</span></label>
+        </div>
+      </div>
+      <div class="q" data-q="4.5" data-label="Potensi penghematan belum tergarap">
+        <div class="qt"><span class="code">4.5</span> <span class="star">⭐</span> Perkiraan potensi penghematan listrik yang belum tergarap</div>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="i45" value="<5%"><span>&lt; 5%</span></label>
+          <label class="opt"><input type="radio" name="i45" value="5-10%"><span>5–10%</span></label>
+          <label class="opt"><input type="radio" name="i45" value="10-20%"><span>10–20%</span></label>
+          <label class="opt"><input type="radio" name="i45" value=">20%"><span>&gt; 20%</span></label>
+          <label class="opt"><input type="radio" name="i45" value="Tidak tahu"><span>Tidak tahu</span></label>
+        </div>
+      </div>
+      <div class="q" data-q="4.6" data-label="Kenapa audit sebelumnya kurang bermanfaat">
+        <div class="qt"><span class="code">4.6</span> Apa yang membuat audit energi sebelumnya kurang bermanfaat / tidak ditindaklanjuti? <span class="hint">(opsional)</span></div>
+        <textarea class="txta" name="i46" placeholder="mis. rekomendasi tidak praktis, tidak ada follow-up, ROI tidak jelas…"></textarea>
+      </div>
     </div>
-  </section>
+
+    <div class="qsec ind">
+      <div class="qsec-head"><span class="n">5</span><h3>Minat jasa audit energi EnVisor &amp; willingness to pay</h3></div>
+      <div class="q" data-q="5.1" data-label="Minat jasa audit energi (1-5)">
+        <div class="qt"><span class="code">5.1</span> <span class="star">⭐</span> Seberapa tertarik memakai jasa audit energi yang menemukan penghematan terukur?</div>
+        <div class="likert">
+          <label class="lk"><input type="radio" name="i51" value="1"><span>1</span></label>
+          <label class="lk"><input type="radio" name="i51" value="2"><span>2</span></label>
+          <label class="lk"><input type="radio" name="i51" value="3"><span>3</span></label>
+          <label class="lk"><input type="radio" name="i51" value="4"><span>4</span></label>
+          <label class="lk"><input type="radio" name="i51" value="5"><span>5</span></label>
+        </div>
+      </div>
+      <div class="q" data-q="5.2" data-label="Model harga preferensi">
+        <div class="qt"><span class="code">5.2</span> <span class="star">⭐</span> Model harga yang paling sesuai bagi Anda</div>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="i52" value="Fixed fee per audit"><span>Fixed fee per audit</span></label>
+          <label class="opt"><input type="radio" name="i52" value="Shared-savings (% penghematan)"><span>Shared-savings (% penghematan)</span></label>
+          <label class="opt"><input type="radio" name="i52" value="Langganan monitoring"><span>Langganan monitoring</span></label>
+          <label class="opt"><input type="radio" name="i52" value="Belum tahu"><span>Belum tahu</span></label>
+        </div>
+      </div>
+      <div class="q" data-q="5.3" data-label="Porsi shared-savings wajar">
+        <div class="qt"><span class="code">5.3</span> Untuk shared-savings, porsi yang wajar bagi penyedia jasa?</div>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="i53" value="10-20%"><span>10–20%</span></label>
+          <label class="opt"><input type="radio" name="i53" value="20-30%"><span>20–30%</span></label>
+          <label class="opt"><input type="radio" name="i53" value="30-40%"><span>30–40%</span></label>
+          <label class="opt"><input type="radio" name="i53" value="Tergantung"><span>Tergantung hasil</span></label>
+        </div>
+      </div>
+      <div class="q" data-q="5.4" data-label="Anggaran wajar 1 audit">
+        <div class="qt"><span class="code">5.4</span> Anggaran yang wajar untuk satu kali audit energi (fixed fee)</div>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="i54" value="<25jt"><span>&lt; Rp 25jt</span></label>
+          <label class="opt"><input type="radio" name="i54" value="25-75jt"><span>25–75jt</span></label>
+          <label class="opt"><input type="radio" name="i54" value="75-200jt"><span>75–200jt</span></label>
+          <label class="opt"><input type="radio" name="i54" value=">200jt"><span>&gt; 200jt</span></label>
+          <label class="opt"><input type="radio" name="i54" value="Belum ada anggaran"><span>Belum ada anggaran</span></label>
+        </div>
+      </div>
+      <div class="q" data-q="5.5" data-label="Bersedia pilot audit?">
+        <div class="qt"><span class="code">5.5</span> <span class="star">⭐</span> Bersediakah fasilitas Anda menjadi <strong>pilot audit energi</strong>?</div>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="i55" value="Ya"><span>Ya</span></label>
+          <label class="opt"><input type="radio" name="i55" value="Mungkin"><span>Mungkin</span></label>
+          <label class="opt"><input type="radio" name="i55" value="Tidak"><span>Tidak</span></label>
+        </div>
+      </div>
+      <div class="q" data-q="5.6" data-label="Pengambil keputusan">
+        <div class="qt"><span class="code">5.6</span> Siapa pengambil keputusan pembelian? <span class="hint">(boleh &gt;1)</span></div>
+        <div class="opts">
+          <label class="opt"><input type="checkbox" name="i56" value="Saya"><span>Saya</span></label>
+          <label class="opt"><input type="checkbox" name="i56" value="Atasan/Direksi"><span>Atasan/Direksi</span></label>
+          <label class="opt"><input type="checkbox" name="i56" value="Procurement"><span>Procurement</span></label>
+          <label class="opt"><input type="checkbox" name="i56" value="Korporat/pusat"><span>Korporat/pusat</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="qsec ind">
+      <div class="qsec-head"><span class="n">6</span><h3>Penutup</h3></div>
+      <div class="q" data-q="6.1" data-label="NPS (0-10)">
+        <div class="qt"><span class="code">6.1</span> Kemungkinan merekomendasikan jasa ini ke kolega industri? <span class="hint">(0–10)</span></div>
+        <div class="nps">
+          <label class="lk"><input type="radio" name="i61" value="0"><span>0</span></label>
+          <label class="lk"><input type="radio" name="i61" value="1"><span>1</span></label>
+          <label class="lk"><input type="radio" name="i61" value="2"><span>2</span></label>
+          <label class="lk"><input type="radio" name="i61" value="3"><span>3</span></label>
+          <label class="lk"><input type="radio" name="i61" value="4"><span>4</span></label>
+          <label class="lk"><input type="radio" name="i61" value="5"><span>5</span></label>
+          <label class="lk"><input type="radio" name="i61" value="6"><span>6</span></label>
+          <label class="lk"><input type="radio" name="i61" value="7"><span>7</span></label>
+          <label class="lk"><input type="radio" name="i61" value="8"><span>8</span></label>
+          <label class="lk"><input type="radio" name="i61" value="9"><span>9</span></label>
+          <label class="lk"><input type="radio" name="i61" value="10"><span>10</span></label>
+        </div>
+      </div>
+      <div class="q" data-q="6.2" data-label="Kontak tindak lanjut">
+        <div class="qt"><span class="code">6.2</span> Kontak tindak lanjut: nama · email/No. · perusahaan</div>
+        <textarea class="txta" name="i62" placeholder="…"></textarea>
+      </div>
+      <div class="q" data-q="6.3" data-label="Syarat pasti memakai jasa">
+        <div class="qt"><span class="code">6.3</span> Satu syarat utama agar Anda <strong>pasti</strong> memakai jasa audit energi ini:</div>
+        <textarea class="txta" name="i63" placeholder="…"></textarea>
+      </div>
+    </div>
+
+    <div class="submit-row"><button type="submit" class="btn btn-go">✅ Lihat &amp; Kirim Jawaban</button></div>
+
+    <div class="result" id="result-ind">
+      <h3>✅ Jawaban terkumpul</h3>
+      <pre id="summary-ind"></pre>
+      <div class="res-btns">
+        <button type="button" class="btn btn-wa" onclick="waShare('ind')">📲 Kirim via WhatsApp</button>
+        <button type="button" class="btn btn-p2" onclick="copyAns('ind')">📋 Salin Jawaban</button>
+        <button type="button" class="btn btn-g2" onclick="window.print()">🖨️ Cetak / PDF</button>
+      </div>
+      <p class="muted">Kirim ringkasan ini ke tim EnVisor untuk direkap. Tidak ada data yang tersimpan otomatis di server.</p>
+    </div>
+  </form>
 
   <!-- SCORING -->
-  <h2 style="font-size:20px;font-weight:900;margin:44px 0 0">📊 Cara membaca hasil (go / no-go)</h2>
+  <h2 style="font-size:19px;font-weight:900;margin:40px 0 0">📊 Cara membaca hasil (go / no-go)</h2>
   <div class="score">
     <table>
       <thead><tr><th>Sinyal</th><th>Indikator GO</th><th>Indikator NO-GO</th></tr></thead>
       <tbody>
-        <tr><td class="t-strong">Problem nyata — Rumah</td><td class="go">≥ 60% kaget tagihan ≥ 3x/thn &amp; Q2.6 ≥ 4</td><td class="nogo">Mayoritas "tidak terganggu"</td></tr>
+        <tr><td class="t-strong">Masalah nyata — Rumah</td><td class="go">≥ 60% kaget tagihan ≥ 3x/thn &amp; Q2.6 ≥ 4</td><td class="nogo">Mayoritas "tidak terganggu"</td></tr>
         <tr><td class="t-strong">WTP — Rumah</td><td class="go">≥ 25% "Ya" bayar Rp 99k; OPP dekat Rp 99k</td><td class="nogo">"Ya" &lt; 10%</td></tr>
-        <tr><td class="t-strong">Problem nyata — Industri</td><td class="go">Downtime ≥ 3x/thn &amp; biaya/jam ≥ Rp 25jt</td><td class="nogo">Aset sedikit &amp; downtime nihil</td></tr>
-        <tr><td class="t-strong">Intent — Industri</td><td class="go">≥ 30% bersedia pilot; ≥ 5 kandidat LOI</td><td class="nogo">Pilot &lt; 10%</td></tr>
+        <tr><td class="t-strong">Masalah nyata — Industri</td><td class="go">Listrik ≥ 15% biaya operasi &amp; potensi hemat ≥ 10%</td><td class="nogo">Listrik beban kecil &amp; sudah optimal</td></tr>
+        <tr><td class="t-strong">Minat jasa audit — Industri</td><td class="go">Q5.1 ≥ 4 &amp; ≥ 30% bersedia pilot audit</td><td class="nogo">Minat rendah / pilot &lt; 10%</td></tr>
         <tr><td class="t-strong">NPS</td><td class="go">≥ +30</td><td class="nogo">≤ 0</td></tr>
       </tbody>
     </table>
   </div>
-  <p style="font-size:12.5px;color:var(--mid);margin-top:14px"><strong>Van Westendorp:</strong> plot 4 kurva (Q5.1–5.4) → titik potong = rentang harga optimal (OPP) &amp; batas (PMC/PME); bandingkan dengan Rp 99k. Hasil survei wajib disajikan apa adanya (termasuk yang negatif) saat sesi panel.</p>
+  <p style="font-size:12.5px;color:var(--mid);margin-top:14px"><strong>Van Westendorp (Rumah):</strong> plot 4 jawaban harga (Q3.1–3.4) → titik potong = rentang harga optimal (OPP); bandingkan dengan Rp 99k. Sajikan hasil apa adanya, termasuk yang negatif.</p>
 
 </main>
 
@@ -297,25 +647,56 @@ footer a{color:#94a3b8}footer a:hover{color:#fff}
     <div style="display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap">
       <div>
         <div class="logo" style="color:#fff;margin-bottom:6px">⚡ EnVisor<em>.AI</em></div>
-        <div style="max-width:340px">Kuesioner Market Validation — Section B proposal Innovation Gateway 2026.</div>
+        <div style="max-width:340px">Kuesioner Market Validation — fokus masalah tagihan listrik &amp; willingness to pay.</div>
       </div>
       <div style="display:flex;flex-direction:column;gap:7px">
         <a href="/bisnis.html">Halaman Bisnis</a>
-        <a href="/slo.html">SLO Deep Dive</a>
+        <a href="/">Aplikasi EnVisor</a>
         <a href="/downloads/EnVisor-Kuesioner-Market-Validation.md">Unduh (.md)</a>
       </div>
     </div>
-    <div class="foot-note">© 2026 EnVisor.AI · Kuesioner untuk riset pengembangan produk. Angka pricing bersifat hipotesis yang divalidasi oleh kuesioner ini.</div>
+    <div class="foot-note">© 2026 EnVisor.AI · Kuesioner untuk riset pengembangan produk. Jawaban dikirim manual via WhatsApp/salin — tidak disimpan otomatis. Harga bersifat hipotesis yang divalidasi kuesioner ini.</div>
   </div>
 </footer>
 
 <script>
 function show(which){
-  document.getElementById('panel-home').classList.toggle('show', which==='home');
-  document.getElementById('panel-ind').classList.toggle('show', which==='ind');
+  document.getElementById('form-home').classList.toggle('show', which==='home');
+  document.getElementById('form-ind').classList.toggle('show', which==='ind');
   document.getElementById('tab-home').classList.toggle('on', which==='home');
   document.getElementById('tab-ind').classList.toggle('on', which==='ind');
-  window.scrollTo({top:0,behavior:'instant'});
+  window.scrollTo({top:0});
+}
+function collect(which){
+  var form=document.getElementById('form-'+which);
+  var lines=['Kuesioner EnVisor — '+(which==='home'?'Pelanggan Rumah':'Industri / Audit Energi'),''];
+  form.querySelectorAll('.q[data-q]').forEach(function(g){
+    var code=g.getAttribute('data-q'), label=g.getAttribute('data-label'), vals=[];
+    g.querySelectorAll('input,textarea').forEach(function(inp){
+      if(inp.type==='radio'||inp.type==='checkbox'){ if(inp.checked) vals.push(inp.value); }
+      else if(inp.value && inp.value.trim()) vals.push(inp.value.trim());
+    });
+    lines.push(code+'. '+label+': '+(vals.length?vals.join(', '):'-'));
+  });
+  return lines.join('\n');
+}
+function submitForm(which){
+  var text=collect(which);
+  document.getElementById('summary-'+which).textContent=text;
+  var box=document.getElementById('result-'+which);
+  box.style.display='block';
+  box.scrollIntoView({behavior:'smooth'});
+}
+function waShare(which){
+  var t=encodeURIComponent(document.getElementById('summary-'+which).textContent);
+  window.open('https://wa.me/?text='+t,'_blank');
+}
+function copyAns(which){
+  var t=document.getElementById('summary-'+which).textContent;
+  navigator.clipboard.writeText(t).then(function(){
+    var b=event.target; var o=b.textContent; b.textContent='✅ Tersalin!';
+    setTimeout(function(){b.textContent=o;},1500);
+  });
 }
 </script>
 </body>
