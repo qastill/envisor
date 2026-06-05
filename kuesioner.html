@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f172a">
+<title>EnVisor — Kuesioner Market Validation (Rumah & Industri)</title>
+<meta name="description" content="Kuesioner market validation EnVisor untuk pelanggan rumah tangga (B2C) & industri (B2B/B2G): problem validation, solution validation, Van Westendorp pricing.">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f7f8fc;--white:#fff;--acc:#f59e0b;--acc2:#ef4444;--blue:#0891b2;--indigo:#6366f1;
+  --green:#10b981;--cyan:#06b6d4;--violet:#8b5cf6;
+  --dark:#0f172a;--mid:#64748b;--light:#e2e8f0;--light2:#f1f5f9;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--dark);line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:920px;margin:0 auto;padding:0 22px}
+
+nav{background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--light);height:60px;display:flex;align-items:center;position:sticky;top:0;z-index:100}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;width:100%}
+.logo{font-weight:900;font-size:19px}.logo em{color:var(--acc);font-style:normal}
+.nback{font-size:13px;font-weight:700;color:var(--mid)}.nback:hover{color:var(--dark)}
+
+.hero{background:radial-gradient(900px 420px at 80% -10%,rgba(99,102,241,.22),transparent),linear-gradient(160deg,#0f172a,#1e293b 60%,#0f172a);color:#fff;padding:54px 0 56px}
+.crumb{font-size:12px;color:#94a3b8;font-weight:700;margin-bottom:16px}.crumb a{color:#818cf8}
+.pill{display:inline-flex;gap:8px;background:rgba(99,102,241,.16);border:1px solid rgba(99,102,241,.4);color:#a5b4fc;font-size:12px;font-weight:800;padding:6px 15px;border-radius:30px;letter-spacing:.5px;margin-bottom:18px}
+.hero h1{font-size:clamp(26px,4.5vw,42px);font-weight:900;line-height:1.12;letter-spacing:-.5px;max-width:760px}
+.hero p{font-size:clamp(14px,2vw,17px);color:#cbd5e1;max-width:680px;margin-top:14px}
+.tools{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:11px;font-weight:800;font-size:14px;cursor:pointer;border:none;transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn-p{background:linear-gradient(135deg,var(--indigo),var(--violet));color:#fff}
+.btn-g{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2)}
+
+/* methodology */
+.method{background:#fffbeb;border:1px solid #fde68a;border-radius:16px;padding:22px 24px;margin-top:34px}
+.method b{color:#854d0e;font-size:14px}
+.method ul{margin:10px 0 0 0;list-style:none;display:flex;flex-direction:column;gap:7px}
+.method li{font-size:13px;color:#854d0e;padding-left:18px;position:relative}
+.method li::before{content:'✓';position:absolute;left:0;font-weight:900}
+
+/* tabs */
+.tabs{display:flex;gap:10px;margin:40px 0 0;position:sticky;top:60px;background:var(--bg);padding:14px 0;z-index:50}
+.tab{flex:1;padding:14px;border-radius:13px;border:2px solid var(--light);background:var(--white);font-family:inherit;font-weight:800;font-size:15px;cursor:pointer;color:var(--mid);transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.tab.on.home{border-color:var(--acc);background:#fffbeb;color:#92400e}
+.tab.on.ind{border-color:var(--indigo);background:#eef2ff;color:#3730a3}
+
+.panel{display:none}.panel.show{display:block;animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.meta-row{display:flex;gap:10px;flex-wrap:wrap;margin:24px 0 8px}
+.chip{font-size:12px;font-weight:700;background:var(--white);border:1px solid var(--light);border-radius:20px;padding:6px 14px;color:var(--mid)}
+
+.qsec{background:var(--white);border:1px solid var(--light);border-radius:18px;padding:8px 0;margin-top:18px;overflow:hidden}
+.qsec-head{display:flex;align-items:center;gap:12px;padding:16px 22px;background:linear-gradient(90deg,var(--dark),#1e293b);color:#fff;margin:-8px 0 0}
+.qsec-head .n{width:28px;height:28px;border-radius:8px;background:var(--acc);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:#0f172a;flex-shrink:0}
+.ind .qsec-head .n{background:var(--indigo);color:#fff}
+.qsec-head h3{font-size:15px;font-weight:800}
+.qsec-head .sub{font-size:11.5px;color:#94a3b8;font-weight:600;margin-left:auto}
+.q{padding:14px 22px;border-bottom:1px solid var(--light2)}
+.q:last-child{border-bottom:none}
+.q .qt{font-size:14px;font-weight:700;display:flex;gap:8px}
+.q .code{font-weight:900;color:var(--blue);flex-shrink:0;font-variant-numeric:tabular-nums}
+.ind .q .code{color:var(--indigo)}
+.star{color:var(--acc2);font-weight:900}
+.opts{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px;padding-left:30px}
+.opt{font-size:12.5px;color:var(--mid);border:1px solid var(--light);border-radius:8px;padding:5px 11px;background:var(--bg)}
+.scale{display:inline-flex;gap:5px;margin-top:9px;margin-left:30px}
+.scale span{width:30px;height:30px;border-radius:8px;border:1.5px solid var(--light);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--mid);background:var(--bg)}
+.fill{margin-top:9px;margin-left:30px;height:30px;border:1.5px dashed var(--light);border-radius:8px;background:repeating-linear-gradient(90deg,transparent,transparent 18px,var(--light) 18px,var(--light) 19px);max-width:340px}
+.note{font-size:12px;color:var(--mid);font-style:italic;padding:0 22px 10px 52px}
+
+.vw{background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:14px 18px;margin:6px 22px 10px}
+.vw b{color:#1e40af;font-size:13px}
+.vw p{font-size:12.5px;color:#1e3a8a;margin-top:4px}
+
+/* scoring */
+.score{background:var(--white);border:1px solid var(--light);border-radius:18px;padding:8px;margin-top:30px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:560px}
+th{text-align:left;font-size:11px;font-weight:800;color:var(--mid);text-transform:uppercase;letter-spacing:.5px;padding:12px 14px;border-bottom:2px solid var(--light)}
+td{padding:11px 14px;border-bottom:1px solid var(--light2);vertical-align:top}
+tr:last-child td{border-bottom:none}
+.go{color:var(--green);font-weight:700}.nogo{color:var(--acc2);font-weight:700}
+
+footer{background:#0f172a;color:#94a3b8;padding:34px 0 26px;font-size:13px;margin-top:50px}
+footer a{color:#94a3b8}footer a:hover{color:#fff}
+.foot-note{border-top:1px solid rgba(255,255,255,.08);margin-top:18px;padding-top:16px;font-size:11.5px;color:#64748b}
+
+@media print{
+  nav,.hero .tools,.tabs,footer .foot-note{display:none!important}
+  .panel{display:block!important}
+  .tabs{display:none}
+  body{background:#fff}
+  .qsec,.method,.score{box-shadow:none;break-inside:avoid}
+  .qsec-head{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a href="/bisnis.html" class="logo">⚡ EnVisor<em>.AI</em></a>
+    <a href="/bisnis.html" class="nback">← Halaman Bisnis</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="crumb"><a href="/bisnis.html">Bisnis</a> · Customer Validation</div>
+    <span class="pill">📋 KUESIONER MARKET VALIDATION</span>
+    <h1>Validasi pasar EnVisor — Rumah &amp; Industri</h1>
+    <p>Dua kuesioner siap pakai untuk Section B proposal (Customer Validation &amp; Traction): memvalidasi <strong>masalah</strong> dan <strong>minat solusi</strong> dengan metodologi yang benar — bukan sekadar mengumpulkan pujian.</p>
+    <div class="tools">
+      <button class="btn btn-p" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
+      <a class="btn btn-g" href="/downloads/EnVisor-Kuesioner-Market-Validation.md" download>📝 Unduh (.md) untuk Google Forms</a>
+      <a class="btn btn-g" href="/bisnis.html#download">📊 Proposal</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="method">
+    <b>⚙️ Prinsip metodologi (baca dulu)</b>
+    <ul>
+      <li>Pisahkan <strong>problem validation</strong> (apakah masalahnya nyata) dari <strong>solution validation</strong> (apakah solusinya diminati).</li>
+      <li>Hindari pertanyaan menggiring — tanyakan <strong>perilaku &amp; pengalaman nyata</strong>, bukan "apakah Anda suka ide ini?".</li>
+      <li>Validasi harga dengan <strong>Van Westendorp</strong> (4 pertanyaan), bukan satu pertanyaan "mau bayar berapa".</li>
+      <li>Pertanyaan bertanda <span class="star">⭐</span> = <em>killer question</em> penentu go/no-go. Skala = Likert 1–5 (1 sangat tidak setuju … 5 sangat setuju) kecuali disebut lain.</li>
+      <li>Target sampel: Rumah ≥ 100 responden (beragam daya VA); Industri ≥ 15–20 wawancara mendalam + ≥ 30 survei.</li>
+    </ul>
+  </div>
+
+  <div class="tabs">
+    <button class="tab home on" id="tab-home" onclick="show('home')">🏠 Pelanggan Rumah (B2C)</button>
+    <button class="tab ind" id="tab-ind" onclick="show('ind')">🏭 Pelanggan Industri (B2B/B2G)</button>
+  </div>
+
+  <!-- ============ HOME ============ -->
+  <section class="panel show home" id="panel-home">
+    <div class="meta-row">
+      <span class="chip">⏱️ 4–6 menit</span>
+      <span class="chip">📱 Online (PWA/WA) atau tatap muka</span>
+      <span class="chip">🎯 Target ≥ 100 responden</span>
+    </div>
+
+    <div class="qsec">
+      <div class="qsec-head"><span class="n">1</span><h3>Profil &amp; Screening</h3><span class="sub">Konteks responden</span></div>
+      <div class="q"><div class="qt"><span class="code">1.1</span> Lokasi (Kota/Kabupaten)</div><div class="fill"></div></div>
+      <div class="q"><div class="qt"><span class="code">1.2</span> Daya listrik terpasang di rumah</div><div class="opts"><span class="opt">450 VA</span><span class="opt">900 VA</span><span class="opt">1300 VA</span><span class="opt">2200 VA</span><span class="opt">3500 VA+</span><span class="opt">Tidak tahu</span></div></div>
+      <div class="q"><div class="qt"><span class="code">1.3</span> Rata-rata tagihan/token listrik per bulan</div><div class="opts"><span class="opt">&lt; Rp 200rb</span><span class="opt">200–400rb</span><span class="opt">400–700rb</span><span class="opt">700rb–1,2jt</span><span class="opt">&gt; 1,2jt</span></div></div>
+      <div class="q"><div class="qt"><span class="code">1.4</span> Jumlah penghuni rumah</div><div class="opts"><span class="opt">1–2</span><span class="opt">3–4</span><span class="opt">5–6</span><span class="opt">&gt; 6</span></div></div>
+      <div class="q"><div class="qt"><span class="code">1.5</span> Status meteran</div><div class="opts"><span class="opt">Pascabayar</span><span class="opt">Prabayar (token)</span></div></div>
+      <div class="q"><div class="qt"><span class="code">1.6</span> Seberapa nyaman Anda memakai aplikasi di HP?</div><div class="scale"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div></div>
+    </div>
+
+    <div class="qsec">
+      <div class="qsec-head"><span class="n">2</span><h3>Problem Validation</h3><span class="sub">Apakah masalahnya nyata?</span></div>
+      <div class="q"><div class="qt"><span class="code">2.1</span> <span class="star">⭐</span> Dalam 6 bulan terakhir, seberapa sering Anda terkejut tagihan/token lebih boros dari perkiraan?</div><div class="opts"><span class="opt">Tidak pernah</span><span class="opt">1–2x</span><span class="opt">3–5x</span><span class="opt">Hampir tiap bulan</span></div></div>
+      <div class="q"><div class="qt"><span class="code">2.2</span> "Saya tahu persis perangkat mana yang paling boros listrik."</div><div class="scale"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div></div>
+      <div class="q"><div class="qt"><span class="code">2.3</span> "Saya pernah merasa tagihan listrik saya tidak wajar/janggal."</div><div class="scale"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div></div>
+      <div class="q"><div class="qt"><span class="code">2.4</span> Saat tagihan melonjak, apa yang biasanya Anda lakukan? <em>(boleh &gt;1)</em></div><div class="opts"><span class="opt">Tidak melakukan apa-apa</span><span class="opt">Cek/cabut perangkat</span><span class="opt">Tanya orang lain</span><span class="opt">Komplain ke PLN</span><span class="opt">Cari info internet</span><span class="opt">Lainnya</span></div></div>
+      <div class="q"><div class="qt"><span class="code">2.5</span> Seberapa mengganggu masalah tagihan tak terkontrol bagi keuangan rumah Anda?</div><div class="scale"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div></div>
+      <div class="q"><div class="qt"><span class="code">2.6</span> <span class="star">⭐</span> Mengetahui penyebab borosnya <strong>tanpa alat ukur</strong> — seberapa berharga bagi Anda?</div><div class="scale"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div></div>
+    </div>
+
+    <div class="qsec">
+      <div class="qsec-head"><span class="n">3</span><h3>Perilaku Saat Ini</h3><span class="sub">Solusi alternatif</span></div>
+      <div class="q"><div class="qt"><span class="code">3.1</span> Pernah memakai audit/kalkulator listrik?</div><div class="opts"><span class="opt">Belum pernah</span><span class="opt">Kalkulator online</span><span class="opt">Panggil teknisi</span><span class="opt">Lainnya</span></div></div>
+      <div class="q"><div class="qt"><span class="code">3.2</span> Jika pernah, apa yang membuat Anda berhenti / tidak puas?</div><div class="fill"></div></div>
+      <div class="q"><div class="qt"><span class="code">3.3</span> Dari mana biasanya Anda cari info hemat listrik?</div><div class="opts"><span class="opt">Media sosial</span><span class="opt">YouTube</span><span class="opt">Teman/keluarga</span><span class="opt">PLN</span><span class="opt">Tidak pernah</span></div></div>
+    </div>
+
+    <div class="qsec">
+      <div class="qsec-head"><span class="n">4</span><h3>Solution Validation</h3><span class="sub">Tunjukkan mockup EnVisor Home</span></div>
+      <div class="note">Paparkan: "foto tiap elektronik → AI estimasi watt &amp; biaya → bandingkan dengan tagihan → rekomendasi hemat".</div>
+      <div class="q"><div class="qt"><span class="code">4.1</span> <span class="star">⭐</span> Setelah melihat ini, seberapa besar kemungkinan Anda mencobanya?</div><div class="scale"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div></div>
+      <div class="q"><div class="qt"><span class="code">4.2</span> Fitur mana yang paling menarik? <em>(urutkan 1–3)</em></div><div class="opts"><span class="opt">Biaya per perangkat</span><span class="opt">Deteksi anomali tagihan</span><span class="opt">Rekomendasi hemat</span><span class="opt">Bandingkan rumah sejenis</span><span class="opt">Laporan lengkap</span></div></div>
+      <div class="q"><div class="qt"><span class="code">4.3</span> Kekhawatiran terbesar Anda? <em>(boleh &gt;1)</em></div><div class="opts"><span class="opt">Akurasi hasil</span><span class="opt">Privasi foto</span><span class="opt">Ribet/makan waktu</span><span class="opt">Tidak percaya AI</span><span class="opt">Tidak ada</span></div></div>
+      <div class="q"><div class="qt"><span class="code">4.4</span> "Saya lebih percaya jika tertera ini alat estimasi (bukan audit resmi), margin error 5–20%."</div><div class="scale"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div></div>
+    </div>
+
+    <div class="qsec">
+      <div class="qsec-head"><span class="n">5</span><h3>Willingness to Pay</h3><span class="sub">Van Westendorp · laporan premium</span></div>
+      <div class="vw"><b>Van Westendorp Price Sensitivity</b><p>Empat pertanyaan harga untuk laporan premium (diagnosa lengkap + rekomendasi terinci). Plot 4 jawaban → temukan rentang harga optimal.</p></div>
+      <div class="q"><div class="qt"><span class="code">5.1</span> Pada harga berapa <strong>terlalu mahal</strong> sehingga Anda tidak beli? (Rp)</div><div class="fill"></div></div>
+      <div class="q"><div class="qt"><span class="code">5.2</span> Pada harga berapa <strong>mulai mahal</strong> tapi masih dipertimbangkan? (Rp)</div><div class="fill"></div></div>
+      <div class="q"><div class="qt"><span class="code">5.3</span> Pada harga berapa terasa <strong>murah/worth it</strong>? (Rp)</div><div class="fill"></div></div>
+      <div class="q"><div class="qt"><span class="code">5.4</span> Pada harga berapa <strong>terlalu murah</strong> sampai ragu kualitasnya? (Rp)</div><div class="fill"></div></div>
+      <div class="q"><div class="qt"><span class="code">5.5</span> <span class="star">⭐</span> Bersediakah membayar <strong>Rp 99.000</strong> untuk laporan premium ini?</div><div class="opts"><span class="opt">Ya</span><span class="opt">Mungkin</span><span class="opt">Tidak — alasan: ___</span></div></div>
+      <div class="q"><div class="qt"><span class="code">5.6</span> Tertarik di-rujuk ke layanan apa?</div><div class="opts"><span class="opt">Tambah/turun daya</span><span class="opt">Solar panel (PLTS)</span><span class="opt">Perangkat hemat</span><span class="opt">SPKLU / EV</span><span class="opt">Tidak</span></div></div>
+    </div>
+
+    <div class="qsec">
+      <div class="qsec-head"><span class="n">6</span><h3>Penutup</h3><span class="sub">NPS &amp; pilot</span></div>
+      <div class="q"><div class="qt"><span class="code">6.1</span> Kemungkinan merekomendasikan EnVisor ke teman/keluarga? <em>(NPS 0–10)</em></div><div class="scale"><span>0</span><span>…</span><span>5</span><span>…</span><span>10</span></div></div>
+      <div class="q"><div class="qt"><span class="code">6.2</span> Boleh kami hubungi untuk uji coba gratis (pilot)?</div><div class="opts"><span class="opt">Ya, No. WA: ___</span><span class="opt">Tidak</span></div></div>
+      <div class="q"><div class="qt"><span class="code">6.3</span> Satu hal yang membuat Anda <strong>pasti</strong> memakai aplikasi ini:</div><div class="fill"></div></div>
+    </div>
+  </section>
+
+  <!-- ============ INDUSTRI ============ -->
+  <section class="panel ind" id="panel-ind">
+    <div class="meta-row">
+      <span class="chip">⏱️ 10–15 menit</span>
+      <span class="chip">🗣️ Wawancara mendalam + survei</span>
+      <span class="chip">🎯 ≥ 15–20 wawancara + ≥ 30 survei</span>
+    </div>
+    <div class="note" style="padding-left:0">Responden ideal: Manajer Pemeliharaan, Manajer Energi/Utility, HSE, Plant Manager, atau pengelola aset unit PLN.</div>
+
+    <div class="qsec ind">
+      <div class="qsec-head"><span class="n">1</span><h3>Profil Responden &amp; Organisasi</h3></div>
+      <div class="q"><div class="qt"><span class="code">1.1</span> Jabatan/peran</div><div class="fill"></div></div>
+      <div class="q"><div class="qt"><span class="code">1.2</span> Sektor</div><div class="opts"><span class="opt">Manufaktur</span><span class="opt">FMCG/F&amp;B</span><span class="opt">Pertambangan</span><span class="opt">Properti/Gedung</span><span class="opt">Kawasan industri</span><span class="opt">Unit PLN</span><span class="opt">Lainnya</span></div></div>
+      <div class="q"><div class="qt"><span class="code">1.3</span> Jumlah karyawan</div><div class="opts"><span class="opt">&lt; 50</span><span class="opt">50–250</span><span class="opt">250–1000</span><span class="opt">&gt; 1000</span></div></div>
+      <div class="q"><div class="qt"><span class="code">1.4</span> Golongan tarif / daya tersambung PLN <em>(mis. I-3, I-4, B-3)</em></div><div class="fill"></div></div>
+      <div class="q"><div class="qt"><span class="code">1.5</span> Jumlah aset kelistrikan kritikal (trafo, panel, switchgear, gardu)</div><div class="opts"><span class="opt">&lt; 10</span><span class="opt">10–50</span><span class="opt">50–200</span><span class="opt">&gt; 200</span></div></div>
+      <div class="q"><div class="qt"><span class="code">1.6</span> Lokasi operasi</div><div class="fill"></div></div>
+    </div>
+
+    <div class="qsec ind">
+      <div class="qsec-head"><span class="n">2</span><h3>Problem — Inspeksi &amp; Pemeliharaan Aset</h3></div>
+      <div class="q"><div class="qt"><span class="code">2.1</span> Inspeksi aset kelistrikan saat ini dilakukan bagaimana? <em>(boleh &gt;1)</em></div><div class="opts"><span class="opt">Visual manual terjadwal</span><span class="opt">Thermografi pihak ketiga</span><span class="opt">Sensor/IoT</span><span class="opt">Hanya saat gangguan</span><span class="opt">Tidak rutin</span></div></div>
+      <div class="q"><div class="qt"><span class="code">2.2</span> <span class="star">⭐</span> Dalam 12 bulan terakhir, berapa kali gangguan/downtime kelistrikan tak terduga?</div><div class="opts"><span class="opt">0</span><span class="opt">1–2</span><span class="opt">3–5</span><span class="opt">&gt; 5</span></div></div>
+      <div class="q"><div class="qt"><span class="code">2.3</span> <span class="star">⭐</span> Perkiraan biaya rata-rata <strong>1 jam downtime</strong></div><div class="opts"><span class="opt">&lt; Rp 5jt</span><span class="opt">5–25jt</span><span class="opt">25–100jt</span><span class="opt">&gt; 100jt</span><span class="opt">Tidak tahu</span></div></div>
+      <div class="q"><div class="qt"><span class="code">2.4</span> "Kami sering baru tahu ada masalah aset setelah terjadi gangguan."</div><div class="scale"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div></div>
+      <div class="q"><div class="qt"><span class="code">2.5</span> "Metode inspeksi kami saat ini cukup andal mendeteksi dini kerusakan."</div><div class="scale"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div></div>
+      <div class="q"><div class="qt"><span class="code">2.6</span> Pendekatan pemeliharaan dominan</div><div class="opts"><span class="opt">Reaktif</span><span class="opt">Preventif (terjadwal)</span><span class="opt">Prediktif (berbasis kondisi)</span></div></div>
+    </div>
+
+    <div class="qsec ind">
+      <div class="qsec-head"><span class="n">3</span><h3>Problem — Efisiensi Energi</h3></div>
+      <div class="q"><div class="qt"><span class="code">3.1</span> Biaya listrik per bulan</div><div class="opts"><span class="opt">&lt; Rp 100jt</span><span class="opt">100–500jt</span><span class="opt">500jt–2M</span><span class="opt">&gt; 2M</span></div></div>
+      <div class="q"><div class="qt"><span class="code">3.2</span> Pernah melakukan audit energi?</div><div class="opts"><span class="opt">Belum</span><span class="opt">Internal</span><span class="opt">Konsultan eksternal</span></div></div>
+      <div class="q"><div class="qt"><span class="code">3.3</span> Menerapkan ISO 50001?</div><div class="opts"><span class="opt">Ya</span><span class="opt">Sedang proses</span><span class="opt">Tidak</span></div></div>
+      <div class="q"><div class="qt"><span class="code">3.4</span> <span class="star">⭐</span> Perkiraan potensi pemborosan energi yang belum tergarap</div><div class="opts"><span class="opt">&lt; 5%</span><span class="opt">5–10%</span><span class="opt">10–20%</span><span class="opt">&gt; 20%</span><span class="opt">Tidak tahu</span></div></div>
+    </div>
+
+    <div class="qsec ind">
+      <div class="qsec-head"><span class="n">4</span><h3>Problem — SLO &amp; Compliance</h3></div>
+      <div class="q"><div class="qt"><span class="code">4.1</span> Pernah proses SLO/perizinan instalasi tertunda?</div><div class="opts"><span class="opt">Tidak pernah</span><span class="opt">Jarang</span><span class="opt">Sering</span></div></div>
+      <div class="q"><div class="qt"><span class="code">4.2</span> Penyebab penundaan tersering <em>(boleh &gt;1)</em></div><div class="opts"><span class="opt">Dokumen/gambar tak lengkap</span><span class="opt">Instalasi belum laik</span><span class="opt">NIDI</span><span class="opt">Jadwal LIT</span><span class="opt">Lainnya</span></div></div>
+      <div class="q"><div class="qt"><span class="code">4.3</span> Pengeluaran SLO &amp; inspeksi instalasi per tahun</div><div class="opts"><span class="opt">&lt; Rp 10jt</span><span class="opt">10–50jt</span><span class="opt">50–200jt</span><span class="opt">&gt; 200jt</span></div></div>
+      <div class="q"><div class="qt"><span class="code">4.4</span> "Mengurus kesiapan &amp; dokumen SLO menyita waktu/biaya signifikan."</div><div class="scale"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div></div>
+    </div>
+
+    <div class="qsec ind">
+      <div class="qsec-head"><span class="n">5</span><h3>Solution Validation</h3><span class="sub">Paparkan modul EnVisor</span></div>
+      <div class="q"><div class="qt"><span class="code">5.1</span> <span class="star">⭐</span> Urutkan modul berdasarkan nilai (1 = paling penting): ThermoVision AI · Drone/AssetScan · FactoryAudit · AR FieldAssist · SLO Readiness</div><div class="fill" style="max-width:100%"></div></div>
+      <div class="q"><div class="qt"><span class="code">5.2</span> "Solusi prediktif AI seperti ini akan mengurangi gangguan/biaya kami signifikan."</div><div class="scale"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div></div>
+      <div class="q"><div class="qt"><span class="code">5.3</span> Hambatan adopsi terbesar? <em>(boleh &gt;1)</em></div><div class="opts"><span class="opt">Akurasi/kepercayaan AI</span><span class="opt">Keamanan data</span><span class="opt">Integrasi sistem</span><span class="opt">Biaya</span><span class="opt">SDM/perubahan proses</span><span class="opt">Regulasi</span></div></div>
+      <div class="q"><div class="qt"><span class="code">5.4</span> Saat ini memakai solusi sejenis (vendor)?</div><div class="opts"><span class="opt">Tidak</span><span class="opt">Ya: ___ (apa yang kurang?)</span></div></div>
+    </div>
+
+    <div class="qsec ind">
+      <div class="qsec-head"><span class="n">6</span><h3>Buying Process &amp; Willingness to Pay</h3></div>
+      <div class="q"><div class="qt"><span class="code">6.1</span> <span class="star">⭐</span> Model harga yang paling sesuai</div><div class="opts"><span class="opt">Langganan SaaS (per aset/site)</span><span class="opt">Bayar per inspeksi</span><span class="opt">Bundle hardware+software</span><span class="opt">Shared-savings</span><span class="opt">Lisensi tahunan</span></div></div>
+      <div class="q"><div class="qt"><span class="code">6.2</span> Kisaran anggaran untuk solusi ini per tahun</div><div class="opts"><span class="opt">&lt; Rp 50jt</span><span class="opt">50–200jt</span><span class="opt">200jt–1M</span><span class="opt">&gt; 1M</span><span class="opt">Belum ada</span></div></div>
+      <div class="q"><div class="qt"><span class="code">6.3</span> Siapa pengambil keputusan pembelian? <em>(boleh &gt;1)</em></div><div class="opts"><span class="opt">Saya</span><span class="opt">Atasan/Direksi</span><span class="opt">Procurement</span><span class="opt">Komite teknis</span><span class="opt">Korporat/pusat</span></div></div>
+      <div class="q"><div class="qt"><span class="code">6.4</span> Tipikal lama proses pengadaan solusi baru</div><div class="opts"><span class="opt">&lt; 1 bln</span><span class="opt">1–3 bln</span><span class="opt">3–6 bln</span><span class="opt">&gt; 6 bln</span></div></div>
+      <div class="q"><div class="qt"><span class="code">6.5</span> <span class="star">⭐</span> Bersediakah fasilitas Anda menjadi <strong>pilot project</strong>?</div><div class="opts"><span class="opt">Ya</span><span class="opt">Mungkin</span><span class="opt">Tidak</span></div></div>
+      <div class="q"><div class="qt"><span class="code">6.6</span> Bersedia menandatangani <strong>LOI/MoU</strong> jika pilot berhasil?</div><div class="opts"><span class="opt">Ya</span><span class="opt">Perlu diskusi</span><span class="opt">Tidak</span></div></div>
+    </div>
+
+    <div class="qsec ind">
+      <div class="qsec-head"><span class="n">7</span><h3>Penutup</h3></div>
+      <div class="q"><div class="qt"><span class="code">7.1</span> Kemungkinan merekomendasikan ke kolega industri? <em>(NPS 0–10)</em></div><div class="scale"><span>0</span><span>…</span><span>5</span><span>…</span><span>10</span></div></div>
+      <div class="q"><div class="qt"><span class="code">7.2</span> Kontak tindak lanjut: Nama · Email/No. · Perusahaan</div><div class="fill" style="max-width:100%"></div></div>
+      <div class="q"><div class="qt"><span class="code">7.3</span> Satu syarat utama agar Anda <strong>pasti</strong> mengadopsi solusi ini:</div><div class="fill" style="max-width:100%"></div></div>
+    </div>
+  </section>
+
+  <!-- SCORING -->
+  <h2 style="font-size:20px;font-weight:900;margin:44px 0 0">📊 Cara membaca hasil (go / no-go)</h2>
+  <div class="score">
+    <table>
+      <thead><tr><th>Sinyal</th><th>Indikator GO</th><th>Indikator NO-GO</th></tr></thead>
+      <tbody>
+        <tr><td class="t-strong">Problem nyata — Rumah</td><td class="go">≥ 60% kaget tagihan ≥ 3x/thn &amp; Q2.6 ≥ 4</td><td class="nogo">Mayoritas "tidak terganggu"</td></tr>
+        <tr><td class="t-strong">WTP — Rumah</td><td class="go">≥ 25% "Ya" bayar Rp 99k; OPP dekat Rp 99k</td><td class="nogo">"Ya" &lt; 10%</td></tr>
+        <tr><td class="t-strong">Problem nyata — Industri</td><td class="go">Downtime ≥ 3x/thn &amp; biaya/jam ≥ Rp 25jt</td><td class="nogo">Aset sedikit &amp; downtime nihil</td></tr>
+        <tr><td class="t-strong">Intent — Industri</td><td class="go">≥ 30% bersedia pilot; ≥ 5 kandidat LOI</td><td class="nogo">Pilot &lt; 10%</td></tr>
+        <tr><td class="t-strong">NPS</td><td class="go">≥ +30</td><td class="nogo">≤ 0</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:12.5px;color:var(--mid);margin-top:14px"><strong>Van Westendorp:</strong> plot 4 kurva (Q5.1–5.4) → titik potong = rentang harga optimal (OPP) &amp; batas (PMC/PME); bandingkan dengan Rp 99k. Hasil survei wajib disajikan apa adanya (termasuk yang negatif) saat sesi panel.</p>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div style="display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap">
+      <div>
+        <div class="logo" style="color:#fff;margin-bottom:6px">⚡ EnVisor<em>.AI</em></div>
+        <div style="max-width:340px">Kuesioner Market Validation — Section B proposal Innovation Gateway 2026.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        <a href="/bisnis.html">Halaman Bisnis</a>
+        <a href="/slo.html">SLO Deep Dive</a>
+        <a href="/downloads/EnVisor-Kuesioner-Market-Validation.md">Unduh (.md)</a>
+      </div>
+    </div>
+    <div class="foot-note">© 2026 EnVisor.AI · Kuesioner untuk riset pengembangan produk. Angka pricing bersifat hipotesis yang divalidasi oleh kuesioner ini.</div>
+  </div>
+</footer>
+
+<script>
+function show(which){
+  document.getElementById('panel-home').classList.toggle('show', which==='home');
+  document.getElementById('panel-ind').classList.toggle('show', which==='ind');
+  document.getElementById('tab-home').classList.toggle('on', which==='home');
+  document.getElementById('tab-ind').classList.toggle('on', which==='ind');
+  window.scrollTo({top:0,behavior:'instant'});
+}
+</script>
+</body>
+</html>
