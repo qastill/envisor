@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Smart Energy & HEMS — Otomasi Beban, Baterai, EV Charger | EnVisor</title>
+<meta name="description" content="Sistem manajemen energi cerdas: menggeser beban ke jam matahari, mengatur pengisian baterai dan kendaraan listrik, serta mencegah MCB anjlok pada daya terbatas.">
+<link rel="canonical" href="https://envisor.id/hems.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Smart Energy & HEMS — Otomasi Beban, Baterai, EV Charger | EnVisor">
+<meta property="og:description" content="Sistem manajemen energi cerdas: menggeser beban ke jam matahari, mengatur pengisian baterai dan kendaraan listrik, serta mencegah MCB anjlok pada daya terbatas.">
+<meta property="og:url" content="https://envisor.id/hems.html">
+<link rel="icon" href="/icons/icon-192x192.png">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+<nav data-nav></nav>
+
+<header class="hero-page">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <span class="hero-pill">🧠 Smart Energy &amp; HEMS</span>
+        <h1>Tuas Termurah Bukan Menambah Panel — Tapi <em>Menggeser Waktu</em></h1>
+        <p class="lead">Karena kelebihan produksi surya tidak lagi dikreditkan, menggeser beban ke jam matahari
+          menaikkan penghematan 10–15 poin persen <strong>tanpa belanja modal sama sekali</strong>.
+          Sistem manajemen energi melakukannya otomatis.</p>
+        <div class="btn-row" style="margin-top:26px">
+          <a class="btn btn-primary" href="#konsultasi">Konsultasi gratis</a>
+          <a class="btn btn-ghost" href="/surya.html#kalkulator">Lihat efeknya di kalkulator</a>
+        </div>
+      </div>
+      <div class="calc">
+        <div style="font-size:12px;font-weight:800;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Efek menggeser beban</div>
+        <p style="font-size:13px;color:var(--mid);margin-bottom:16px">Sistem 5 kWp, tagihan Rp 1,5 juta, tanpa tambahan panel.</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Pemakaian siang</th><th>Hemat/bulan</th></tr></thead>
+          <tbody id="tabelGeser"></tbody>
+        </table></div>
+        <div class="note" style="margin-top:16px;font-size:13px">
+          Selisih antara baris pertama dan terakhir dicapai hanya dengan menjadwalkan ulang
+          perangkat yang sudah kamu miliki.
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="container">
+    <div class="sec-head"><div class="eyebrow">Kemampuan</div><h2>Apa yang diatur sistem</h2></div>
+    <div class="grid g3">
+      <div class="card-s"><span class="ico">⏰</span><h3>Penjadwalan beban</h3><p>Mesin cuci, pompa kolam, pemanas air, dan pengering dijalankan saat produksi surya sedang tinggi.</p></div>
+      <div class="card-s"><span class="ico">🔋</span><h3>Pengaturan baterai</h3><p>Mengisi dari kelebihan surya, bukan dari jaringan, lalu melepasnya pada beban malam yang paling bernilai.</p></div>
+      <div class="card-s"><span class="ico">🚗</span><h3>Pengisian kendaraan listrik</h3><p>Menyesuaikan arus pengisian dengan kelebihan produksi sehingga mobil terisi dari matahari, bukan dari PLN.</p></div>
+      <div class="card-s"><span class="ico">🛡️</span><h3>Pembatas daya</h3><p>Mencegah MCB anjlok dengan menunda beban besar saat beban serentak mendekati batas daya tersambung.</p></div>
+      <div class="card-s"><span class="ico">❄️</span><h3>Pendinginan awal</h3><p>Mendinginkan ruangan lebih awal saat surya berlimpah, sehingga beban tata udara sore hari berkurang.</p></div>
+      <div class="card-s"><span class="ico">📱</span><h3>Kendali dan laporan</h3><p>Pemantauan produksi dan konsumsi secara langsung, dengan laporan bulanan berisi kWh yang berhasil diselamatkan.</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="background:#fff">
+  <div class="container">
+    <div class="grid g2" style="gap:44px;align-items:start">
+      <div>
+        <div class="eyebrow">Urutan yang benar</div>
+        <h2>Lakukan yang gratis lebih dulu</h2>
+        <p class="lead" style="margin:14px 0 20px">Otomasi bernilai, tetapi urutannya menentukan seberapa besar hasilnya.</p>
+        <div class="steps" style="grid-template-columns:1fr;gap:12px">
+          <div class="step"><h3>Geser jadwal secara manual</h3><p>Tidak berbiaya. Uji dulu apakah pola barunya cocok dengan kebiasaan penghuni sebelum membeli perangkat apa pun.</p></div>
+          <div class="step"><h3>Pasang otomasi</h3><p>Setelah polanya terbukti, otomasi membuatnya konsisten tanpa perlu diingat setiap hari.</p></div>
+          <div class="step"><h3>Tambah baterai bila perlu</h3><p>Hanya bila masih banyak produksi terbuang setelah penggeseran beban dimaksimalkan.</p></div>
+        </div>
+      </div>
+      <div class="card-flat">
+        <h3 style="margin-bottom:14px">Perangkat yang paling layak dijadwalkan</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Perangkat</th><th>Daya</th><th>Fleksibel?</th></tr></thead>
+          <tbody>
+            <tr><td>Pemanas air</td><td>1.500–3.000 W</td><td class="t-good">Sangat</td></tr>
+            <tr><td>Pengisi mobil listrik</td><td>3.500–7.000 W</td><td class="t-good">Sangat</td></tr>
+            <tr><td>Pompa kolam</td><td>400–1.500 W</td><td class="t-good">Sangat</td></tr>
+            <tr><td>Mesin cuci &amp; pengering</td><td>500–2.500 W</td><td class="t-good">Ya</td></tr>
+            <tr><td>Pendinginan awal ruangan</td><td>700–2.000 W</td><td class="t-good">Ya</td></tr>
+            <tr><td>Kulkas</td><td>100–250 W</td><td class="t-bad">Tidak</td></tr>
+            <tr><td>Penerangan</td><td>200–600 W</td><td class="t-bad">Tidak</td></tr>
+          </tbody>
+        </table></div>
+        <p style="font-size:12.5px;color:var(--mid);margin-top:12px">
+          Beban yang fleksibel adalah yang waktunya bisa dipindah tanpa mengganggu kenyamanan.
+          Beban tetap sebaiknya diperbaiki efisiensinya, bukan dijadwalkan.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="konsultasi" class="tight">
+  <div class="container-narrow"><div class="cta-band">
+    <h2 style="color:#fff">Rancang sistem manajemen energi</h2>
+    <p>Kami tinjau profil beban dan perangkat yang ada, lalu susun rencana penggeseran beban beserta perkiraan tambahan penghematannya.</p>
+    <form data-lead="hems" style="max-width:440px;margin:0 auto;text-align:left">
+      <div class="field"><label style="color:#fff">Nama</label><input name="nama" required placeholder="Nama lengkap"></div>
+      <div class="field"><label style="color:#fff">WhatsApp atau email</label><input name="kontak" required placeholder="08xx… / nama@email.com"></div>
+      <div class="field"><label style="color:#fff">Perusahaan / lokasi</label><input name="lokasi" required placeholder="Nama perusahaan, kota"></div>
+      <div class="field"><label style="color:#fff">Kebutuhan <span class="sub" style="color:#94a3b8">(opsional)</span></label><textarea name="catatan" placeholder="Ceritakan singkat kondisi saat ini…"></textarea></div>
+      <button type="submit" class="btn btn-primary btn-block">Kirim permintaan →</button>
+      <div class="form-msg"></div>
+    </form>
+  </div></div>
+</section>
+<footer data-footer></footer>
+<script src="/data/site-data.js"></script>
+<script src="/js/site.js"></script>
+<script>
+(function () {
+  const D = window.EnVisorData;
+  const baris = [30, 45, 60, 75].map(p => {
+    const r = D.hitungPlts({ tagihan: 1500000, psh: 4.8, tarif: D.TARIFF['R-1M/3500'].rate, profil: 'rumah', porsiSiang: p / 100, kwpManual: 5 });
+    return { p, hemat: r.hematBulanan };
+  });
+  const dasar = baris[0].hemat;
+  document.getElementById('tabelGeser').innerHTML = baris.map((b, i) =>
+    `<tr><td><strong>${b.p}%</strong></td><td class="${i ? 't-good' : ''}">${D.rupiahSingkat(b.hemat)}${i ? ' <small style="color:var(--mid);font-weight:600">(+' + D.rupiahSingkat(b.hemat - dasar) + ')</small>' : ''}</td></tr>`
+  ).join('');
+})();
+</script>
+</body>
+</html>

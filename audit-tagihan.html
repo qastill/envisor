@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Audit Tagihan Listrik PLN — Cek Kelebihan Tagihan | EnVisor</title>
+<meta name="description" content="Periksa kewajaran tagihan PLN dari data struk: rekening minimum, tarif efektif, PBJT, lonjakan tak wajar, dan golongan tarif yang salah. Gratis dan berbasis aturan tarif, bukan tebakan.">
+<link rel="canonical" href="https://envisor.id/audit-tagihan.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Audit Tagihan Listrik PLN — Cek Kelebihan Tagihan | EnVisor">
+<meta property="og:description" content="Periksa kewajaran tagihan PLN dari data struk: rekening minimum, tarif efektif, PBJT, lonjakan tak wajar, dan golongan tarif yang salah. Gratis dan berbasis aturan tarif, bukan tebakan.">
+<meta property="og:url" content="https://envisor.id/audit-tagihan.html">
+<link rel="icon" href="/icons/icon-192x192.png">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+<nav data-nav></nav>
+
+<header class="hero-page">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <span class="hero-pill">🧾 Gratis · tanpa akun</span>
+        <h1>Tagihan PLN-mu <em>Wajar</em> atau Ada yang Keliru?</h1>
+        <p class="lead">
+          Delapan pemeriksaan berbasis aturan tarif PLN yang berlaku — bukan tebakan AI.
+          Setiap temuan menyebutkan aturannya, jadi kamu bisa membawanya langsung ke PLN.
+        </p>
+        <div class="hero-stats">
+          <div><strong>8</strong><span>Aturan diperiksa</span></div>
+          <div><strong>±2</strong><span>Menit pengerjaan</span></div>
+          <div><strong>0</strong><span>Data disimpan</span></div>
+        </div>
+      </div>
+
+      <div class="calc">
+        <h3>Masukkan data dari struk</h3>
+        <p class="hint">Semua angka ada di struk PLN atau aplikasi PLN Mobile.</p>
+
+        <div class="field">
+          <label for="a-golongan">Golongan tarif</label>
+          <select id="a-golongan"></select>
+        </div>
+        <div class="field">
+          <label for="a-daya">Daya tersambung <span class="sub">(VA)</span></label>
+          <select id="a-daya"></select>
+        </div>
+        <div class="field">
+          <label for="a-tagihan">Tagihan bulan ini <span class="sub">(Rp)</span></label>
+          <input type="number" id="a-tagihan" value="850000" min="0" step="10000" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label for="a-kwh">Pemakaian bulan ini <span class="sub">(kWh)</span></label>
+          <input type="number" id="a-kwh" value="480" min="0" step="1" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label>Tagihan 3 bulan sebelumnya <span class="sub">(Rp, opsional)</span></label>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+            <input type="number" id="a-r1" placeholder="−1 bln" inputmode="numeric">
+            <input type="number" id="a-r2" placeholder="−2 bln" inputmode="numeric">
+            <input type="number" id="a-r3" placeholder="−3 bln" inputmode="numeric">
+          </div>
+        </div>
+        <div class="field">
+          <label for="a-ppjt">PBJT daerah <span class="sub">(%)</span></label>
+          <div class="range-row">
+            <input type="range" id="a-ppjt" min="0" max="12" step="0.5" value="5">
+            <span class="range-val" id="a-ppjtVal">5%</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Jenis langganan</label>
+          <div class="chips" id="a-bayar">
+            <button type="button" class="chip on" data-val="0">Pascabayar</button>
+            <button type="button" class="chip" data-val="1">Prabayar (token)</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Bangunan dipakai untuk usaha?</label>
+          <div class="chips" id="a-usaha">
+            <button type="button" class="chip on" data-val="0">Tidak</button>
+            <button type="button" class="chip" data-val="1">Ya</button>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-block" id="a-jalan">Periksa tagihan →</button>
+        <p style="font-size:11.5px;color:var(--mid);margin-top:12px;text-align:center">
+          Data diproses sesaat untuk perhitungan dan tidak disimpan.
+        </p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="hasil" style="display:none">
+  <div class="container">
+    <div class="sec-head left">
+      <div class="eyebrow">Hasil pemeriksaan</div>
+      <h2 id="h-judul"></h2>
+      <p class="lead" id="h-sub"></p>
+    </div>
+    <div class="grid g4" style="margin-bottom:28px" id="h-ringkas"></div>
+    <div id="h-temuan" class="grid" style="gap:16px"></div>
+  </div>
+</section>
+
+<section style="background:#fff">
+  <div class="container">
+    <div class="sec-head">
+      <div class="eyebrow">Metodologi</div>
+      <h2>Delapan hal yang kami periksa</h2>
+      <p class="lead">Semuanya berasal dari aturan tarif yang bisa ditelusuri, sehingga hasilnya bisa dibantah dan diverifikasi.</p>
+    </div>
+    <div class="grid g2">
+      <div class="card-s"><span class="ico">⚡</span><h3>Rekening minimum</h3>
+        <p>Pelanggan pascabayar tetap ditagih setara 40 jam nyala. Kalau pemakaianmu di bawah ambang itu, kamu membayar kapasitas yang tidak pernah dipakai.</p></div>
+      <div class="card-s"><span class="ico">📐</span><h3>Tarif efektif per kWh</h3>
+        <p>Tagihan dibagi pemakaian dibandingkan dengan tarif golongan ditambah PBJT. Selisih di atas 15% menandakan ada yang perlu ditelusuri.</p></div>
+      <div class="card-s"><span class="ico">🏛️</span><h3>Batas PBJT</h3>
+        <p>UU 1/2022 tentang HKPD membatasi pajak tenaga listrik paling tinggi 10%. Angka di atasnya perlu diklarifikasi ke Bapenda setempat.</p></div>
+      <div class="card-s"><span class="ico">📈</span><h3>Lonjakan mendadak</h3>
+        <p>Tagihan dibandingkan dengan median bulan-bulan sebelumnya. Kenaikan di atas 40% tanpa perubahan perangkat hampir selalu punya sebab yang bisa ditemukan.</p></div>
+      <div class="card-s"><span class="ico">📋</span><h3>Pola tagihan taksiran</h3>
+        <p>Tiga tagihan yang nyaris identik menandakan meter tidak dibaca langsung. Selisihnya biasanya ditagihkan sekaligus di kemudian hari.</p></div>
+      <div class="card-s"><span class="ico">📊</span><h3>Faktor beban</h3>
+        <p>Perbandingan pemakaian terhadap kapasitas terpasang. Di bawah 5% berarti daya yang dilanggan jauh melampaui kebutuhan nyata.</p></div>
+      <div class="card-s"><span class="ico">🏪</span><h3>Kesesuaian peruntukan</h3>
+        <p>Usaha yang berjalan pada golongan rumah tangga berisiko terkena tagihan susulan saat penertiban pemakaian tenaga listrik.</p></div>
+      <div class="card-s"><span class="ico">🔀</span><h3>Kecocokan golongan dan daya</h3>
+        <p>Golongan yang tidak sesuai daya tersambung membuat seluruh perhitungan tagihan meleset sejak awal.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container-narrow">
+    <div class="sec-head"><div class="eyebrow">Langkah lanjutan</div><h2>Kalau ditemukan kejanggalan</h2></div>
+    <div class="steps" style="grid-template-columns:repeat(2,1fr)">
+      <div class="step"><h3>Kumpulkan bukti</h3><p>Foto stand meter hari ini beserta struk 3–6 bulan terakhir. Tanggal pada foto penting sebagai penanda waktu.</p></div>
+      <div class="step"><h3>Ajukan lewat PLN Mobile</h3><p>Gunakan menu pengaduan dan lampirkan foto. Catat nomor laporannya untuk penelusuran.</p></div>
+      <div class="step"><h3>Minta rincian rekening</h3><p>Kamu berhak meminta rincian stand meter awal dan akhir yang dipakai menghitung tagihan.</p></div>
+      <div class="step"><h3>Eskalasi bila perlu</h3><p>Bila tidak tertangani, laporan dapat diteruskan ke call center 123 atau lembaga perlindungan konsumen.</p></div>
+    </div>
+    <div class="note" style="margin-top:26px">
+      <strong>Catatan jujur:</strong> alat ini menemukan indikasi, bukan bukti hukum. Angka potensi penghematan
+      adalah perkiraan berdasarkan data yang kamu masukkan. Keputusan akhir tetap berada pada verifikasi PLN
+      atas stand meter dan riwayat rekeningmu.
+    </div>
+  </div>
+</section>
+
+<section class="tight">
+  <div class="container-narrow"><div class="cta-band">
+    <h2 style="color:#fff">Tagihan wajar tapi tetap terasa mahal?</h2>
+    <p>Berarti masalahnya bukan penagihan, melainkan konsumsi. Audit AI memotret perangkat mana yang paling banyak menyedot biaya.</p>
+    <div class="btn-row center">
+      <a class="btn btn-primary" href="/index.html">Jalankan audit AI gratis</a>
+      <a class="btn btn-ghost" href="/surya.html#kalkulator">Hitung PLTS Atap</a>
+    </div>
+  </div></div>
+</section>
+<footer data-footer></footer>
+<script src="/data/site-data.js"></script>
+<script src="/js/site.js"></script>
+<script>
+(function () {
+  const D = window.EnVisorData;
+  const el = (id) => document.getElementById(id);
+  const state = { prabayar: false, komersial: false };
+
+  el('a-golongan').innerHTML = Object.entries(D.TARIFF).map(([k, v]) =>
+    `<option value="${k}"${k === 'R-1/2200' ? ' selected' : ''}>${v.label}</option>`).join('');
+
+  const DAYA = [450, 900, 1300, 2200, 3500, 4400, 5500, 6600, 7700, 10600, 13200, 16500, 23000, 33000, 41500, 53000];
+  el('a-daya').innerHTML = DAYA.map(d =>
+    `<option value="${d}"${d === 2200 ? ' selected' : ''}>${d.toLocaleString('id-ID')} VA</option>`).join('');
+
+  EnVisorUI.chips('#a-bayar', v => { state.prabayar = v === '1'; });
+  EnVisorUI.chips('#a-usaha', v => { state.komersial = v === '1'; });
+  el('a-ppjt').addEventListener('input', e => { el('a-ppjtVal').textContent = e.target.value + '%'; });
+
+  const WARNA = { tinggi: 'badge-red', sedang: 'badge-amber', info: 'badge-blue' };
+  const LABEL = { tinggi: 'Perlu ditindaklanjuti', sedang: 'Perlu dicek', info: 'Informasi' };
+
+  el('a-jalan').addEventListener('click', async () => {
+    const btn = el('a-jalan');
+    btn.disabled = true; btn.textContent = 'Memeriksa…';
+
+    const riwayat = ['a-r1', 'a-r2', 'a-r3'].map(id => Number(el(id).value)).filter(n => n > 0);
+    const payload = {
+      golongan: el('a-golongan').value,
+      dayaVa: Number(el('a-daya').value),
+      tagihan: Number(el('a-tagihan').value),
+      kwh: Number(el('a-kwh').value),
+      riwayat,
+      ppjtPersen: Number(el('a-ppjt').value),
+      prabayar: state.prabayar,
+      komersial: state.komersial,
+    };
+
+    try {
+      const res = await fetch('/api/audit/tagihan', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error || 'Gagal memeriksa');
+      tampilkan(data);
+    } catch (err) {
+      alert('Pemeriksaan gagal: ' + err.message);
+    } finally {
+      btn.disabled = false; btn.textContent = 'Periksa tagihan →';
+    }
+  });
+
+  function tampilkan(data) {
+    const r = data.ringkasan;
+    el('hasil').style.display = '';
+
+    const judul = {
+      'wajar': 'Tidak ditemukan kejanggalan',
+      'perlu-dicek': 'Ada yang sebaiknya dicek',
+      'perlu-ditindaklanjuti': 'Ditemukan hal yang perlu ditindaklanjuti',
+      'data-kurang': 'Data belum cukup untuk memeriksa',
+    };
+    el('h-judul').textContent = judul[r.status];
+    el('h-sub').textContent = r.status === 'data-kurang'
+      ? 'Isi pemakaian kWh dan tagihan bulan ini supaya pemeriksaan bisa dijalankan. Tanpa keduanya kami tidak bisa menyatakan tagihanmu wajar.'
+      : r.jumlahTemuan
+      ? `${r.jumlahTemuan} temuan dari 8 pemeriksaan, ${r.temuanTinggi} di antaranya berprioritas tinggi.`
+      : 'Struktur tagihanmu konsisten dengan tarif golongan dan pemakaian yang dilaporkan.';
+
+    el('h-ringkas').innerHTML = [
+      ['Tarif efektif', r.tarifEfektif ? 'Rp ' + r.tarifEfektif.toLocaleString('id-ID') + '/kWh' : '—'],
+      ['Tarif resmi golongan', 'Rp ' + Math.round(r.tarifPerKwh).toLocaleString('id-ID') + '/kWh'],
+      ['Potensi sekali klaim', r.potensiSekali ? D.rupiahSingkat(r.potensiSekali) : '—'],
+      ['Potensi hemat per bulan', r.potensiBulanan ? D.rupiahSingkat(r.potensiBulanan) : '—'],
+    ].map(([k, v]) => `<div class="card-flat" style="padding:20px">
+        <div style="font-size:12px;font-weight:800;color:var(--mid);text-transform:uppercase;letter-spacing:.05em">${k}</div>
+        <div style="font-size:22px;font-weight:900;margin-top:6px">${v}</div>
+      </div>`).join('');
+
+    el('h-temuan').innerHTML = data.temuan.length
+      ? data.temuan.map(t => `<div class="card-flat">
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px">
+            <span class="badge ${WARNA[t.tingkat]}">${LABEL[t.tingkat]}</span>
+            <span class="badge badge-slate">${t.kode}</span>
+            ${t.potensiRp > 0 ? `<span class="badge badge-green">${D.rupiahSingkat(t.potensiRp)}${t.jenis === 'bulanan' ? '/bulan' : ' sekali'}</span>` : ''}
+          </div>
+          <h3 style="margin-bottom:8px">${t.judul}</h3>
+          <p style="font-size:14.5px;color:var(--mid);margin-bottom:12px">${t.temuan}</p>
+          <div style="background:var(--light2);border-radius:12px;padding:14px 16px;font-size:14px">
+            <strong>Langkah:</strong> ${t.aksi}
+          </div>
+        </div>`).join('')
+      : r.status === 'data-kurang'
+      ? `<div class="card-flat" style="text-align:center;padding:40px">
+          <div style="font-size:40px;margin-bottom:10px">📝</div>
+          <h3>Belum bisa disimpulkan</h3>
+          <p style="color:var(--mid);margin-top:8px;font-size:14.5px">
+            Pemeriksaan yang dilewati: ${r.pemeriksaanDilewati.join(', ')}.
+            Angka-angka ini ada di struk PLN atau aplikasi PLN Mobile.
+          </p>
+        </div>`
+      : `<div class="card-flat" style="text-align:center;padding:40px">
+          <div style="font-size:40px;margin-bottom:10px">✅</div>
+          <h3>Tagihan terlihat wajar</h3>
+          <p style="color:var(--mid);margin-top:8px;font-size:14.5px">
+            Kalau tetap terasa mahal, penyebabnya ada pada konsumsi, bukan penagihan.
+            <a href="/index.html" style="font-weight:800;color:var(--acc)">Jalankan audit AI</a> untuk melihat perangkat paling boros.
+          </p>
+        </div>`;
+
+    el('hasil').scrollIntoView({ behavior: 'smooth' });
+  }
+})();
+</script>
+</body>
+</html>

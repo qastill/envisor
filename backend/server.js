@@ -5,6 +5,9 @@ const path = require('path');
 
 const analyzeRoutes = require('./routes/analyze');
 const reportRoutes = require('./routes/report');
+const leadRoutes = require('./routes/lead');
+const solarRoutes = require('./routes/solar');
+const auditRoutes = require('./routes/audit');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,6 +20,9 @@ app.use(express.static(path.join(__dirname, '..')));
 
 app.use('/api/analyze', analyzeRoutes);
 app.use('/api/report', reportRoutes);
+app.use('/api/lead', leadRoutes);
+app.use('/api/solar', solarRoutes);
+app.use('/api/audit', auditRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
