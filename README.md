@@ -51,7 +51,7 @@ envisor-ai/
 
 Anything under `panduan/`, `blog/`, `lokasi/`, the three hub pages, `sitemap.xml`
 and `robots.txt` is **generated** — edit `data/content.js` or `data/site-data.js`
-and re-run `npm run build`, never the generated HTML directly.
+and re-run `npm run build:pages`, never the generated HTML directly.
 
 ## 🚀 Getting Started
 
@@ -77,10 +77,17 @@ npm run dev
 
 ### 4. Build the generated pages
 ```bash
-npm run build
+npm run build:pages
 ```
 Regenerates `panduan/`, `blog/`, `lokasi/`, the hub pages, `sitemap.xml` and
-`robots.txt`. Run this after editing `data/content.js` or `data/site-data.js`.
+`robots.txt`. Run this after editing `data/content.js` or `data/site-data.js`,
+and commit the result — the generated HTML is checked in and is what gets
+deployed.
+
+> **Do not rename this script to `build`.** Vercel auto-detects a script named
+> `build`, runs it, and then fails the deploy looking for a `public/` output
+> directory. This project is served straight from the repo root, so the build
+> step must stay out of Vercel's way.
 
 ### 5. Run in production
 ```bash
