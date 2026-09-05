@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://envisor.id/sitemap.xml
+Sitemap: https://envisor.vercel.app/sitemap.xml
