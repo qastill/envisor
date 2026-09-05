@@ -62,7 +62,14 @@
       { maxKwp: 100,      perKwp: 8000000 },
       { maxKwp: Infinity, perKwp: 7000000 },
     ],
-    kwpMinimum: 2,   // di bawah ini instalasi tidak praktis dipasang
+    kwpMinimum: 2,     // di bawah ini instalasi tidak praktis dipasang
+    kwpMaksimum: 100000, // pagar atas; PLTS atap tidak pernah sebesar ini
+    // Iradiasi di luar rentang ini tidak ada di Indonesia. Membatasinya juga
+    // menjaga pencarian ukuran optimal tetap terbatas, karena psh yang sangat
+    // kecil membuat batas atas pencarian meledak.
+    pshMinimum: 2,
+    pshMaksimum: 7,
+    langkahPencarian: 500 // jumlah maksimum ukuran yang dicoba
   };
 
   /* ---------- PAKET ---------- */
@@ -161,6 +168,26 @@
      PERHITUNGAN
      ============================================================ */
 
+  /**
+   * Angka yang aman dipakai berhitung.
+   *
+   * Nilai non-numerik menghasilkan NaN, dan setiap perbandingan dengan NaN
+   * bernilai false — sehingga pemeriksaan diam-diam terlewat dan hasilnya
+   * terlihat wajar padahal tidak pernah dihitung. Karena itu nilai yang tidak
+   * terhingga dikembalikan ke bawaan, lalu dijepit ke rentang yang masuk akal.
+   *
+   * @param {*} nilai
+   * @param {number} bawaan dipakai bila nilai tidak terhingga
+   * @param {number} [min]
+   * @param {number} [max]
+   * @returns {number}
+   */
+  function angkaAman(nilai, bawaan, min = -Infinity, max = Infinity) {
+    const n = Number(nilai);
+    if (!Number.isFinite(n)) return bawaan;
+    return Math.min(max, Math.max(min, n));
+  }
+
   /** CAPEX terpasang (Rp) untuk ukuran sistem tertentu. */
   function capexPlts(kwp) {
     const tier = SOLAR.capexTier.find(t => kwp <= t.maxKwp) || SOLAR.capexTier[SOLAR.capexTier.length - 1];
@@ -223,12 +250,23 @@
    * optimal — menambah panel di atas itu justru menurunkan nilai investasi.
    */
   function ukuranOptimal(o) {
-    const perBulanPerKwp = o.psh * SOLAR.performanceRatio * 30;
+    const psh = angkaAman(o.psh, 4.7, SOLAR.pshMinimum, SOLAR.pshMaksimum);
+    const perBulanPerKwp = psh * SOLAR.performanceRatio * 30;
+    const minimum = angkaAman(o.kwpMin, SOLAR.kwpMinimum, 0.5, SOLAR.kwpMaksimum);
+
     // Di atas 2x beban siang, tambahan kWh hampir seluruhnya terbuang.
-    const batas = Math.min(o.kwpMaks, Math.max(o.kwpMin || SOLAR.kwpMinimum, (o.bebanSiang * 2) / perBulanPerKwp));
-    const minimum = o.kwpMin || SOLAR.kwpMinimum;
+    const batas = Math.min(
+      angkaAman(o.kwpMaks, SOLAR.kwpMaksimum, minimum, SOLAR.kwpMaksimum),
+      Math.max(minimum, (o.bebanSiang * 2) / perBulanPerKwp)
+    );
+
+    // Langkah dibuat menyesuaikan rentang supaya jumlah percobaan tetap
+    // terbatas — tanpa ini, rentang yang lebar membuat perulangan ini
+    // berjalan sangat lama dan menggantung permintaan yang memanggilnya.
+    const langkah = Math.max(0.5, Math.ceil(((batas - minimum) / SOLAR.langkahPencarian) * 2) / 2);
+
     let terbaik = minimum, npvTerbaik = -Infinity;
-    for (let kwp = minimum; kwp <= batas + 0.001; kwp += 0.5) {
+    for (let kwp = minimum; kwp <= batas + 0.001; kwp += langkah) {
       const produksi = kwp * perBulanPerKwp;
       const terpakai = energiTerpakai(produksi, o.bebanSiang);
       let capex = capexPlts(kwp);
@@ -252,26 +290,31 @@
    * @param {number}  [o.targetSiang] porsi beban siang yang ingin ditutup (0–1)
    */
   function hitungPlts(o) {
-    const tarif  = o.tarif || TARIFF['R-1/1300'].rate;
-    const psh    = o.psh || 4.7;
-    const profil = o.profil || 'rumah';
-    const konsumsiKwh = o.tagihan / tarif;
+    const tarif   = angkaAman(o.tarif, TARIFF['R-1/1300'].rate, 1, 100000);
+    const psh     = angkaAman(o.psh, 4.7, SOLAR.pshMinimum, SOLAR.pshMaksimum);
+    const tagihan = angkaAman(o.tagihan, 0, 0);
+    const profil  = SOLAR.porsiSiang[o.profil] != null ? o.profil : 'rumah';
+    const konsumsiKwh = tagihan / tarif;
 
     const porsi = o.porsiSiang != null
-      ? Math.min(SOLAR.porsiSiangMaks, o.porsiSiang + (o.baterai ? SOLAR.tambahanBaterai : 0))
+      ? Math.min(SOLAR.porsiSiangMaks,
+                 angkaAman(o.porsiSiang, SOLAR.porsiSiang[profil], 0.05, 1) +
+                 (o.baterai ? SOLAR.tambahanBaterai : 0))
       : porsiSiangEfektif(profil, o.baterai);
     const bebanSiang = konsumsiKwh * porsi;
 
-    const kwpMaks = o.kwpMaks || Infinity;
     const kwp = o.kwpManual
-      ? o.kwpManual
-      : ukuranOptimal({ bebanSiang, psh, tarif, baterai: !!o.baterai, kwpMaks });
+      ? angkaAman(o.kwpManual, SOLAR.kwpMinimum, 0.5, SOLAR.kwpMaksimum)
+      : ukuranOptimal({ bebanSiang, psh, tarif, baterai: !!o.baterai,
+                        kwpMaks: o.kwpMaks, kwpMin: o.kwpMin });
 
     const produksi = produksiBulanan(kwp, psh);
     const terpakai = energiTerpakai(produksi, bebanSiang);
     const terbuang = Math.max(0, produksi - terpakai);
     const hematBulanan = Math.round(terpakai * tarif);
-    const hematPersen = Math.min(99, Math.round((hematBulanan / o.tagihan) * 100));
+    const hematPersen = tagihan > 0
+      ? Math.min(99, Math.round((hematBulanan / tagihan) * 100))
+      : 0;
 
     let capex = capexPlts(kwp);
     let kapasitasBaterai = 0;
@@ -309,7 +352,7 @@
       hematBulanan,
       hematPersen,
       hematTahunan: hematBulanan * 12,
-      tagihanBaru: Math.max(0, Math.round(o.tagihan - hematBulanan)),
+      tagihanBaru: Math.max(0, Math.round(tagihan - hematBulanan)),
       capex,
       kapasitasBaterai,
       paybackTahun: isFinite(payback) ? Math.round(payback * 10) / 10 : null,
@@ -333,7 +376,7 @@
   }
 
   return { SITE, TARIFF, SOLAR, PAKET, KOTA, NAV, NAV_CTA, FOOTER,
-           capexPlts, produksiBulanan, porsiSiangEfektif, energiTerpakai,
+           angkaAman, capexPlts, produksiBulanan, porsiSiangEfektif, energiTerpakai,
            npvSistem, ukuranOptimal,
            hitungPlts, rupiah, rupiahSingkat };
 });

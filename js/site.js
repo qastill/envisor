@@ -131,18 +131,6 @@
         onPick(chip.dataset.val, chip);
       });
     },
-    /** Animasi angka supaya perubahan hasil kalkulator terasa. */
-    animasi(el, dari, ke, format) {
-      const mulai = performance.now();
-      const durasi = 420;
-      function tick(now) {
-        const t = Math.min(1, (now - mulai) / durasi);
-        const eased = 1 - Math.pow(1 - t, 3);
-        el.textContent = format(dari + (ke - dari) * eased);
-        if (t < 1) requestAnimationFrame(tick);
-      }
-      requestAnimationFrame(tick);
-    },
   };
 
   document.addEventListener('DOMContentLoaded', () => {

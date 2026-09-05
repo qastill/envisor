@@ -6,7 +6,7 @@
  * pelanggan maupun petugas PLN.
  */
 
-const { TARIFF } = require('../config/solar');
+const { TARIFF, angkaAman } = require('../config/solar');
 
 /** Tahapan daya tersambung PLN (VA). */
 const TANGGA_DAYA = [
@@ -62,11 +62,18 @@ function median(deret) {
 function auditTagihan(input) {
   const golongan = TARIFF[input.golongan] ? input.golongan : 'R-1/1300';
   const tarif = TARIFF[golongan].rate;
-  const dayaVa = Number(input.dayaVa) || 1300;
-  const tagihan = Number(input.tagihan) || 0;
-  const kwh = Number(input.kwh) || 0;
-  const riwayat = Array.isArray(input.riwayat) ? input.riwayat.map(Number) : [];
-  const ppjt = input.ppjtPersen == null ? 5 : Number(input.ppjtPersen);
+
+  // Masukan wajib dibersihkan sebelum dipakai. Nilai non-numerik menghasilkan
+  // NaN, dan setiap perbandingan dengan NaN bernilai false — akibatnya
+  // pemeriksaan terlewat diam-diam dan tagihan dilaporkan wajar padahal tidak
+  // pernah diperiksa. Untuk alat audit, itu kegagalan yang paling merugikan.
+  const dayaVa  = angkaAman(input.dayaVa, 1300, 450, 200000);
+  const tagihan = angkaAman(input.tagihan, 0, 0);
+  const kwh     = angkaAman(input.kwh, 0, 0);
+  const ppjt    = angkaAman(input.ppjtPersen, 5, 0, 100);
+  const riwayat = (Array.isArray(input.riwayat) ? input.riwayat : [])
+    .map((n) => angkaAman(n, 0, 0))
+    .filter((n) => n > 0);
   const temuan = [];
 
   const tambah = (t) => temuan.push(t);
@@ -261,6 +268,16 @@ function auditTagihan(input) {
     });
   }
 
+  // Tanpa kWh atau tagihan, sebagian besar aturan tidak dapat dijalankan.
+  // Melaporkan "wajar" dalam keadaan itu sama saja menyatakan aman padahal
+  // belum diperiksa, jadi keadaannya dibedakan secara eksplisit.
+  const dataKurang = kwh <= 0 || tagihan <= 0;
+  const pemeriksaanDilewati = [];
+  if (kwh <= 0) pemeriksaanDilewati.push('rekening minimum', 'tarif efektif', 'faktor beban');
+  if (tagihan <= 0) pemeriksaanDilewati.push('tarif efektif', 'lonjakan tagihan');
+  if (riwayat.length < 2) pemeriksaanDilewati.push('lonjakan tagihan');
+  if (riwayat.length < 3) pemeriksaanDilewati.push('pola tagihan taksiran');
+
   const urutan = { tinggi: 0, sedang: 1, info: 2 };
   temuan.sort((a, b) => urutan[a.tingkat] - urutan[b.tingkat]);
 
@@ -289,10 +306,14 @@ function auditTagihan(input) {
       potensiSekali: Math.round(potensiSekali),
       potensiBulanan: Math.round(potensiBulanan),
       potensiSetahun: Math.round(potensiSekali + potensiBulanan * 12),
+      dataKurang,
+      pemeriksaanDilewati: [...new Set(pemeriksaanDilewati)],
       status: temuan.some((t) => t.tingkat === 'tinggi')
         ? 'perlu-ditindaklanjuti'
         : temuan.length
         ? 'perlu-dicek'
+        : dataKurang
+        ? 'data-kurang'
         : 'wajar',
     },
   };

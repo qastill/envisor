@@ -218,9 +218,16 @@
     const r = data.ringkasan;
     el('hasil').style.display = '';
 
-    const judul = { 'wajar': 'Tidak ditemukan kejanggalan', 'perlu-dicek': 'Ada yang sebaiknya dicek', 'perlu-ditindaklanjuti': 'Ditemukan hal yang perlu ditindaklanjuti' };
+    const judul = {
+      'wajar': 'Tidak ditemukan kejanggalan',
+      'perlu-dicek': 'Ada yang sebaiknya dicek',
+      'perlu-ditindaklanjuti': 'Ditemukan hal yang perlu ditindaklanjuti',
+      'data-kurang': 'Data belum cukup untuk memeriksa',
+    };
     el('h-judul').textContent = judul[r.status];
-    el('h-sub').textContent = r.jumlahTemuan
+    el('h-sub').textContent = r.status === 'data-kurang'
+      ? 'Isi pemakaian kWh dan tagihan bulan ini supaya pemeriksaan bisa dijalankan. Tanpa keduanya kami tidak bisa menyatakan tagihanmu wajar.'
+      : r.jumlahTemuan
       ? `${r.jumlahTemuan} temuan dari 8 pemeriksaan, ${r.temuanTinggi} di antaranya berprioritas tinggi.`
       : 'Struktur tagihanmu konsisten dengan tarif golongan dan pemakaian yang dilaporkan.';
 
@@ -247,6 +254,15 @@
             <strong>Langkah:</strong> ${t.aksi}
           </div>
         </div>`).join('')
+      : r.status === 'data-kurang'
+      ? `<div class="card-flat" style="text-align:center;padding:40px">
+          <div style="font-size:40px;margin-bottom:10px">📝</div>
+          <h3>Belum bisa disimpulkan</h3>
+          <p style="color:var(--mid);margin-top:8px;font-size:14.5px">
+            Pemeriksaan yang dilewati: ${r.pemeriksaanDilewati.join(', ')}.
+            Angka-angka ini ada di struk PLN atau aplikasi PLN Mobile.
+          </p>
+        </div>`
       : `<div class="card-flat" style="text-align:center;padding:40px">
           <div style="font-size:40px;margin-bottom:10px">✅</div>
           <h3>Tagihan terlihat wajar</h3>

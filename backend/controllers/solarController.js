@@ -5,7 +5,7 @@
  * halaman, pada penawaran, dan pada integrasi pihak ketiga selalu identik.
  */
 
-const { hitungPlts, KOTA, TARIFF, capexPlts } = require('../config/solar');
+const { hitungPlts, KOTA, TARIFF, capexPlts, SOLAR, angkaAman } = require('../config/solar');
 
 /** POST /api/solar/estimate */
 function estimasiPlts(req, res) {
@@ -22,10 +22,14 @@ function estimasiPlts(req, res) {
     const kota = KOTA.find((k) => k.slug === b.kota);
     const golongan = TARIFF[b.golongan] ? b.golongan : 'R-1/2200';
 
+    // psh berasal dari pemanggil bila kotanya tidak dikenali, jadi dijepit ke
+    // rentang iradiasi yang nyata sebelum masuk ke perhitungan.
+    const psh = kota ? kota.psh : angkaAman(b.psh, 4.7, SOLAR.pshMinimum, SOLAR.pshMaksimum);
+
     const hasil = hitungPlts({
       tagihan,
       tarif: TARIFF[golongan].rate,
-      psh: kota ? kota.psh : Number(b.psh) || 4.7,
+      psh,
       profil: ['rumah', 'bisnis', 'industri'].includes(b.profil) ? b.profil : 'rumah',
       baterai: !!b.baterai,
       porsiSiang: b.porsiSiang != null ? Number(b.porsiSiang) : undefined,
@@ -37,7 +41,7 @@ function estimasiPlts(req, res) {
       success: true,
       konteks: {
         kota: kota ? kota.nama : null,
-        psh: kota ? kota.psh : Number(b.psh) || 4.7,
+        psh,
         golongan: TARIFF[golongan].label,
         tarifPerKwh: TARIFF[golongan].rate,
       },
