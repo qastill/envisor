@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PLTS Atap Indonesia 2026 — Hitung Hemat & Balik Modal | EnVisor</title>
+<meta name="description" content="Kalkulator PLTS Atap dengan model self-consumption jujur pasca Permen ESDM 2/2024. Hitung ukuran sistem optimal, penghematan bulanan, dan tahun balik modal dalam 60 detik.">
+<link rel="canonical" href="https://envisor.id/surya.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="PLTS Atap Indonesia 2026 — Hitung Hemat & Balik Modal">
+<meta property="og:description" content="Ukuran sistem optimal berbasis NPV, bukan janji hemat 90%. Hitung gratis dalam 60 detik.">
+<meta property="og:url" content="https://envisor.id/surya.html">
+<link rel="icon" href="/icons/icon-192x192.png">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+
+<nav data-nav></nav>
+
+<!-- ============ HERO + KALKULATOR ============ -->
+<header class="hero-page" id="kalkulator">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <span class="hero-pill">☀️ Kalkulator PLTS Atap 2026</span>
+        <h1>Berapa Sebenarnya <em>Hemat</em> Panel Surya di Rumahmu?</h1>
+        <p class="lead">
+          Sejak Permen ESDM 2/2024, kelebihan listrik yang diekspor ke PLN <strong>tidak lagi dikreditkan</strong>.
+          Artinya hanya listrik yang kamu pakai sendiri yang bernilai. Kalkulator ini menghitungnya apa adanya —
+          termasuk memberi tahu kalau PLTS <em>belum</em> masuk akal untukmu.
+        </p>
+        <div class="hero-stats">
+          <div><strong id="hs1">—</strong><span>Ukuran optimal</span></div>
+          <div><strong id="hs2">—</strong><span>Hemat per bulan</span></div>
+          <div><strong id="hs3">—</strong><span>Balik modal</span></div>
+        </div>
+      </div>
+
+      <div class="calc">
+        <h3>Hitung dalam 60 detik</h3>
+        <p class="hint">Cukup tagihan listrik dan kota. Sisanya kami hitung.</p>
+
+        <div class="field">
+          <label for="tagihan">Tagihan listrik per bulan <span class="sub">(Rp)</span></label>
+          <input type="number" id="tagihan" value="1500000" min="100000" step="50000" inputmode="numeric">
+        </div>
+
+        <div class="field">
+          <label for="kota">Kota</label>
+          <select id="kota"></select>
+        </div>
+
+        <div class="field">
+          <label for="golongan">Golongan tarif PLN</label>
+          <select id="golongan"></select>
+        </div>
+
+        <div class="field">
+          <label>Jenis bangunan</label>
+          <div class="chips" id="profilChips">
+            <button type="button" class="chip on" data-val="rumah">🏠 Rumah</button>
+            <button type="button" class="chip" data-val="bisnis">🏢 Bisnis</button>
+            <button type="button" class="chip" data-val="industri">🏭 Industri</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="siang">Pemakaian di jam matahari (07.00–17.00)
+            <span class="sub">— faktor paling menentukan</span></label>
+          <div class="range-row">
+            <input type="range" id="siang" min="20" max="90" step="5" value="45">
+            <span class="range-val" id="siangVal">45%</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Tambah baterai penyimpanan?</label>
+          <div class="chips" id="bateraiChips">
+            <button type="button" class="chip on" data-val="0">Tanpa baterai</button>
+            <button type="button" class="chip" data-val="1">Dengan baterai</button>
+          </div>
+        </div>
+
+        <div class="calc-out">
+          <div class="big" id="outHemat">—<small id="outHematSub">penghematan per bulan</small></div>
+          <div class="calc-rows">
+            <div><span>Ukuran sistem optimal</span><span id="rKwp">—</span></div>
+            <div><span>Perkiraan biaya terpasang</span><span id="rCapex">—</span></div>
+            <div><span>Tagihan setelah PLTS</span><span id="rTagihan">—</span></div>
+            <div><span>Balik modal</span><span id="rPayback">—</span></div>
+            <div><span>Luas atap dibutuhkan</span><span id="rAtap">—</span></div>
+            <div><span>Listrik terbuang (tak terpakai)</span><span id="rBuang">—</span></div>
+            <div><span>CO₂ dihindari per tahun</span><span id="rCo2">—</span></div>
+          </div>
+          <div id="verdict" style="margin-top:16px"></div>
+        </div>
+
+        <a class="btn btn-primary btn-block" href="#konsultasi" style="margin-top:16px">Minta penawaran detail →</a>
+        <p style="font-size:11.5px;color:var(--mid);margin-top:12px;text-align:center">
+          Estimasi, bukan penawaran mengikat. Angka final butuh survei atap.
+        </p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ KENAPA ANGKA KAMI BEDA ============ -->
+<section>
+  <div class="container">
+    <div class="sec-head">
+      <div class="eyebrow">Transparansi</div>
+      <h2>Kenapa angka kami lebih kecil dari <em>brosur vendor</em></h2>
+      <p class="lead">Tiga asumsi yang sering disembunyikan, dan bagaimana kami memperlakukannya.</p>
+    </div>
+    <div class="grid g3">
+      <div class="card-s">
+        <span class="ico">🔁</span>
+        <h3>Ekspor tidak dikreditkan</h3>
+        <p>Banyak kalkulator masih memakai skema <em>net metering</em> lama (ekspor 1:1). Regulasi PLTS Atap terkini
+           meniadakannya, sehingga kelebihan produksi siang hari hilang begitu saja kalau tidak dipakai.</p>
+      </div>
+      <div class="card-s">
+        <span class="ico">📉</span>
+        <h3>Serapan menurun, bukan tetap</h3>
+        <p>Makin besar panel relatif terhadap beban siang, makin banyak kWh yang terbuang. Kami memodelkannya
+           sebagai kurva jenuh, bukan persentase datar 100%.</p>
+      </div>
+      <div class="card-s">
+        <span class="ico">🧾</span>
+        <h3>Ada biaya tetap</h3>
+        <p>Izin PLN, SLO, proteksi, mobilisasi dan monitoring tidak ikut mengecil saat sistemnya kecil.
+           Itulah kenapa PLTS 1–2 kWp jarang balik modal.</p>
+      </div>
+    </div>
+    <div class="note" style="margin-top:26px">
+      <strong>Konsekuensinya jujur:</strong> untuk rumah dengan tagihan di bawah ± Rp 1,5 juta dan pemakaian
+      siang rendah, kalkulator kami sering menyimpulkan PLTS <em>belum</em> layak. Dalam kasus itu,
+      <a href="/index.html" style="color:#92400e;font-weight:800">audit AI gratis</a> dan perbaikan efisiensi
+      memberi pengembalian jauh lebih cepat daripada memasang panel.
+    </div>
+  </div>
+</section>
+
+<!-- ============ CARA KERJA ============ -->
+<section style="background:#fff">
+  <div class="container">
+    <div class="sec-head">
+      <div class="eyebrow">Alur</div>
+      <h2>Dari hitung sampai menyala dalam <em>4 langkah</em></h2>
+    </div>
+    <div class="steps">
+      <div class="step"><h3>Hitung online</h3><p>Masukkan tagihan dan kota. Dapat ukuran sistem, biaya, dan tahun balik modal seketika.</p></div>
+      <div class="step"><h3>Survei atap</h3><p>Tim memverifikasi orientasi, kemiringan, bayangan, dan kondisi struktur. Gratis, tanpa komitmen.</p></div>
+      <div class="step"><h3>Izin &amp; SLO</h3><p>Permohonan PLTS Atap ke PLN, sertifikasi laik operasi, dan dokumen teknis kami urus.</p></div>
+      <div class="step"><h3>Pasang &amp; pantau</h3><p>Instalasi 1–3 hari, lalu produksi terpantau lewat aplikasi dengan laporan bulanan.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PAKET ============ -->
+<section>
+  <div class="container">
+    <div class="sec-head">
+      <div class="eyebrow">Paket</div>
+      <h2>Paket PLTS Atap rumah</h2>
+      <p class="lead">Harga indikatif terpasang, sudah termasuk izin, SLO, dan monitoring. Angka final mengikuti hasil survei.</p>
+    </div>
+    <div class="price-grid" id="paketGrid"></div>
+    <p style="text-align:center;margin-top:24px">
+      Butuh di atas 10 kWp atau untuk bisnis? <a href="/harga.html" style="font-weight:800;color:var(--acc)">Lihat daftar harga lengkap →</a>
+    </p>
+  </div>
+</section>
+
+<!-- ============ APA YANG TERMASUK ============ -->
+<section style="background:#fff">
+  <div class="container">
+    <div class="grid g2" style="align-items:center;gap:44px">
+      <div>
+        <div class="eyebrow">Lingkup kerja</div>
+        <h2>Yang sudah termasuk — dan yang tidak</h2>
+        <p class="lead" style="margin:12px 0 22px">Supaya tidak ada biaya kejutan di tengah proyek.</p>
+        <ul class="checklist">
+          <li>Modul surya tier-1 dengan garansi performa 25 tahun</li>
+          <li>Inverter bergaransi 5–10 tahun dengan monitoring bawaan</li>
+          <li>Mounting tahan korosi sesuai jenis atap</li>
+          <li>Proteksi AC/DC, penyalur petir, dan grounding</li>
+          <li>Permohonan PLTS Atap ke PLN &amp; pengurusan SLO</li>
+          <li>Laporan produksi bulanan dan peringatan anomali</li>
+        </ul>
+      </div>
+      <div class="card-flat">
+        <h3 style="margin-bottom:14px">Di luar lingkup standar</h3>
+        <ul class="crosslist">
+          <li>Perbaikan struktur atap yang sudah rapuh</li>
+          <li>Penebangan pohon atau relokasi objek pembayang</li>
+          <li>Penambahan daya PLN bila kapasitas eksisting kurang</li>
+          <li>Penggantian instalasi listrik rumah yang tidak laik</li>
+          <li>Baterai penyimpanan (opsional, dihitung terpisah)</li>
+        </ul>
+        <div class="note" style="margin-top:20px">
+          Semua item di atas ditemukan saat survei dan dikuotasi terpisah sebelum kontrak — tidak pernah muncul sebagai tagihan tambahan di tengah jalan.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section>
+  <div class="container-narrow">
+    <div class="sec-head"><div class="eyebrow">Pertanyaan</div><h2>Yang paling sering ditanyakan</h2></div>
+    <div class="faq">
+      <details open><summary>Apakah PLTS Atap masih menguntungkan setelah aturan ekspor dihapus?</summary>
+        <div class="ans"><p>Tergantung profil pemakaian. Untuk pabrik, gudang, kantor, dan usaha yang beban puncaknya siang hari, PLTS justru sangat menguntungkan — balik modal 6–8 tahun. Untuk rumah tangga yang mayoritas listriknya terpakai malam hari, hasilnya jauh lebih lemah. Kalkulator di atas membedakan keduanya.</p></div></details>
+      <details><summary>Apakah saya tetap butuh PLN kalau sudah pasang panel?</summary>
+        <div class="ans"><p>Ya. Sistem on-grid tetap tersambung PLN untuk malam hari dan saat cuaca mendung. PLTS Atap mengurangi tagihan, bukan memutus langganan. Melepas diri dari PLN memerlukan sistem off-grid dengan baterai besar yang biayanya jauh lebih tinggi.</p></div></details>
+      <details><summary>Berapa lama umur panel dan inverter?</summary>
+        <div class="ans"><p>Modul surya bergaransi performa 25 tahun dengan degradasi sekitar 0,55% per tahun — pada tahun ke-25 masih menghasilkan sekitar 87% dari kapasitas awal. Inverter umumnya perlu diganti sekali di tahun ke-10 sampai ke-15, dan biaya itu sudah kami masukkan sebagai bagian dari asumsi operasional.</p></div></details>
+      <details><summary>Apakah atap saya kuat menahan panel?</summary>
+        <div class="ans"><p>Beban tambahan sistem PLTS sekitar 12–18 kg/m², jauh di bawah kapasitas rangka atap standar yang sehat. Yang perlu diperiksa adalah usia dan kondisi rangka, bukan kapasitas nominalnya. Survei gratis mencakup pemeriksaan ini.</p></div></details>
+      <details><summary>Bagaimana kalau hasil hitungan menyatakan belum layak?</summary>
+        <div class="ans"><p>Kami akan mengatakannya terus terang dan tidak menawarkan pemasangan. Jalur yang lebih masuk akal biasanya audit konsumsi lebih dulu — mengganti beban boros dan menggeser pemakaian ke siang hari sering menurunkan tagihan 15–30% tanpa belanja modal apa pun. Kalau nanti profilnya berubah, PLTS bisa ditinjau ulang.</p></div></details>
+      <details><summary>Apakah ada skema cicilan?</summary>
+        <div class="ans"><p>Tersedia melalui mitra pembiayaan dengan tenor 12–60 bulan. Perlu dicatat: jika bunga cicilan melebihi imbal hasil sistem, total biaya kepemilikan bisa lebih besar daripada tagihan yang dihemat. Kami tampilkan perbandingannya secara terbuka saat penawaran.</p></div></details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ KONSULTASI ============ -->
+<section id="konsultasi">
+  <div class="container-narrow">
+    <div class="cta-band">
+      <h2 style="color:#fff">Minta penawaran berbasis atap aslimu</h2>
+      <p>Kami kirim rincian ukuran sistem, tata letak modul, proyeksi produksi bulanan, dan simulasi pembiayaan. Gratis, tanpa kunjungan sales mendadak.</p>
+      <form data-lead="surya" style="max-width:440px;margin:0 auto;text-align:left">
+        <div class="field"><label for="f-nama" style="color:#fff">Nama</label>
+          <input id="f-nama" name="nama" required placeholder="Nama lengkap"></div>
+        <div class="field"><label for="f-kontak" style="color:#fff">WhatsApp atau email</label>
+          <input id="f-kontak" name="kontak" required placeholder="08xx… / nama@email.com"></div>
+        <div class="field"><label for="f-lokasi" style="color:#fff">Lokasi bangunan</label>
+          <input id="f-lokasi" name="lokasi" required placeholder="Kota / kecamatan"></div>
+        <div class="field"><label for="f-catatan" style="color:#fff">Catatan <span class="sub" style="color:#94a3b8">(opsional)</span></label>
+          <textarea id="f-catatan" name="catatan" placeholder="Jenis atap, luas, kendala bayangan…"></textarea></div>
+        <button type="submit" class="btn btn-primary btn-block">Kirim permintaan →</button>
+        <div class="form-msg"></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer data-footer></footer>
+
+<script src="/data/site-data.js"></script>
+<script src="/js/site.js"></script>
+<script>
+(function () {
+  const D = window.EnVisorData;
+  const el = (id) => document.getElementById(id);
+
+  let state = { profil: 'rumah', baterai: false, siang: 45 };
+
+  // Isi dropdown kota & golongan dari data bersama.
+  el('kota').innerHTML = D.KOTA.map(k =>
+    `<option value="${k.slug}"${k.slug === 'jakarta' ? ' selected' : ''}>${k.nama} — ${k.prov}</option>`).join('');
+  el('golongan').innerHTML = Object.entries(D.TARIFF).map(([k, v]) =>
+    `<option value="${k}"${k === 'R-1/2200' ? ' selected' : ''}>${v.label} · Rp ${v.rate.toLocaleString('id-ID')}/kWh</option>`).join('');
+
+  // Paket dari data bersama, harga dihitung dari model yang sama.
+  el('paketGrid').innerHTML = D.PAKET.map(p => {
+    const harga = D.capexPlts(p.kwp);
+    return `<div class="price-card${p.populer ? ' pop' : ''}">
+      ${p.populer ? '<span class="tag">PALING BANYAK DIPILIH</span>' : ''}
+      <div class="name">${p.nama}</div>
+      <div class="size">${p.kwp} kWp</div>
+      <div style="font-size:13px;color:var(--mid)">Cocok untuk tagihan ${p.tagihan}</div>
+      <div class="amt">${D.rupiahSingkat(harga)}<small>terpasang · ${D.rupiahSingkat(harga / p.kwp)}/kWp</small></div>
+      <ul>${p.fitur.map(f => `<li>${f}</li>`).join('')}
+          <li>${p.modul} · ${p.inverter}</li>
+          <li>Butuh atap ${p.atap}</li></ul>
+      <a href="#konsultasi" class="btn ${p.populer ? 'btn-primary' : 'btn-ghost'} btn-block">Minta penawaran</a>
+    </div>`;
+  }).join('');
+
+  function hitung() {
+    const kota = D.KOTA.find(k => k.slug === el('kota').value) || D.KOTA[0];
+    const tarif = D.TARIFF[el('golongan').value].rate;
+    const tagihan = Math.max(100000, Number(el('tagihan').value) || 0);
+    return D.hitungPlts({
+      tagihan, tarif, psh: kota.psh,
+      profil: state.profil, baterai: state.baterai,
+      porsiSiang: state.siang / 100,
+    });
+  }
+
+  function render() {
+    const r = hitung();
+    el('hs1').textContent = r.kwp + ' kWp';
+    el('hs2').textContent = D.rupiahSingkat(r.hematBulanan);
+    el('hs3').textContent = r.paybackTahun ? r.paybackTahun + ' th' : '—';
+
+    el('outHemat').innerHTML = D.rupiahSingkat(r.hematBulanan) +
+      `<small>hemat per bulan · ${r.hematPersen}% dari tagihan</small>`;
+    el('rKwp').textContent = r.kwp + ' kWp (' + r.jumlahModul + ' modul)';
+    el('rCapex').textContent = D.rupiahSingkat(r.capex) +
+      (r.kapasitasBaterai ? ' · baterai ' + r.kapasitasBaterai + ' kWh' : '');
+    el('rTagihan').textContent = D.rupiahSingkat(r.tagihanBaru);
+    el('rPayback').textContent = r.paybackTahun ? r.paybackTahun + ' tahun' : 'tidak tercapai';
+    el('rAtap').textContent = r.luasAtap + ' m²';
+    el('rBuang').textContent = r.kwhTerbuang + ' kWh/bln (' + (100 - r.rasioTerpakai) + '%)';
+    el('rCo2').textContent = (r.co2Tahunan / 1000).toFixed(1).replace('.', ',') + ' ton · ' + r.pohonSetara + ' pohon';
+
+    el('verdict').innerHTML = r.layak
+      ? `<div class="badge badge-green">✓ Layak secara ekonomi — nilai bersih ${D.rupiahSingkat(r.npv)} selama 25 tahun</div>`
+      : `<div class="badge badge-red">⚠ Belum layak pada profil ini</div>
+         <p style="font-size:13px;color:#cbd5e1;margin-top:10px">
+           Dengan pola pemakaian sekarang, biaya sistem tidak tertutup penghematannya.
+           Naikkan porsi pemakaian siang hari, atau
+           <a href="/index.html" style="color:var(--sun);font-weight:800">jalankan audit AI gratis</a> lebih dulu.
+         </p>`;
+  }
+
+  // Dipakai form lead agar estimasi ikut terkirim.
+  window.__envisorHitung = hitung;
+
+  EnVisorUI.chips('#profilChips', (v) => {
+    state.profil = v;
+    // Selaraskan slider dengan porsi siang khas tiap jenis bangunan.
+    const bawaan = Math.round(D.SOLAR.porsiSiang[v] * 100);
+    state.siang = bawaan;
+    el('siang').value = bawaan;
+    el('siangVal').textContent = bawaan + '%';
+    render();
+  });
+  EnVisorUI.chips('#bateraiChips', (v) => { state.baterai = v === '1'; render(); });
+  el('siang').addEventListener('input', (e) => {
+    state.siang = Number(e.target.value);
+    el('siangVal').textContent = state.siang + '%';
+    render();
+  });
+  ['tagihan', 'kota', 'golongan'].forEach(id => el(id).addEventListener('input', render));
+
+  render();
+})();
+</script>
+</body>
+</html>
