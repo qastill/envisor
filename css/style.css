@@ -225,3 +225,15 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
   .chart-label{min-width:80px;max-width:80px}
   .hr-main{font-size:28px}
 }
+
+/* NAV LINKS — jalur ke halaman solusi dari aplikasi audit */
+.nav-links-app{display:flex;align-items:center;gap:4px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.nav-links-app::-webkit-scrollbar{display:none}
+.nav-links-app a{font-size:12.5px;font-weight:700;color:var(--mid);text-decoration:none;padding:6px 10px;border-radius:9px;white-space:nowrap;transition:.15s}
+.nav-links-app a:hover{color:var(--dark);background:var(--light2)}
+.nav-links-app a.nav-badge{color:#92400e}
+@media(max-width:560px){
+  nav{padding:0 14px}
+  .logo{font-size:17px}
+  .nav-links-app a{font-size:11.5px;padding:6px 7px}
+}

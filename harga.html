@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Harga PLTS Atap Indonesia 2026 — Daftar Biaya per kWp | EnVisor</title>
+<meta name="description" content="Daftar harga PLTS Atap terpasang dari 2 kWp sampai 500 kWp, lengkap dengan rincian biaya tetap, simulasi cicilan, dan apa saja yang termasuk.">
+<link rel="canonical" href="https://envisor.id/harga.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Harga PLTS Atap Indonesia 2026 — Daftar Biaya per kWp | EnVisor">
+<meta property="og:description" content="Daftar harga PLTS Atap terpasang dari 2 kWp sampai 500 kWp, lengkap dengan rincian biaya tetap, simulasi cicilan, dan apa saja yang termasuk.">
+<meta property="og:url" content="https://envisor.id/harga.html">
+<link rel="icon" href="/icons/icon-192x192.png">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+<nav data-nav></nav>
+
+<header class="hero-light">
+  <div class="container">
+    <div class="eyebrow">Harga</div>
+    <h1>Harga PLTS Atap <em>Terbuka</em></h1>
+    <p class="lead">Harga indikatif terpasang beserta struktur biayanya. Kami tunjukkan juga
+      bagian yang membuat sistem kecil jadi mahal per kWp — informasi yang biasanya tidak muncul di brosur.</p>
+  </div>
+</header>
+
+<section class="tight">
+  <div class="container">
+    <div class="sec-head left">
+      <div class="eyebrow">Struktur biaya</div>
+      <h2>Kenapa harga per kWp turun saat sistem membesar</h2>
+    </div>
+    <div class="grid g2" style="gap:36px;align-items:start">
+      <div>
+        <p class="lead" style="margin-bottom:18px">Biaya PLTS terdiri dari dua bagian yang berperilaku sangat berbeda.</p>
+        <ul class="checklist">
+          <li><strong>Biaya tetap (± Rp 9 juta)</strong> — perizinan PLN, Sertifikat Laik Operasi, proteksi arus searah dan bolak-balik, mobilisasi tim, serta pemasangan monitoring. Besarnya hampir sama untuk sistem 2 kWp maupun 20 kWp.</li>
+          <li><strong>Biaya per kWp (Rp 7–11,5 juta)</strong> — modul, inverter, mounting, kabel, dan tenaga kerja. Bagian inilah yang sebanding dengan kapasitas, dan harga satuannya menurun pada volume besar.</li>
+        </ul>
+        <div class="note" style="margin-top:22px">
+          Akibatnya, sistem 2 kWp berharga sekitar Rp 16 juta per kWp sementara sistem 20 kWp hanya sekitar
+          Rp 9,4 juta per kWp — meskipun panel yang dipakai persis sama.
+        </div>
+      </div>
+      <div class="card-flat">
+        <h3 style="margin-bottom:16px">Daftar harga terpasang</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Ukuran</th><th>Produksi*</th><th>Harga</th><th>Per kWp</th></tr></thead>
+          <tbody id="tabelHarga"></tbody>
+        </table></div>
+        <p style="font-size:12px;color:var(--mid);margin-top:12px">
+          *Produksi bulanan pada iradiasi 4,8 jam puncak per hari. Harga belum termasuk baterai,
+          perbaikan struktur atap, dan penambahan daya PLN.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:#fff">
+  <div class="container">
+    <div class="sec-head"><div class="eyebrow">Paket rumah</div><h2>Paket siap pasang</h2></div>
+    <div class="price-grid" id="paketGrid"></div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="sec-head left">
+      <div class="eyebrow">Pembiayaan</div>
+      <h2>Simulasi cicilan — <em>dengan peringatannya</em></h2>
+      <p class="lead">Cicilan membuat PLTS terjangkau di muka, tetapi tidak selalu membuatnya menguntungkan.</p>
+    </div>
+    <div class="grid g2" style="gap:36px;align-items:start">
+      <div class="card-flat">
+        <div class="field">
+          <label for="c-harga">Harga sistem <span class="sub">(Rp)</span></label>
+          <input type="number" id="c-harga" value="66500000" step="1000000" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label for="c-dp">Uang muka <span class="sub">(%)</span></label>
+          <div class="range-row"><input type="range" id="c-dp" min="0" max="50" step="5" value="20"><span class="range-val" id="c-dpVal">20%</span></div>
+        </div>
+        <div class="field">
+          <label for="c-tenor">Tenor <span class="sub">(bulan)</span></label>
+          <div class="range-row"><input type="range" id="c-tenor" min="12" max="60" step="6" value="36"><span class="range-val" id="c-tenorVal">36 bln</span></div>
+        </div>
+        <div class="field">
+          <label for="c-bunga">Bunga efektif per tahun <span class="sub">(%)</span></label>
+          <div class="range-row"><input type="range" id="c-bunga" min="0" max="24" step="0.5" value="12"><span class="range-val" id="c-bungaVal">12%</span></div>
+        </div>
+        <div class="field">
+          <label for="c-hemat">Perkiraan hemat per bulan <span class="sub">(Rp)</span></label>
+          <input type="number" id="c-hemat" value="500000" step="50000" inputmode="numeric">
+        </div>
+      </div>
+      <div>
+        <div class="calc-out" style="margin-top:0">
+          <div class="big" id="c-angsuran">—<small>angsuran per bulan</small></div>
+          <div class="calc-rows">
+            <div><span>Uang muka</span><span id="c-outDp">—</span></div>
+            <div><span>Total dibayar</span><span id="c-outTotal">—</span></div>
+            <div><span>Total bunga</span><span id="c-outBunga">—</span></div>
+            <div><span>Arus kas bersih per bulan</span><span id="c-outArus">—</span></div>
+          </div>
+          <div id="c-verdict" style="margin-top:16px"></div>
+        </div>
+        <div class="note" style="margin-top:20px">
+          <strong>Yang perlu disadari:</strong> selama masa cicilan, arus kas bersih hampir selalu negatif —
+          angsuran biasanya lebih besar daripada penghematan. Keuntungannya baru terasa setelah cicilan lunas.
+          Kalau total bunga melampaui penghematan seumur sistem, membeli tunai atau menunda lebih masuk akal.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:#fff">
+  <div class="container-narrow">
+    <div class="sec-head"><div class="eyebrow">Pertanyaan</div><h2>Seputar harga</h2></div>
+    <div class="faq">
+      <details open><summary>Kenapa harganya berbeda dengan penawaran lain yang saya terima?</summary>
+        <div class="ans"><p>Perbedaan terbesar biasanya ada pada lingkup. Penawaran yang jauh lebih murah sering belum memasukkan perizinan PLN, Sertifikat Laik Operasi, proteksi arus searah, atau monitoring. Saat membandingkan, samakan dulu lingkupnya — bukan hanya angka totalnya.</p></div></details>
+      <details><summary>Apakah harga ini mengikat?</summary>
+        <div class="ans"><p>Tidak. Ini harga indikatif untuk perencanaan. Angka final ditetapkan setelah survei atap, karena jenis atap, ketinggian, jarak tarikan kabel, dan kondisi panel listrik eksisting mempengaruhi biaya pemasangan.</p></div></details>
+      <details><summary>Ada biaya rutin setelah terpasang?</summary>
+        <div class="ans"><p>Perawatan yang wajar sekitar 1% dari nilai sistem per tahun — meliputi pembersihan modul dua kali setahun dan pemeriksaan sambungan. Inverter umumnya perlu diganti sekali di tahun ke-10 sampai ke-15, dan biaya itu sudah diperhitungkan dalam proyeksi balik modal kami.</p></div></details>
+      <details><summary>Bagaimana kalau atap saya perlu diperbaiki dulu?</summary>
+        <div class="ans"><p>Perbaikan struktur berada di luar lingkup standar dan dikuotasi terpisah setelah survei. Kami tidak akan memasang di atas atap yang kondisinya meragukan, karena membongkar sistem untuk memperbaiki atap di kemudian hari jauh lebih mahal.</p></div></details>
+    </div>
+  </div>
+</section>
+
+<section class="tight">
+  <div class="container-narrow"><div class="cta-band">
+    <h2 style="color:#fff">Hitung angka untuk bangunanmu</h2>
+    <p>Kalkulator menentukan ukuran optimal berdasarkan nilai investasi, lalu menunjukkan harga yang sesuai.</p>
+    <div class="btn-row center"><a class="btn btn-primary" href="/surya.html#kalkulator">Buka kalkulator</a></div>
+  </div></div>
+</section>
+<footer data-footer></footer>
+<script src="/data/site-data.js"></script>
+<script src="/js/site.js"></script>
+<script>
+(function () {
+  const D = window.EnVisorData;
+  const el = (id) => document.getElementById(id);
+
+  el('tabelHarga').innerHTML = [2, 3, 5, 7.5, 10, 15, 20, 30, 50, 100, 200, 500].map(kwp => {
+    const c = D.capexPlts(kwp);
+    return `<tr><td><strong>${String(kwp).replace('.', ',')} kWp</strong></td>
+      <td>${Math.round(D.produksiBulanan(kwp, 4.8)).toLocaleString('id-ID')} kWh</td>
+      <td>${D.rupiahSingkat(c)}</td>
+      <td>${D.rupiahSingkat(c / kwp)}</td></tr>`;
+  }).join('');
+
+  el('paketGrid').innerHTML = D.PAKET.map(p => {
+    const harga = D.capexPlts(p.kwp);
+    return `<div class="price-card${p.populer ? ' pop' : ''}">
+      ${p.populer ? '<span class="tag">PALING BANYAK DIPILIH</span>' : ''}
+      <div class="name">${p.nama}</div><div class="size">${p.kwp} kWp</div>
+      <div style="font-size:13px;color:var(--mid)">Cocok untuk tagihan ${p.tagihan}</div>
+      <div class="amt">${D.rupiahSingkat(harga)}<small>terpasang · ${D.rupiahSingkat(harga / p.kwp)}/kWp</small></div>
+      <ul>${p.fitur.map(f => `<li>${f}</li>`).join('')}<li>${p.modul} · ${p.inverter}</li><li>Butuh atap ${p.atap}</li></ul>
+      <a href="/surya.html#konsultasi" class="btn ${p.populer ? 'btn-primary' : 'btn-ghost'} btn-block">Minta penawaran</a>
+    </div>`;
+  }).join('');
+
+  /* --- simulasi cicilan (anuitas) --- */
+  const ikat = (id, fmt) => {
+    const s = el(id), v = el(id + 'Val');
+    s.addEventListener('input', () => { v.textContent = fmt(s.value); hitungCicilan(); });
+    v.textContent = fmt(s.value);
+  };
+
+  function hitungCicilan() {
+    const harga = Number(el('c-harga').value) || 0;
+    const dp = harga * (Number(el('c-dp').value) / 100);
+    const pokok = harga - dp;
+    const n = Number(el('c-tenor').value);
+    const i = Number(el('c-bunga').value) / 100 / 12;
+    const hemat = Number(el('c-hemat').value) || 0;
+
+    // Angsuran anuitas; saat bunga 0 rumusnya jatuh ke pembagian biasa.
+    const angsuran = i === 0 ? pokok / n : (pokok * i) / (1 - Math.pow(1 + i, -n));
+    const total = angsuran * n + dp;
+    const bunga = total - harga;
+    const arus = hemat - angsuran;
+
+    el('c-angsuran').innerHTML = D.rupiahSingkat(angsuran) + '<small>angsuran per bulan selama ' + n + ' bulan</small>';
+    el('c-outDp').textContent = D.rupiahSingkat(dp);
+    el('c-outTotal').textContent = D.rupiahSingkat(total);
+    el('c-outBunga').textContent = D.rupiahSingkat(bunga);
+    el('c-outArus').textContent = (arus >= 0 ? '+' : '\u2212') + D.rupiahSingkat(Math.abs(arus));
+
+    el('c-verdict').innerHTML = arus >= 0
+      ? `<div class="badge badge-green">✓ Penghematan menutup angsuran sejak bulan pertama</div>`
+      : `<div class="badge badge-amber">⚠ Perlu tambahan ${D.rupiahSingkat(Math.abs(arus))}/bulan selama masa cicilan</div>`;
+  }
+
+  ikat('c-dp', v => v + '%');
+  ikat('c-tenor', v => v + ' bln');
+  ikat('c-bunga', v => v + '%');
+  ['c-harga', 'c-hemat'].forEach(id => el(id).addEventListener('input', hitungCicilan));
+  hitungCicilan();
+})();
+</script>
+</body>
+</html>

@@ -1,5 +1,6 @@
-const CACHE_NAME = 'envisor-v5';
-const STATIC = ['/', '/css/style.css', '/js/app.js', '/manifest.json'];
+const CACHE_NAME = 'envisor-v6';
+const STATIC = ['/', '/css/style.css', '/css/site.css', '/js/app.js',
+                '/js/site.js', '/data/site-data.js', '/manifest.json'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(STATIC)));

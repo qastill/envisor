@@ -43,7 +43,7 @@
 
         <div class="field">
           <label for="tagihan">Tagihan listrik per bulan <span class="sub">(Rp)</span></label>
-          <input type="number" id="tagihan" value="1500000" min="100000" step="50000" inputmode="numeric">
+          <input type="number" id="tagihan" value="2500000" min="100000" step="50000" inputmode="numeric">
         </div>
 
         <div class="field">
@@ -265,7 +265,7 @@
   el('kota').innerHTML = D.KOTA.map(k =>
     `<option value="${k.slug}"${k.slug === 'jakarta' ? ' selected' : ''}>${k.nama} — ${k.prov}</option>`).join('');
   el('golongan').innerHTML = Object.entries(D.TARIFF).map(([k, v]) =>
-    `<option value="${k}"${k === 'R-1/2200' ? ' selected' : ''}>${v.label} · Rp ${v.rate.toLocaleString('id-ID')}/kWh</option>`).join('');
+    `<option value="${k}"${k === 'R-1M/3500' ? ' selected' : ''}>${v.label} · Rp ${v.rate.toLocaleString('id-ID')}/kWh</option>`).join('');
 
   // Paket dari data bersama, harga dihitung dari model yang sama.
   el('paketGrid').innerHTML = D.PAKET.map(p => {
