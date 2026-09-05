@@ -11,7 +11,12 @@
   /* ---------- BRAND ---------- */
   const SITE = {
     name: 'EnVisor',
-    domain: 'https://envisor.id',
+    // Domain yang benar-benar melayani situs ini. Tag canonical dan sitemap
+    // wajib menunjuk ke sini: mengarahkannya ke domain yang belum aktif
+    // membuat mesin pencari menganggap halaman aslinya ada di tempat lain.
+    // Ganti ke domain khusus begitu domainnya sudah aktif, lalu jalankan
+    // `npm run build:pages` supaya seluruh halaman ikut diperbarui.
+    domain: 'https://envisor.vercel.app',
     tagline: 'Platform audit energi & PLTS Atap berbasis AI untuk Indonesia',
     email: 'halo@envisor.id',
     wa: '6281234567890',
